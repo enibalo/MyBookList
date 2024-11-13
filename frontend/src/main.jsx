@@ -4,6 +4,10 @@ import {BrowserRouter, Routes, Route} from "react-router-dom"
 import './styles/index.css'
 import Login from './views/Login.jsx'
 import UserSettings from './views/UserSettings.jsx'
+import Search from './views/Search.jsx'
+import SignUp from './views/SignUp.jsx'
+import AddBook from './views/AddBook.jsx'
+import Book from './views/Book.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,5 +21,5 @@ createRoot(document.getElementById('root')).render(
       <Route path="/addBook" element={<AddBook/>}></Route>
     </Routes>
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )
