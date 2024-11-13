@@ -54,7 +54,6 @@ table {
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -63,6 +62,7 @@ table {
 
 
 *{
+  line-height: 1.4;
   box-sizing: border-box;
 }
 
@@ -75,24 +75,22 @@ body{
     height: 100vh;
 }
 
+h1,h2,h3{
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
 
 h1{
-  font-weight: 700;
   font-size: 3.2em;
-  letter-spacing: -0.06em;
 }
 
 h2{
   font-size: 2.2em;
-  font-weight: 700;
-  letter-spacing: -0.06em;
-  
 }
 
 h3{
   font-size: 1.2em;
-  font-weight: 700;
-  letter-spacing: -0.06em;
 }
 
 
@@ -104,18 +102,19 @@ h3{
   color: #1E1E1E;
 }
 
+.red-bg,.black-bg{
+  border:none;
+  border-radius: 1em; 
+  line-height: 1;
+}
 
 .black-bg{
-  border:none;
   background-color: #2C2C2C;
   color: #F5F5F5;
-  border-radius: 1em; 
 }
 
 .red-bg{
-  border:none;
   background-color: #EC221F;
   color: #FEE9E7;
-  border-radius: 1em; 
 }
 
