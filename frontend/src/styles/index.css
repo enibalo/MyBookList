@@ -63,8 +63,6 @@ table {
 
 
 *{
-  font-size: 1em;
-  font-weight:normal;
   box-sizing: border-box;
 }
 
@@ -98,18 +96,26 @@ h3{
 }
 
 
-.secondary-text{
+.secondary{
   color: #757575;
 }
 
+.primary{
+  color: #1E1E1E;
+}
+
+
 .black-bg{
-/*will add later going to bed*/
+  border:none;
+  background-color: #2C2C2C;
+  color: #F5F5F5;
+  border-radius: 1em; 
 }
 
 .red-bg{
-
+  border:none;
+  background-color: #EC221F;
+  color: #FEE9E7;
+  border-radius: 1em; 
 }
 
-.grey-bg{
-
-}
