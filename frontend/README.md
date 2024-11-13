@@ -1,5 +1,5 @@
 Views => for web pages like Home Page 
 
-Components => for reusable components like header 
+Components => for reusable components like Header 
 
-Styles => for css styles 
+Styles => for CSS styles 
