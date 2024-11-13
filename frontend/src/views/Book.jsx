@@ -1,5 +1,5 @@
 
-import {Header} from '../components/Header.jsx'
+import Header from '../components/Header.jsx';
 
 
 export default function Book(){
@@ -11,7 +11,7 @@ export default function Book(){
         </main>
         </>
     )
-}
+};
 
 //two states, no reccs, has reccs, 
 //two states for reccCard made by user 
@@ -22,5 +22,6 @@ export function ReccomendedCard(){
 
         </li>
     )
-}
+};
+
 
