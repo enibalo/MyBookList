@@ -101,3 +101,13 @@
     max-width: 100%;
     min-width: 100%;
 }
+
+#reccomendHeader{
+}
+
+#menu{
+    border: 1px solid grey;
+    border-radius: 1em; 
+    font-size: bold;
+    padding-left: 12px;
+}

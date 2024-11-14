@@ -10,6 +10,7 @@ import thumbsDown from '../assets/Thumbs-down.svg'
 import styles from '../styles/Book.module.css';
 import PropTypes from 'prop-types';
 
+
 function Book (){
     let {isbn} = useParams();
 
@@ -32,7 +33,7 @@ function Book (){
     });
 
     return(
-        //need to handle favorited by the admin!
+        
         <>
         <Header></Header>
         <main id={styles.main}>
@@ -63,7 +64,10 @@ function Book (){
             }
             </section>
             <section className={styles.container}>
-                <h2>Recommendations</h2>
+                <div id={styles.reccomendHeader}>
+                <h2>Recommendations</h2>  
+                <Menu></Menu>
+                </div>
                 {reccs == [] ? 
                     <div className="secondary">Be the first to recommend a book!</div> 
                     : 
@@ -83,9 +87,11 @@ function Book (){
 
 
 //two states, no reccs, has reccs, 
-//according drop down menu
+//accordion drop down menu
 //center thumbs up area
 //fix recommendatins heading spacing 
+//need to handle favorited by the admin!
+//check readability of font/
 
 
 export function ReccomendedCard({recc}){
@@ -94,7 +100,6 @@ export function ReccomendedCard({recc}){
     useEffect( () => {
     
         async function fetchData(){
-            // eslint-disable-next-line react/prop-types
             const tempTags = await fetchReccTags(recc.Book_isbn,recc.Username, recc.Recommended_isbn);
             setTags(tempTags);
         }
@@ -134,6 +139,28 @@ export function ReccomendedCard({recc}){
             </div>
         </li>
     );
+}
+
+
+export function Menu(){
+    const menuItems = ["Default", "Add Recommendation", "Edit Recommendation", "Filter Recommendation"];
+    const menuLinks = ["default", "add", "edit", "filter", "default"];
+    function redirectLink(e){
+        let val = e.target.value;
+        console.log(val);
+    }
+    return (
+        <>
+        <label htmlFor={styles.menu} aria-label="Choose a Way to Interact With the Recommendation Section"></label>
+        <select onChange={redirectLink} id={styles.menu} className="black-bg" >
+            {menuItems.map((item, index) =>{
+                return (<option value={menuLinks[index]} key={menuLinks[index]} className="black-bg">{item}</option>);
+            }
+            )}
+        </select>
+        </>
+    );
+
 }
 
 
@@ -201,7 +228,14 @@ async function  fetchBook(isbn){
 }
 
 
-
+/*
+<select id="linkSelect" onchange="redirectToLink()">
+  <option value="">Select an option...</option>
+  <option value="https://example.com/page1">Go to Page 1</option>
+  <option value="https://example.com/page2">Go to Page 2</option>
+  <option value="https://example.com/page3">Go to Page 3</option>
+</select>
+ */
 
 
 
