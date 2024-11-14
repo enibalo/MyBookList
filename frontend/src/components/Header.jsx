@@ -3,7 +3,7 @@ import coffeeLogo from '../assets/Coffee.svg';
 import PropTypes from 'prop-types';
 
 import styles from '../styles/Header.module.css';
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 function Header(props) {
   return (

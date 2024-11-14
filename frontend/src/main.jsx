@@ -8,7 +8,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
   <BrowserRouter>
   <Routes>  
-    <Route path="book" element={<Book></Book>}></Route>
+    <Route path="book/:isbn" element={<Book></Book>}></Route>
   </Routes>
   </BrowserRouter>
   </StrictMode>
