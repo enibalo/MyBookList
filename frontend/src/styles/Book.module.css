@@ -80,6 +80,7 @@
 
 
 .cardFooter{
+    align-items: flex-end;
     padding-top: 16px;
     display: flex;
     justify-content: space-between;
@@ -88,26 +89,42 @@
 
 .holdThumb{
     display: flex;
+    gap: 8px;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
 }
 
-.cardFooter div{
+.holdThumb div{
+    display: flex;
+}
+
+#holdRatings{
     display: flex;
     gap: 16px;
 }
 
-.cardFooter > img{
-    max-width: 100%;
-    min-width: 100%;
+#noReccs{
+    padding-top: 32px;
 }
 
 #reccomendHeader{
+    border-bottom: 1px solid grey;
+    padding-bottom: 16px;
 }
 
 #menu{
+    margin-top: 8px;
     border: 1px solid grey;
-    border-radius: 1em; 
-    font-size: bold;
+    border-radius: 0.7em;
     padding-left: 12px;
+    padding: 4px 0px 4px 12px;
+}
+
+.noDecor{
+    text-decoration: none;
+}
+
+.noDecor:hover{
+    text-decoration: underline;
+    font-weight: bold;
 }
