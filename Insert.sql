@@ -1,29 +1,49 @@
 -- Tag
+DELETE FROM Tag;
+DELETE FROM `User`;
+DELETE FROM Publisher;
+DELETE FROM Genre;
+DELETE FROM Author;
+DELETE FROM `Admin`;
+DELETE FROM Book;
+DELETE FROM Recommendation_tag;
+DELETE FROM Recommendation;
+DELETE FROM Book_series;
+DELETE FROM Posseses;
+DELETE FROM Likes;
+DELETE FROM Favorites;
+
 INSERT INTO Tag (Name) VALUES
 ('Fantasy'), ('Science Fiction'), ('Romance'), ('Mystery'), ('Non-Fiction');
 
 -- User
-INSERT INTO User (Username, Password) VALUES
+INSERT INTO `User` (Username, `Password`) VALUES
 ('bookworm1', 'pass123'),
-('readerlove', 'securepass'),
+('readerlove', 'securepas'),
 ('novelguy', 'bookpass1'),
-('storyseeker', 'readerpass'),
+('storyseek', 'readerpas'),
 ('pagelover', 'novelpass');
 
 -- Publisher
-INSERT INTO Publisher (Name, Email, Phone) VALUES
-('Penguin Random House', 'info@penguinrandom.com', '2127829000'),
-('HarperCollins', 'contact@harpercollins.com', '2122077000'),
-('Simon & Schuster', 'info@simonschuster.com', '2126987000'),
-('Hachette Book Group', 'contact@hachette.com', '2123640100'),
-('Macmillan Publishers', 'info@macmillan.com', '6462307000');
+INSERT INTO Publisher (`Name`, Email, Phone) VALUES
+('Penguin Random House', 'info@penguinrand.com', '2127829000'),
+('HarperCollins', 'contact@harper.com', '2122077000'),
+('Simon & Schuster', 'info@simons.com', '2126987000'),
+('Hachette Book Group', 'contact@hachet.com', '2123640100'),
+('Macmillan Publishers', 'info@macmill.com', '6462307000');
 
 -- Genre
-INSERT INTO Genre (Name, Main_genre) VALUES
-('Epic Fantasy', 'Fantasy'),
-('Space Opera', 'Science Fiction'),
-('Historical Romance', 'Romance'),
-('Detective Fiction', 'Mystery'),
+-- Insert main genres first
+INSERT INTO Genre (`Name`, Main_genre) VALUES
+('Fiction', NULL),
+('Non-Fiction', NULL);
+
+-- Insert sub-genres with 'Fiction' as the main genre for fiction books
+INSERT INTO Genre (`Name`, Main_genre) VALUES
+('Epic Fantasy', 'Fiction'),
+('Space Opera', 'Fiction'),
+('Historical Romance', 'Fiction'),
+('Detective Fiction', 'Fiction'),
 ('Popular Science', 'Non-Fiction');
 
 -- Author
@@ -35,7 +55,7 @@ INSERT INTO Author (ID, Fname, Lname, DOB) VALUES
 (5, 'Stephen', 'Hawking', '1942-01-08');
 
 -- Admin
-INSERT INTO Admin (Username, Password) VALUES
+INSERT INTO `Admin` (Username, `Password`) VALUES
 ('admin1', 'adminpass1'),
 ('superuser', 'superpass2');
 
@@ -56,7 +76,7 @@ INSERT INTO Recommendation_tag (Tag_name, Username, Book_isbn, Recommended_isbn)
 ('Non-Fiction', 'pagelover', 9780553380163, 9780261103252);
 
 -- Recommendation
-INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, Comment, Up_vote, Down_vote) VALUES
+INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, `Comment`, Up_vote, Down_vote) VALUES
 ('bookworm1', 9780261103252, 9780441172719, 'If you enjoy epic world-building, Dune is a must-read!', 15, 2),
 ('readerlove', 9780441172719, 9780553380163, 'For more mind-bending concepts, check out A Brief History of Time.', 10, 1),
 ('novelguy', 9780141439518, 9780062073488, 'If you like strong characters and plot twists, try this Christie classic.', 8, 3),
@@ -90,4 +110,4 @@ INSERT INTO Favorites (Username, Book_isbn) VALUES
 ('readerlove', 9780441172719),
 ('novelguy', 9780141439518),
 ('storyseeker', 9780062073488),
-('pagelover', 9780553380163);
+('pagelover', 9780553380163);publisherpublisher
