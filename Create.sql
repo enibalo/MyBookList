@@ -14,6 +14,10 @@ DROP TABLE IF EXISTS Publisher;
 DROP TABLE IF EXISTS `User`;
 DROP TABLE IF EXISTS Tag;
 
+
+-- I had to change some integer data types (ISBN and Phone), as i was getting value out of range errors
+-- P.s. if it doesn't work try deleting this comment, and it worked better for me when i created db manually so i have no create database statement.
+
 CREATE TABLE Tag(
 
     `Name` VARCHAR(20) NOT NULL,
