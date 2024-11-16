@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import thumbsUp from '../../assets/Thumbs-up.svg';
 import thumbsDown from '../../assets/Thumbs-down.svg';
 import styles from '../../styles/Book.module.css';
+import PropTypes from "prop-types";
 
 export default function RecommendedCard({recc}){
     let [tags, setTags] = useState([]);
@@ -19,6 +20,7 @@ export default function RecommendedCard({recc}){
 
         return () => { isMounted = false};
     }, []);
+
 
   
     return(
@@ -44,13 +46,13 @@ export default function RecommendedCard({recc}){
             <div className={styles.cardFooter}>
                 <span>Username : {recc.Username}</span>
                 <div id={styles.holdRatings}>
-                    <span aria-label='Upvotes for this Recommendation' className={styles.holdThumb}>
+                    <span aria-label='Upvotes' className={styles.holdThumb}>
                         <span>{recc.Up_vote}</span>
-                        <div><img alt='Green Thumbs up' className={styles.icon} src={thumbsUp}></img></div>
+                        <button onClick={()=>{handleClick("upvote")}}><img alt='Green Thumbs up' className={styles.icon} src={thumbsUp}></img></button>
                     </span>
-                    <span aria-label='Downvote for this Recommendation'className={styles.holdThumb}>
+                    <span aria-label='Downvote'className={styles.holdThumb}>
                         <span>{recc.Down_vote}</span>
-                        <div><img  alt='Red Thumbs down'className={styles.icon } src={thumbsDown}></img></div>
+                        <button onClick={()=>{handleClick("downvote")}}><img  alt='Red Thumbs down'className={styles.icon } src={thumbsDown}></img></button>
                     </span>
                 </div>
             </div>
@@ -58,6 +60,10 @@ export default function RecommendedCard({recc}){
     );
   }
   
+
+function handleClick(value){
+    console.log(value);
+}
  
 async function fetchReccTags(bookIsbn, username, reccIsbn){
     const tags = [
@@ -67,6 +73,21 @@ async function fetchReccTags(bookIsbn, username, reccIsbn){
     return tags;
   }
   
+
+  RecommendedCard.propTypes = {
+    recc : PropTypes.shape({
+        Book_isbn: PropTypes.number.isRequired,
+        Recommended_isbn: PropTypes.number.isRequired,
+        Comment: PropTypes.string.isRequired,
+        Up_vote: PropTypes.number.isRequired,
+        Down_vote: PropTypes.number.isRequired,
+        Username: PropTypes.string.isRequired,
+        Title: PropTypes.string.isRequired,
+        Fname: PropTypes.string.isRequired,
+        Lname: PropTypes.string.isRequired
+      }  
+    ),
+  };
   
   
   

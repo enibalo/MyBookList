@@ -94,8 +94,16 @@
     align-items: flex-end;
 }
 
-.holdThumb div{
+.holdThumb button{
     display: flex;
+    border: 1px solid white;
+    padding: 2px;
+    background-color: white;
+}
+
+.holdThumb button:hover{
+    border: 1px solid grey;
+    border-radius: 0.5em;
 }
 
 #holdRatings{
