@@ -8,17 +8,25 @@ import styles from '../../styles/Book.module.css';
 
 export default function FilterRec() {
     let {isbn} = useParams();
+    let [reccs, setReccs] = useState(null);
+    let [error, setError] = useState(false);
 
-    let [reccs, setReccs] = useState([]);
     let username = "";
 
     useEffect(  ()=> {
-      async function fetchData(){
-          const tempReccs = await fetchFilteredReccs(isbn, username);
-          setReccs(tempReccs);
-      }
-      fetchData();
-  });
+          let isMounted = true;
+          fetchFilteredReccs(isbn, username)
+          .then( (result) => {if (isMounted) {   setReccs(result);}})
+            .catch((error) =>{  setError(true);});
+            return () => {
+              isMounted = false; // Cleanup flag on unmount
+            };    
+  }, []);
+
+    if (error) return <div>Error</div>
+
+    if (reccs == []) return <div>Loading...</div>;
+  
 
     return (
       <>

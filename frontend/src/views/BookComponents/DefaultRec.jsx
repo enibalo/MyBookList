@@ -7,25 +7,33 @@ import RecommendedCard from './RecommendedCard.jsx';
 import styles from '../../styles/Book.module.css';
 
 export default function DefaultRec() {
+    
     let {isbn} = useParams();
-
-    let [reccs, setReccs] = useState([]);
+    const [reccs, setReccs] = useState([]);
+    let [error, setError] = useState(false);
 
     useEffect(  ()=> {
-      async function fetchData(){
-          const tempReccs = await fetchReccs(isbn);
-          setReccs(tempReccs);
-      }
-      fetchData();
-  });
+            let isMounted = true;
+            fetchReccs(isbn)
+            .then( (result) => {if (isMounted) {   setReccs(result);}})
+            .catch((error) =>{  setError(true);});
+            return () => {
+              isMounted = false; // Cleanup flag on unmount
+            };    
+    },[]);
+
+    if (error) return <div>Error</div>
+
+    if (reccs == []) return <div>Loading...</div>;
+    
 
     return (
       <>
-      {reccs == null ? 
+      {reccs == null? 
           <div className="secondary" id={styles.noReccs}>Be the first to recommend a book!</div> 
           : 
           <ul>
-              {reccs.map( (recc) => {
+             {reccs.map( (recc) => {
                   return <RecommendedCard key={recc.Username+"-"+recc.Recommended_isbn} recc={recc}></RecommendedCard>;
               })
               }
@@ -35,9 +43,15 @@ export default function DefaultRec() {
     )
 }
 
+/*
+{reccs.map( (recc) => {
+                  return <RecommendedCard key={recc.Username+"-"+recc.Recommended_isbn} recc={recc}></RecommendedCard>;
+              })
+              }*/ 
+
 
 async function fetchReccs(isbn){
-  const reccs = [
+  let reccs = [
       {
       "Book_isbn": 1,
         "Recommended_isbn": 2,
@@ -63,6 +77,8 @@ async function fetchReccs(isbn){
     ];
   return reccs;
 }
+
+
 
 
 /*

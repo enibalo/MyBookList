@@ -8,15 +8,18 @@ import styles from '../../styles/Book.module.css';
 
 export default function RecommendedCard({recc}){
     let [tags, setTags] = useState([]);
+    let [error, setError] = useState(false);
+    console.log("card");
     
     useEffect( () => {
-        async function fetchData(){
-            const tempTags = await fetchReccTags(recc.Book_isbn,recc.Username, recc.Recommended_isbn);
-            setTags(tempTags);
-        }
-        fetchData();
-    }
-    );
+        let isMounted = true; 
+        fetchReccTags(recc.Book_isbn,recc.Username, recc.Recommended_isbn)
+        .then( result => {  if (isMounted) setTags(result)})
+        .catch((error) => {console.log("error"); setError(true)});
+
+        return () => { isMounted = false};
+    }, []);
+
   
     return(
         <li className={styles.card}>
@@ -29,7 +32,8 @@ export default function RecommendedCard({recc}){
                 </header>
   
                 <ul className={styles.ul} aria-label="Tags for the Recommended Book">
-                        {tags.map( (tag, index) => {
+                        {
+                        ( tags== []) ?  ( error ? <div>Error</div>: <div>Loading...</div>) : tags.map( (tag, index) => {
                             // eslint-disable-next-line react/prop-types
                             return <li className={ (index % 2 == 0 ? "black-bg " : "red-bg ")  +  styles.bubble} key={tag.Tag_name + "-" + recc.Recommended_isbn} >{tag.Tag_name}</li> ;
                         })
