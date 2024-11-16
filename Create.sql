@@ -107,10 +107,11 @@ CREATE TABLE Recommendation(
 );
 
 CREATE TABLE Recommendation_tag(
-    Tag_name VARCHAR(10) NOT NULL,
+    Tag_name VARCHAR(20) NOT NULL,
     Username VARCHAR(10) NOT NULL,
     Book_isbn VARCHAR(13) NOT NULL,
-    Recommended_isbn INT NOT NULL,
+    Recommended_isbn VARCHAR(13) NOT NULL,
+    
     PRIMARY KEY (Tag_name,Username,Book_isbn, Recommended_isbn),
 
     CONSTRAINT Rectag_username FOREIGN KEY (Username) REFERENCES 	`User`(Username) 
@@ -122,7 +123,8 @@ CREATE TABLE Recommendation_tag(
     CONSTRAINT Rectag_book FOREIGN KEY (Book_isbn)  REFERENCES Book(ISBN) 
     ON DELETE CASCADE ON UPDATE CASCADE,
 
-    CONSTRAINT Rectag_recommended FOREIGN KEY (Recommended_isbn)  REFERENCES 	Book(ISBN)  ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT Rectag_recommended FOREIGN KEY (Recommended_isbn)  REFERENCES 	Book(ISBN)  
+	 ON DELETE CASCADE ON UPDATE CASCADE
 );
 	
 CREATE TABLE Book_series(

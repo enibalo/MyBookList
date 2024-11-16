@@ -14,7 +14,7 @@ DELETE FROM Likes;
 DELETE FROM Favorites;
 
 INSERT INTO Tag (Name) VALUES
-('Fantasy'), ('Science Fiction'), ('Romance'), ('Mystery'), ('Non-Fiction');
+('Enemy to Lover'), ('Evil Parent'), ('Cheezy'), ('Wattpad Era'), ('Cry-athon');
 
 -- User
 INSERT INTO `User` (Username, `Password`) VALUES
@@ -69,18 +69,18 @@ INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary
 
 -- Recommendation_tag
 INSERT INTO Recommendation_tag (Tag_name, Username, Book_isbn, Recommended_isbn) VALUES
-('Fantasy', 'bookworm1', 9780261103252, 9780441172719),
-('Science Fiction', 'readerlove', 9780441172719, 9780553380163),
-('Romance', 'novelguy', 9780141439518, 9780062073488),
-('Mystery', 'storyseeker', 9780062073488, 9780141439518),
-('Non-Fiction', 'pagelover', 9780553380163, 9780261103252);
+('Cry-athon', 'bookworm1', 9780261103252, 9780441172719),
+('Cry-athon', 'readerlove', 9780441172719, 9780553380163),
+('Enemy to Lover', 'novelguy', 9780141439518, 9780062073488),
+('Evil Parent', 'storyseek', 9780062073488, 9780141439518),
+('Cheezy', 'pagelover', 9780553380163, 9780261103252);
 
 -- Recommendation
 INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, `Comment`, Up_vote, Down_vote) VALUES
 ('bookworm1', 9780261103252, 9780441172719, 'If you enjoy epic world-building, Dune is a must-read!', 15, 2),
 ('readerlove', 9780441172719, 9780553380163, 'For more mind-bending concepts, check out A Brief History of Time.', 10, 1),
 ('novelguy', 9780141439518, 9780062073488, 'If you like strong characters and plot twists, try this Christie classic.', 8, 3),
-('storyseeker', 9780062073488, 9780141439518, 'For witty dialogue and social commentary, Pride and Prejudice is excellent.', 12, 0),
+('storyseek', 9780062073488, 9780141439518, 'For witty dialogue and social commentary, Pride and Prejudice is excellent.', 12, 0),
 ('pagelover', 9780553380163, 9780261103252, 'For a change of pace, dive into this fantasy epic.', 7, 1);
 
 -- Book_series
@@ -101,7 +101,7 @@ INSERT INTO Likes (Username, Genre_name) VALUES
 ('bookworm1', 'Epic Fantasy'),
 ('readerlove', 'Space Opera'),
 ('novelguy', 'Historical Romance'),
-('storyseeker', 'Detective Fiction'),
+('storyseek', 'Detective Fiction'),
 ('pagelover', 'Popular Science');
 
 -- Favorites
@@ -109,5 +109,5 @@ INSERT INTO Favorites (Username, Book_isbn) VALUES
 ('bookworm1', 9780261103252),
 ('readerlove', 9780441172719),
 ('novelguy', 9780141439518),
-('storyseeker', 9780062073488),
-('pagelover', 9780553380163);publisherpublisher
+('storyseek', 9780062073488),
+('pagelover', 9780553380163);
