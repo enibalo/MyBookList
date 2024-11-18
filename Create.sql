@@ -53,7 +53,7 @@ CREATE TABLE Genre(
 );
 
 CREATE TABLE Author(
-    ID INT NOT NULL, 
+    ID INT NOT NULL AUTO_INCREMENT, 
     Fname  VARCHAR(15) NOT NULL, 
     Lname VARCHAR(15) NOT NULL, 
     DOB DATE,
@@ -94,8 +94,8 @@ CREATE TABLE Recommendation(
     Book_isbn VARCHAR(13) NOT NULL,
     Recommended_isbn VARCHAR(13) NOT NULL,
     `Comment` VARCHAR(200) NOT NULL,
-    Up_vote INT  DEFAULT 0,
-    Down_vote INT DEFAULT 0,
+    Up_vote INT  DEFAULT 0 NOT NULL,
+    Down_vote INT DEFAULT 0 NOT NULL,
 
     PRIMARY KEY (Username,Book_isbn, Recommended_isbn),
 
