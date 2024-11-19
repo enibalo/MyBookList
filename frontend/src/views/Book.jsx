@@ -67,7 +67,7 @@ function Book() {
                     {genres.map((genre) => {
                       return (
                         <li
-                          className={"black-bg " + styles.bubble}
+                          className={"primary-bg " + styles.bubble}
                           key={genre.Genre_name}
                         >
                           {genre.Genre_name}
@@ -140,7 +140,7 @@ export function Menu({ setShow }) {
       <select onChange={redirectLink} id={styles.menu}>
         {menuItems.map((item) => {
           return (
-            <option value={item} key={item} className="black-bg">
+            <option value={item} key={item} className="primary-bg">
               {item}
             </option>
           );

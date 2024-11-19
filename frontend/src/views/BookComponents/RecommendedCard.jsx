@@ -18,7 +18,7 @@ export default function RecommendedCard({ recc }) {
       .then((result) => {
         if (isMounted) setTags(result);
       })
-      .catch((error) => {
+      .catch(() => {
         console.log("error");
         setError(true);
       });
@@ -56,7 +56,8 @@ export default function RecommendedCard({ recc }) {
               return (
                 <li
                   className={
-                    (index % 2 == 0 ? "black-bg " : "red-bg ") + styles.bubble
+                    (index % 2 == 0 ? "primary-bg " : "secondary-bg ") +
+                    styles.bubble
                   }
                   key={tag.Tag_name + "-" + recc.Recommended_isbn}
                 >

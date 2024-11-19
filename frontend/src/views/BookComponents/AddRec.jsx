@@ -2,55 +2,135 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import styles from "../../styles/Book.module.css";
-import { useForm } from "react-hook=form";
+import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import PropTypes from "prop-types";
+import check from "../../assets/Check.svg";
 
 export default function AddRec() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const methods = useForm({
+    defaultValues: {
+      comment:
+        "This book has the same tropes, and it&#39;s really well written!",
+    },
+  });
 
   let { isbn } = useParams();
+  let [tags, setTags] = useState([]);
   let [error, setError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchTags()
+      .then((result) => {
+        if (isMounted) {
+          setTags(result);
+        }
+      })
+      .catch(() => {
+        setError(true);
+      });
+    return () => {
+      isMounted = false; // Cleanup flag on unmount
+    };
+  }, []);
+
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(data, isbn);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <fieldset>
-        <legend>Select Your Tags</legend>
-      </fieldset>
-      <textarea
-        placeholder="This book has the same tropes, and it&#39;s really well written!"
-        {...register("comment", {
-          required: "This field is required.",
-          maxLength: {
-            value: 200,
-            message: "The comment must contain less than 200 characters.",
-          },
-        })}
-      ></textarea>
-      {errors.comment && <span>{errors.comment.message}</span>}
-      <input type="submit"></input>
-    </form>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <h3>Add Recommendation</h3>
+        <div>Search Section</div>
+        {tags == [] ? (
+          error ? (
+            <div>Error</div>
+          ) : (
+            <div>Loading...</div>
+          )
+        ) : (
+          <ToggleGroup items={tags} itemName={"Tags"}></ToggleGroup>
+        )}
+        <textarea
+          {...methods.register("comment", {
+            required: "This field is required.",
+            maxLength: {
+              value: 200,
+              message: "The comment must contain less than 200 characters.",
+            },
+          })}
+        ></textarea>
+        {methods.formState.errors.comment && (
+          <span>{methods.formState.errors.comment.message}</span>
+        )}
+        <input type="submit"></input>
+      </form>
+    </FormProvider>
   );
 }
 
-async function getTags() {
-  let tags = ["fun", "cool"];
+async function fetchTags() {
+  let tags = ["fun", "cool", "awesome"];
   return tags;
 }
 
 export function ToggleGroup({ items, itemName }) {
+  console.log(items);
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+  function atLeastOneChecked(checkboxes) {
+    return checkboxes.length > 0;
+  }
+
   return (
-    <fieldset>
+    <fieldset className="toggleGroup">
       <legend>Select Your {itemName}</legend>
+      {items.map((item, index) => {
+        return (
+          <label
+            htmlFor={"input-" + item}
+            aria-labelledby={"span-" + item}
+            key={item}
+          >
+            {index == 0 ? (
+              <input
+                type="checkbox"
+                id={"input-" + item}
+                name="toggleGroup"
+                value={item}
+                {...register("checkbox", {
+                  validate: atLeastOneChecked,
+                })}
+              ></input>
+            ) : (
+              <input
+                type="checkbox"
+                id={"input-" + item}
+                name="toggleGroup"
+                value={item}
+                {...register("checkbox")}
+              ></input>
+            )}
+
+            <span aria-hidden="true" tabIndex="-1" id={"span-" + item}>
+              <img src={check}></img>
+              {item}
+            </span>
+          </label>
+        );
+      })}
+      {errors.checkbox && <span>You must select at least one item.</span>}
     </fieldset>
   );
 }
+
+ToggleGroup.propTypes = {
+  items: PropTypes.array,
+  itemName: PropTypes.string,
+};
 
 /*
 

@@ -172,6 +172,7 @@ h3 {
   font-size: 1.4em;
 }
 
+.toggleGroup,
 .secondary {
   color: var(--secondary);
 }
@@ -181,20 +182,11 @@ h3 {
 }
 
 .primary-bg,
-.secondary-bg {
+.secondary-bg,
+.toggleGroup span {
   border: none;
   border-radius: 1em;
   line-height: 1;
-}
-
-.primary-bg {
-  background-color: #2c2c2c;
-  color: #f5f5f5;
-}
-
-.secondary-bg {
-  background-color: #ec221f;
-  color: #fee9e7;
 }
 
 .toggleGroup input[type="checkbox"] {
@@ -203,14 +195,20 @@ h3 {
 
 .toggleGroup span {
   display: inline-block;
-  padding: 10px;
-  text-transform: uppercase;
-  border: 2px solid gold;
+  padding: 4px 12px;
+  background-color: #f5f5f5;
   border-radius: 3px;
-  color: gold;
+  margin: 8px;
+  margin-left: 0px;
 }
 
+.primary-bg,
 .toggleGroup input[type="checkbox"]:checked + span {
-  background-color: gold;
-  color: black;
+  background-color: #2c2c2c;
+  color: #f5f5f5;
+}
+
+.secondary-bg {
+  background-color: #ec221f;
+  color: #fee9e7;
 }

@@ -89,6 +89,7 @@
   align-items: flex-end;
 }
 
+/*Depends on background of page*/
 .holdThumb button {
   display: flex;
   border: 1px solid white;
@@ -131,3 +132,5 @@
   text-decoration: underline;
   font-weight: bold;
 }
+
+/*add variable for divider? */
