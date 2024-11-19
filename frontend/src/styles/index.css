@@ -137,6 +137,8 @@ table {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --primary: #1e1e1e;
+  --secondary: #494949;
 }
 
 * {
@@ -171,26 +173,44 @@ h3 {
 }
 
 .secondary {
-  color: #494949;
+  color: var(--secondary);
 }
 
 .primary {
-  color: #1e1e1e;
+  color: var(--primary);
 }
 
-.red-bg,
-.black-bg {
+.primary-bg,
+.secondary-bg {
   border: none;
   border-radius: 1em;
   line-height: 1;
 }
 
-.black-bg {
+.primary-bg {
   background-color: #2c2c2c;
   color: #f5f5f5;
 }
 
-.red-bg {
+.secondary-bg {
   background-color: #ec221f;
   color: #fee9e7;
+}
+
+.toggleGroup input[type="checkbox"] {
+  display: none;
+}
+
+.toggleGroup span {
+  display: inline-block;
+  padding: 10px;
+  text-transform: uppercase;
+  border: 2px solid gold;
+  border-radius: 3px;
+  color: gold;
+}
+
+.toggleGroup input[type="checkbox"]:checked + span {
+  background-color: gold;
+  color: black;
 }
