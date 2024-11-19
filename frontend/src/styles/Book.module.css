@@ -1,138 +1,133 @@
-.h4{
-    font-size: 1em;
-    font-weight: 300;
+.h4 {
+  font-size: 1em;
+  font-weight: 300;
 }
 
-.holdIcon{
-    display: flex;
-    align-items: center;
-    justify-content: right;
+.holdIcon {
+  display: flex;
+  align-items: center;
+  justify-content: right;
 }
-.icon{
-    max-width: 24px;
-    min-width: 16px;
-}
-
-
-.ul{
-    list-style: none;
-    display: flex;
-    gap: 16px; 
-    align-items: center;
-    flex-wrap: wrap;
+.icon {
+  max-width: 24px;
+  min-width: 16px;
 }
 
-.bubble{
-    padding: 8px 4px;
-    min-width: 4em;
-    font-weight: lighter;
-    text-align: center;
-    border-radius: 0.5em;
-    font-size: 1em;
+.ul {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-#book{
-    background-color: #E6E6E6;
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    
+.bubble {
+  padding: 8px 4px;
+  min-width: 4em;
+  font-weight: lighter;
+  text-align: center;
+  border-radius: 0.5em;
+  font-size: 1em;
+}
+
+#book {
+  background-color: #e6e6e6;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding-right: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-right: 48px;
 }
 
-#book .h4{
-    padding-top: 8px;
+#book .h4 {
+  padding-top: 8px;
 }
 
-.container{
-    padding: 24px 48px ;
+.container {
+  padding: 24px 48px;
 }
 
-#squeeze{
-    max-width: 700px;
-    min-width: 200px;
+#squeeze {
+  max-width: 700px;
+  min-width: 200px;
 }
 
-.card{
-   display: flex;
-   flex-direction: column;
-   width: 100%;
-   border-bottom: 1px solid grey;
-   padding: 32px;
-   padding-left: 0px;
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-bottom: 1px solid grey;
+  padding: 32px;
+  padding-left: 0px;
 }
 
-
-#main{
+#main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
   padding: 32px;
   gap: 32px;
 }
 
-
-.cardFooter{
-    align-items: flex-end;
-    padding-top: 16px;
-    display: flex;
-    justify-content: space-between;
-
+.cardFooter {
+  align-items: flex-end;
+  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.holdThumb{
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    align-items: flex-end;
+.holdThumb {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: flex-end;
 }
 
-.holdThumb button{
-    display: flex;
-    border: 1px solid white;
-    padding: 2px;
-    background-color: white;
+.holdThumb button {
+  display: flex;
+  border: 1px solid white;
+  padding: 2px;
+  background-color: white;
 }
 
-.holdThumb button:hover{
-    border: 1px solid grey;
-    border-radius: 0.5em;
+.holdThumb button:hover {
+  border: 1px solid grey;
+  border-radius: 0.5em;
 }
 
-#holdRatings{
-    display: flex;
-    gap: 16px;
+#holdRatings {
+  display: flex;
+  gap: 16px;
 }
 
-#noReccs{
-    padding-top: 32px;
+#noReccs {
+  padding-top: 32px;
 }
 
-#reccomendHeader{
-    border-bottom: 1px solid grey;
-    padding-bottom: 16px;
+#reccomendHeader {
+  border-bottom: 1px solid grey;
+  padding-bottom: 16px;
 }
 
-#menu{
-    margin-top: 8px;
-    border: 1px solid grey;
-    border-radius: 0.7em;
-    padding-left: 12px;
-    padding: 4px 0px 4px 12px;
+#menu {
+  margin-top: 8px;
+  border: 1px solid grey;
+  border-radius: 0.7em;
+  padding-left: 12px;
+  padding: 4px 0px 4px 12px;
 }
 
-.noDecor{
-    text-decoration: none;
+.noDecor {
+  text-decoration: none;
 }
 
-.noDecor:hover{
-    text-decoration: underline;
-    font-weight: bold;
+.noDecor:hover {
+  text-decoration: underline;
+  font-weight: bold;
 }
