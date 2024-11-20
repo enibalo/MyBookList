@@ -45,24 +45,26 @@ export default function ToggleGroup({ items, itemName }) {
             )}
 
             <span
-              className="center"
+              className={"center"}
               aria-hidden="true"
               tabIndex="-1"
               id={"span-" + item}
             >
               <img src={check}></img>
-              <div>{item}</div>
+              <div className="inner-text">{item}</div>
             </span>
           </label>
         );
       })}
-      {errors.checkbox && <span>You must select at least one item.</span>}
+      {errors.checkbox && (
+        <div className="error">You must select at least one item.</div>
+      )}
     </fieldset>
   );
 }
 
 ToggleGroup.propTypes = {
-  items: PropTypes.array,
+  items: PropTypes.arrayOf(PropTypes.string),
   itemName: PropTypes.string,
 };
 
