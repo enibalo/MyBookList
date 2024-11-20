@@ -193,6 +193,7 @@ h3 {
   gap: 8px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .toggleGroup input[type="checkbox"] {
@@ -211,7 +212,7 @@ h3 {
   display: none;
 }
 
-.toggleGroup div {
+.toggleGroup .inner-text {
   color: inherit;
 }
 
@@ -234,4 +235,13 @@ h3 {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.error::before {
+  content: "*";
+}
+
+.error {
+  flex-basis: 100%;
+  color: #ab0000;
 }
