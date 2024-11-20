@@ -1,0 +1,18 @@
+.header {
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.ul {
+  list-style: none;
+  display: flex;
+  gap: 32px;
+}
+
+.img {
+  max-width: 20px;
+  min-width: 16px;
+}

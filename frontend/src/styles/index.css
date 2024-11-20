@@ -1,53 +1,132 @@
-
-
 /* CSS RESET
   http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
-ol, ul {
-	list-style: none;
+ol,
+ul {
+  list-style: none;
 }
-blockquote, q {
-	quotes: none;
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 /*Actual Css */
@@ -58,63 +137,114 @@ table {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --primary: #1e1e1e;
+  --secondary: #494949;
 }
 
-
-*{
+* {
   line-height: 1.4;
   box-sizing: border-box;
+  color: #1e1e1e;
 }
 
-
-
-body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+body {
+  margin: 0;
+  min-height: 100vh;
 }
 
-h1,h2,h3{
+h1,
+h2,
+h3 {
   line-height: 1.2;
   font-weight: 700;
   letter-spacing: -0.06em;
 }
 
-h1{
+h1 {
   font-size: 3.2em;
 }
 
-h2{
+h2 {
   font-size: 2.2em;
 }
 
-h3{
-  font-size: 1.2em;
+h3 {
+  font-size: 1.4em;
 }
 
-
-.secondary{
-  color: #757575;
+.toggleGroup,
+.secondary {
+  color: var(--secondary);
 }
 
-.primary{
-  color: #1E1E1E;
+.primary {
+  color: var(--primary);
 }
 
-.red-bg,.black-bg{
-  border:none;
-  border-radius: 1em; 
+.primary-bg,
+.secondary-bg,
+.toggleGroup span {
+  border: none;
+  border-radius: 0.5em;
   line-height: 1;
 }
 
-.black-bg{
-  background-color: #2C2C2C;
-  color: #F5F5F5;
+.toggleGroup {
+  gap: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.red-bg{
-  background-color: #EC221F;
-  color: #FEE9E7;
+.toggleGroup input[type="checkbox"] {
+  display: none;
 }
 
+.toggleGroup span {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px;
+  background-color: #f5f5f5;
+}
+
+.toggleGroup span img {
+  max-width: 1em;
+  display: none;
+}
+
+.toggleGroup .inner-text {
+  color: inherit;
+}
+
+.primary-bg,
+.toggleGroup input[type="checkbox"]:checked + span {
+  background-color: #2c2c2c;
+  color: #f5f5f5;
+}
+
+.toggleGroup input[type="checkbox"]:checked + span img {
+  display: inline-block;
+}
+
+.secondary-bg {
+  background-color: #ec221f;
+  color: #fee9e7;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toggleGroup legend {
+  padding-bottom: 16px;
+}
+.error::before {
+  content: "*";
+}
+
+.error {
+  flex-basis: 100%;
+  color: #ab0000;
+}
