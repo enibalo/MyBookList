@@ -40,9 +40,8 @@ export default function AddRec() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <h3>Add Recommendation</h3>
-        <div>Search Section</div>
+      <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
+        <div className="secondary">Temporary Search Section</div>
         {tags == [] ? (
           error ? (
             <div>Error</div>
@@ -53,6 +52,7 @@ export default function AddRec() {
           <ToggleGroup items={tags} itemName={"Tags"}></ToggleGroup>
         )}
         <textarea
+          className={styles.textarea}
           {...methods.register("comment", {
             required: "This field is required.",
             maxLength: {
@@ -64,7 +64,7 @@ export default function AddRec() {
         {methods.formState.errors.comment && (
           <span>{methods.formState.errors.comment.message}</span>
         )}
-        <input type="submit"></input>
+        <input type="submit" className="primary-bg"></input>
       </form>
     </FormProvider>
   );
@@ -76,17 +76,17 @@ async function fetchTags() {
 }
 
 export function ToggleGroup({ items, itemName }) {
-  console.log(items);
   const {
     register,
     formState: { errors },
   } = useFormContext();
+
   function atLeastOneChecked(checkboxes) {
     return checkboxes.length > 0;
   }
 
   return (
-    <fieldset className="toggleGroup">
+    <fieldset className={"toggleGroup"}>
       <legend>Select Your {itemName}</legend>
       {items.map((item, index) => {
         return (
@@ -115,14 +115,21 @@ export function ToggleGroup({ items, itemName }) {
               ></input>
             )}
 
-            <span aria-hidden="true" tabIndex="-1" id={"span-" + item}>
+            <span
+              className={styles.center}
+              aria-hidden="true"
+              tabIndex="-1"
+              id={"span-" + item}
+            >
               <img src={check}></img>
-              {item}
+              <div className="inner-text">{item}</div>
             </span>
           </label>
         );
       })}
-      {errors.checkbox && <span>You must select at least one item.</span>}
+      {errors.checkbox && (
+        <div className="error">You must select at least one item.</div>
+      )}
     </fieldset>
   );
 }

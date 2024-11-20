@@ -237,6 +237,9 @@ h3 {
   align-items: center;
 }
 
+.toggleGroup legend {
+  padding-bottom: 16px;
+}
 .error::before {
   content: "*";
 }
