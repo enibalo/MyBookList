@@ -2,21 +2,20 @@ import { useFormContext } from "react-hook-form";
 import PropTypes from "prop-types";
 import check from "../assets/Check.svg";
 
-// not done styling it!!
-//Also, any forms that implement it must use react-hook-form (it made it easy to make sure that at least one item is selected)
+//Any forms that implement it must use react-hook-form (this made it easy to make sure that at least one item is selected)
 //Template form is at the bottom of the file.
 export default function ToggleGroup({ items, itemName }) {
-  console.log(items);
   const {
     register,
     formState: { errors },
   } = useFormContext();
+
   function atLeastOneChecked(checkboxes) {
     return checkboxes.length > 0;
   }
 
   return (
-    <fieldset className="toggleGroup">
+    <fieldset className={"toggleGroup"}>
       <legend>Select Your {itemName}</legend>
       {items.map((item, index) => {
         return (
@@ -45,9 +44,14 @@ export default function ToggleGroup({ items, itemName }) {
               ></input>
             )}
 
-            <span aria-hidden="true" tabIndex="-1" id={"span-" + item}>
+            <span
+              className="center"
+              aria-hidden="true"
+              tabIndex="-1"
+              id={"span-" + item}
+            >
               <img src={check}></img>
-              {item}
+              <div>{item}</div>
             </span>
           </label>
         );
