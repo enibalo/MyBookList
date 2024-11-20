@@ -34,7 +34,7 @@ function Book() {
     <>
       <Header></Header>
       <main id={styles.main}>
-        <div id={styles.squeeze}>
+        <div id={styles.squeeze} aria-hidden="true">
           <section id={styles.book} className={styles.container}>
             <div className={styles.holdIcon}>
               {book != null && book.Username != null ? (
