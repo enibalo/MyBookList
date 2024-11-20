@@ -191,7 +191,6 @@ h3 {
 
 .toggleGroup {
   gap: 8px;
-  margin: 8px 0px;
   display: flex;
   align-items: center;
 }
