@@ -40,6 +40,14 @@ export default function AddRec() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
         <div className="secondary">Temporary Search Section</div>
+
+        <div>
+          <h3>You Selected</h3>
+          <span>Title</span>
+          <span>Series Name</span>
+          <div>Author</div>
+        </div>
+
         {tags == [] ? (
           error ? (
             <div>Error</div>
@@ -72,3 +80,6 @@ async function fetchTags() {
   let tags = ["fun", "cool", "awesome"];
   return tags;
 }
+
+//figure out how to get username, sort out onSubmit logic!
+// need username, isbn, recommended_isbn, and comment and tags.
