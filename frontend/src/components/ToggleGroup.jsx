@@ -4,20 +4,22 @@ import check from "../assets/Check.svg";
 
 //Any forms that implement it must use react-hook-form (this made it easy to make sure that at least one item is selected)
 //Template form is at the bottom of the file.
-export default function ToggleGroup({ items, itemName }) {
+
+function ToggleGroup({ selected, notSelected, itemName }) {
   const {
     register,
     formState: { errors },
   } = useFormContext();
 
   function atLeastOneChecked(checkboxes) {
+    console.log(checkboxes);
     return checkboxes.length > 0;
   }
 
   return (
     <fieldset className={"toggleGroup"}>
       <legend>Select Your {itemName}</legend>
-      {items.map((item, index) => {
+      {selected.map((item, index) => {
         return (
           <label
             htmlFor={"input-" + item}
@@ -30,6 +32,7 @@ export default function ToggleGroup({ items, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
+                defaultChecked={true}
                 {...register("checkbox", {
                   validate: atLeastOneChecked,
                 })}
@@ -40,9 +43,37 @@ export default function ToggleGroup({ items, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
+                defaultChecked={true}
                 {...register("checkbox")}
               ></input>
             )}
+
+            <span
+              className={"center"}
+              aria-hidden="true"
+              tabIndex="-1"
+              id={"span-" + item}
+            >
+              <img src={check}></img>
+              <div className="inner-text">{item}</div>
+            </span>
+          </label>
+        );
+      })}
+      {notSelected.map((item) => {
+        return (
+          <label
+            htmlFor={"input-" + item}
+            aria-labelledby={"span-" + item}
+            key={item}
+          >
+            <input
+              type="checkbox"
+              id={"input-" + item}
+              name="toggleGroup"
+              value={item}
+              {...register("checkbox")}
+            ></input>
 
             <span
               className={"center"}
@@ -63,21 +94,29 @@ export default function ToggleGroup({ items, itemName }) {
   );
 }
 
+// selected - selected items
+// notSelected - not selected items
+// itemName is the name of the toggle group. like Tags, or Genres .
+
+ToggleGroup.defaultProps = {
+  selected: [],
+  notSelected: [],
+};
+
 ToggleGroup.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.string),
+  selected: PropTypes.arrayOf(PropTypes.string),
+  notSelected: PropTypes.arrayOf(PropTypes.string),
   itemName: PropTypes.string,
 };
 
+export default ToggleGroup;
+
 /**
-//The template for forms which use, ToggleGroup. 
 
 import { useForm, FormProvider} from "react-hook-form";
 
 export default function DummyForm() {
   const methods = useForm();
-
-  // items is a list of what should be displayed in toggle group 
-  // itemName is the name of the toggle group. like Tags, or Genres .
 
   const onSubmit = (data) => {
     //whatever you do with form data 

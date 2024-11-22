@@ -33,13 +33,42 @@ export default function AddRec() {
   }, []);
 
   const onSubmit = (data) => {
-    console.log(data, isbn);
+    console.log(data);
   };
+
+  //when search option is clicked, recc_isbn is set, will use when search component is done lol
+  async function onClick(recommended_isbn) {
+    methods.setValue("recommended_isbn", recommended_isbn);
+  }
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
         <div className="secondary">Temporary Search Section</div>
+
+        <div>
+          <h3>You Selected</h3>
+          <span className={styles.title}>Title</span>
+          <span>Series Name</span>
+          <div>Author</div>
+        </div>
+
+        <input
+          type="hidden"
+          name="username"
+          {...methods.register("username", { value: "username" })}
+        ></input>
+        <input
+          type="hidden"
+          name="book_isbn"
+          {...methods.register("book_isbn", { value: isbn })}
+        ></input>
+        <input
+          type="hidden"
+          name="recommended_isbn"
+          {...methods.register("recommended_isbn")}
+        ></input>
+
         {tags == [] ? (
           error ? (
             <div>Error</div>
@@ -47,7 +76,7 @@ export default function AddRec() {
             <div>Loading...</div>
           )
         ) : (
-          <ToggleGroup items={tags} itemName={"Tags"}></ToggleGroup>
+          <ToggleGroup notSelected={tags} itemName={"Tags"}></ToggleGroup>
         )}
         <textarea
           className={styles.textarea}
@@ -72,3 +101,6 @@ async function fetchTags() {
   let tags = ["fun", "cool", "awesome"];
   return tags;
 }
+
+//figure out how to get username, sort out onSubmit logic!
+// need username - cookie, isbn - DONE!, recommended_isbn - SETVALUE, and comment and tags.

@@ -128,6 +128,11 @@
   text-decoration: none;
 }
 
+.title {
+  display: inline-block;
+  margin-right: 4px;
+}
+
 .noDecor:hover {
   text-decoration: underline;
   font-weight: bold;
@@ -137,6 +142,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.dividor {
+  color: grey;
+  border-top: 1px;
 }
 
 .textarea {
