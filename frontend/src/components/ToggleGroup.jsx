@@ -32,6 +32,7 @@ export default function ToggleGroup({ selected, notSelected, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
+                defaultValue={true}
                 {...register("checkbox", {
                   validate: atLeastOneChecked,
                 })}
@@ -42,6 +43,7 @@ export default function ToggleGroup({ selected, notSelected, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
+                defaultValue={true}
                 {...register("checkbox")}
               ></input>
             )}
