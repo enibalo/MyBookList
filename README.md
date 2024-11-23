@@ -12,7 +12,7 @@ Below is the current file structure (any file/foldr not included here can be ign
     &nbsp;main.jsx - Controls our current routes. Use this as a reference: https://www.theodinproject.com/lessons/node-path-react-new-react-router. ( or Instagram). <br />
 
 
-![alt text](image.png)
+![alt text](https://github.com/enibalo/MyBookList/frontend/src/assets/image.png)
 For more info on css modules: https://www.makeuseof.com/react-components-css-modules-style/
 
 
