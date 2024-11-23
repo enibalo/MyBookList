@@ -14,6 +14,7 @@ Below is the current file structure (any file/foldr not included here can be ign
 
 ![alt text](https://github.com/enibalo/MyBookList/blob/df0f2a74df878fad422894dcb4b4e3c4ca32a8f2/frontend/src/assets/image.png)
 For more info on css modules: https://www.makeuseof.com/react-components-css-modules-style/
+The CSS is the same, the only thing that changes is the file name, and the way you use it in the React file. className={styles.theClassName} id={styles.theIDName}
 
 
 
