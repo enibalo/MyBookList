@@ -154,6 +154,7 @@
   border: 1px solid #c1bcbc;
   resize: none;
   border-radius: 0.5em;
+  font-family: inherit;
 }
 
 #form {
