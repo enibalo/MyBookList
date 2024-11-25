@@ -3,12 +3,15 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/index.css";
 import Book from "./views/Book";
+import Browse from "./views/Browse";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="book/:isbn" element={<Book></Book>}></Route>
+        <Route path="browse" element={<Browse/>}></Route>
+        <Route path="book" element={<Book></Book>}></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>
