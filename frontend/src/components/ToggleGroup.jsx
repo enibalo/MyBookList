@@ -5,7 +5,7 @@ import check from "../assets/Check.svg";
 //Any forms that implement it must use react-hook-form (this made it easy to make sure that at least one item is selected)
 //Template form is at the bottom of the file.
 
-export default function ToggleGroup({ selected, notSelected, itemName }) {
+function ToggleGroup({ selected, notSelected, itemName }) {
   const {
     register,
     formState: { errors },
@@ -32,6 +32,7 @@ export default function ToggleGroup({ selected, notSelected, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
+                defaultChecked={true}
                 {...register("checkbox", {
                   validate: atLeastOneChecked,
                 })}
@@ -42,6 +43,7 @@ export default function ToggleGroup({ selected, notSelected, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
+                defaultChecked={true}
                 {...register("checkbox")}
               ></input>
             )}
@@ -96,11 +98,18 @@ export default function ToggleGroup({ selected, notSelected, itemName }) {
 // notSelected - not selected items
 // itemName is the name of the toggle group. like Tags, or Genres .
 
+ToggleGroup.defaultProps = {
+  selected: [],
+  notSelected: [],
+};
+
 ToggleGroup.propTypes = {
   selected: PropTypes.arrayOf(PropTypes.string),
   notSelected: PropTypes.arrayOf(PropTypes.string),
   itemName: PropTypes.string,
 };
+
+export default ToggleGroup;
 
 /**
 

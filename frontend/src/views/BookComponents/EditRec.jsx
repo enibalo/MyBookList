@@ -4,24 +4,19 @@ import { useEffect } from "react";
 import styles from "../../styles/Book.module.css";
 import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
+import PropTypes from "prop-types";
 
 export default function EditRec() {
-  const methods = useForm({
-    defaultValues: {
-      comment: `This book has the same tropes, and it's really well written!`,
-    },
-  });
-
   let { isbn } = useParams();
-  let [tags, setTags] = useState([]);
+  let [reccs, setReccs] = useState([]);
   let [error, setError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    fetchTags()
+    fetchReccs()
       .then((result) => {
         if (isMounted) {
-          setTags(result);
+          setReccs(result);
         }
       })
       .catch(() => {
@@ -32,9 +27,41 @@ export default function EditRec() {
     };
   }, []);
 
+  if (error) return <div>Error</div>;
+
+  if (reccs == []) return <div>Loading</div>;
+
+  return (
+    <>
+      {reccs.map((recc, index) => {
+        return (
+          <EditForm
+            key={recc.isbn + "-" + index}
+            isbn={isbn}
+            recc={recc}
+          ></EditForm>
+        );
+      })}
+    </>
+  );
+}
+
+export function EditForm({ isbn, recc }) {
+  const methods = useForm({
+    defaultValues: {
+      comment: recc.comment,
+      book_isbn: isbn,
+      recommended_isbn: recc.recommended_isbn,
+    },
+  });
+
   const onSubmit = (data) => {
     console.log(data, isbn);
   };
+
+  async function onClick(recommended_isbn) {
+    methods.setValue("recommended_isbn", recommended_isbn);
+  }
 
   return (
     <FormProvider {...methods}>
@@ -44,22 +71,34 @@ export default function EditRec() {
         <div aria-label="Information of the selected book.">
           <h3>You Selected:</h3>
           <div>
-            <h3>You Selected</h3>
-            <span>Title</span>
+            <span className={styles.title}>Title</span>
             <span>Series Name</span>
             <div>Author</div>
           </div>
         </div>
 
-        {tags == [] ? (
-          error ? (
-            <div>Error</div>
-          ) : (
-            <div>Loading...</div>
-          )
-        ) : (
-          <ToggleGroup items={tags} itemName={"Tags"}></ToggleGroup>
-        )}
+        <input
+          type="hidden"
+          name="username"
+          {...methods.register("username", { value: "username" })}
+        ></input>
+        <input
+          type="hidden"
+          name="book_isbn"
+          {...methods.register("book_isbn")}
+        ></input>
+        <input
+          type="hidden"
+          name="recommended_isbn"
+          {...methods.register("recommended_isbn")}
+        ></input>
+
+        <ToggleGroup
+          selected={recc.selected}
+          notSelected={recc.notSelected}
+          itemName={"Tags"}
+        ></ToggleGroup>
+
         <textarea
           className={styles.textarea}
           {...methods.register("comment", {
@@ -75,17 +114,38 @@ export default function EditRec() {
         )}
         <input type="submit" className="primary-bg"></input>
       </form>
+      <hr className={styles.dividor}></hr>
     </FormProvider>
   );
 }
 
-async function fetchReccs(isbn, username) {}
+EditForm.proptypes = {
+  isbn: PropTypes.string.required,
+  recc: PropTypes.shape.required,
+};
 
-async function fetchTags() {
-  let tags = ["fun", "cool", "awesome"];
-  return tags;
+async function fetchReccs(isbn, username) {
+  let recommendation = [
+    {
+      book_isbn: "9781234567890",
+      recommended_isbn: "9780987654321",
+      comment: "Great follow-up for enthusiasts.",
+      selected: ["bestseller", "science fiction", "award-winning"],
+      notSelected: ["classic", "new release", "non-fiction"],
+    },
+    {
+      book_isbn: "9781122334455",
+      recommended_isbn: "9785566778899",
+      comment: "Perfect for readers interested in historical fiction.",
+      selected: ["historical fiction", "top rated"],
+      notSelected: ["romance", "self-help", "new release"],
+    },
+  ];
+
+  return recommendation;
 }
 
-//handle populating form, and tags especially
-// need username, isbn, recommended_isbn, and comment and tags!!
-//use values in react-hook-form for default population
+// JSON_ARRAYAGG https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html#function_json-arrayagg
+// OR USE GROUP_CONCAT
+// so use sql, to return one column GROUPCONCAT/JSONARRAY()
+// JOIN Tags on Recommendation_tags does not equal Tags, then JOIN to Recommendation. So have two columns, selected and non selected.
