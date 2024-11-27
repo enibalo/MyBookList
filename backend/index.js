@@ -2,6 +2,7 @@ import express from "express"
 import mysql from "mysql"
 import cors from "cors"
 
+require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -55,6 +56,14 @@ function my_delete(req,res, tableName, whereClause){
  * whereClause = list of objects. where the column name is the key and value is the column value 
  */
 
+
+//get GENRES of a book, get all tags,
+//getAllInfoBook  
+//addRecommendation
+//getAllInfoRecc
+//getallinfoLikeRecc.
+//getUserReccomendPosts
+//upvote/downvote (user can not spam like or downvote)
 function get(req,res, tableName, attributes, whereClause){
     const query = "SELECT ? FROM ? WHERE ?";
     db.query(query, [attributes, tableName, whereClause], (err, data)=>{
@@ -66,7 +75,6 @@ function get(req,res, tableName, attributes, whereClause){
     })
 
 }
-
 
 /**
  * tableName = string
@@ -85,6 +93,7 @@ function modify(req,res, tableName, attributes, whereClause){
     })
 
 }
+
 
 /*
 isbn - string
@@ -165,9 +174,9 @@ function getUsernameTag(req,res){
 
 
 const db = mysql.createConnection({
-    host:"localhost",
-    user: "root",
-    password: "Appl8101*",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: "My_book_list",
 });
 
