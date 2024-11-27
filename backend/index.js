@@ -27,12 +27,15 @@ function all(req,res){
     })
 }
 
+
+//res.send and ?? and 2d array for add, are only changes that will effect merge!
+
 /**
  * tableName = string,
  * attributes = 2D array of strings, where each sub-array is a row to insert into the table
 */ 
 function add(req,res, tableName, attributes){
-    const query = "INSERT INTO ?? VALUES(?)";
+    const query = "INSERT INTO ?? VALUES ?";
     return db.query(query, [tableName, attributes], (err, data)=>{
         if (err) {
             return  res.send(err);
@@ -47,7 +50,7 @@ function add(req,res, tableName, attributes){
  * attributes = 2D array of strings, where each sub-array is a row to insert into the table
 */ 
 function addNoResponse(tableName, attributes){
-    const query = "INSERT INTO ?? VALUES(?)";
+    const query = "INSERT INTO ?? VALUES ?";
     return db.query(query, [tableName, attributes], (err, data)=>{
         if (err) {
             console.log(err);
@@ -132,10 +135,13 @@ function modifyNoResponse( tableName, attributes, whereClause){
  * isbn - string
  */
 function getInfoBook(req,res, isbn){
-    const query = `SELECT Book.ISBN, Title, Purchase_link, Publisher_name, Summary, Fname, Lname, Series_name, Username, Book_order
-FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON
-Book_series.Book_isbn=Book.ISBN ) LEFT OUTER JOIN Favorites ON Favorites.Book_isbn=Book.ISBN
-WHERE Book.ISBN= ?
+    const query = `SELECT Book.ISBN, Title, Purchase_link, Publisher_name, Summary, Fname, Lname, Series_name, Username, Book_order,
+JSON_ARRAYAGG(Genre_name) AS \`Genre\`
+FROM ( ( (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON
+Book_series.Book_isbn=Book.ISBN ) LEFT OUTER JOIN Favorites ON Favorites.Book_isbn=Book.ISBN)
+JOIN Posseses ON Posseses.Book_isbn=Book.ISBN
+WHERE Book.ISBN = ?
+GROUP BY Book.ISBN
     `;
     db.query(query, [isbn], (err, data)=>{
         if (err) {
