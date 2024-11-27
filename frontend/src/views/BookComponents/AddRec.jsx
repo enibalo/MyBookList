@@ -102,5 +102,3 @@ async function fetchTags() {
   return tags;
 }
 
-//figure out how to get username, sort out onSubmit logic!
-// need username - cookie, isbn - DONE!, recommended_isbn - SETVALUE, and comment and tags.

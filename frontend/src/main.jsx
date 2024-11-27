@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")).render(
       <Routes>
         <Route path="settings" element={<UserSettings/>}></Route>
         <Route path="signup" element={<SignUp/>}></Route>
-        <Route path="addBook" element={<AddBook/>}></Route>
+        <Route path="add-book" element={<AddBook/>}></Route>
         <Route path="book/:isbn" element={<Book></Book>}></Route>
         <Route path="browse" element={<Browse/>}></Route>
       </Routes>
@@ -29,6 +29,6 @@ createRoot(document.getElementById("root")).render(
       <Route path="signup" element={<SignUp/>}></Route>
       <Route path="browse" element={<Browse/>}></Route>
       <Route path="book" element={<Book></Book>}></Route>
-      <Route path="addBook" element={<AddBook/>}></Route>
+      <Route path="add-book" element={<AddBook/>}></Route>
     </Routes>
     </BrowserRouter> */

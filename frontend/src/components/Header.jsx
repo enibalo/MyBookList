@@ -22,6 +22,7 @@ function Header(props) {
   );
 }
 
+
 Header.propTypes = {
   secondPage: PropTypes.string,
 };

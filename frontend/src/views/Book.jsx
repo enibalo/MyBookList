@@ -11,7 +11,7 @@ import AddRec from "./BookComponents/AddRec.jsx";
 import EditRec from "./BookComponents/EditRec.jsx";
 import DefaultRec from "./BookComponents/DefaultRec.jsx";
 import FilterRec from "./BookComponents/FilterRec.jsx";
-
+//onclick thumbs up /down 
 function Book() {
   let { isbn } = useParams();
 

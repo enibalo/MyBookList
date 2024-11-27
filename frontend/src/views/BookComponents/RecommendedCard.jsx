@@ -7,10 +7,33 @@ import thumbsDown from "../../assets/Thumbs-down.svg";
 import styles from "../../styles/Book.module.css";
 import PropTypes from "prop-types";
 
+
 export default function RecommendedCard({ recc }) {
   let [tags, setTags] = useState([]);
   let [error, setError] = useState(false);
-  console.log("card");
+  let [upVote, setUpVote] = useState(0);
+  let [downVote, setDownVote] = useState(0);
+
+  useEffect(()=>{ setDownVote(recc.Down_vote); console.log("update vote"); },
+   []);
+  useEffect(()=>{ setUpVote(recc.Up_vote); },
+   []);
+
+  
+  function handleClick(value) {
+      let temp;
+      if("downVote" == value){
+        temp = downVote; 
+        setDownVote(temp + 1);
+        //send update to server
+      }else{
+        temp = upVote;
+        setUpVote(temp + 1);
+        //send update to server
+      }
+      
+    }
+
 
   useEffect(() => {
     let isMounted = true;
@@ -73,7 +96,7 @@ export default function RecommendedCard({ recc }) {
         <span>Username : {recc.Username}</span>
         <div id={styles.holdRatings}>
           <span aria-label="Upvotes" className={styles.holdThumb}>
-            <span>{recc.Up_vote}</span>
+            <span>{upVote}</span>
             <button
               onClick={() => {
                 handleClick("upvote");
@@ -87,7 +110,7 @@ export default function RecommendedCard({ recc }) {
             </button>
           </span>
           <span aria-label="Downvote" className={styles.holdThumb}>
-            <span>{recc.Down_vote}</span>
+            <span>{downVote}</span>
             <button
               onClick={() => {
                 handleClick("downvote");
@@ -106,9 +129,8 @@ export default function RecommendedCard({ recc }) {
   );
 }
 
-function handleClick(value) {
-  console.log(value);
-}
+
+
 
 async function fetchReccTags(bookIsbn, username, reccIsbn) {
   const tags = [{ Tag_name: "Tag1" }, { Tag_name: "Tag2" }];
