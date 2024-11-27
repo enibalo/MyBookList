@@ -12,8 +12,8 @@
 }
 
 .menu-icon {
-  font-size: 18px;
-  color: #5e5e5e;
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
@@ -33,7 +33,8 @@
 }
 
 .search-icon {
-  color: #5e5e5e;
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
