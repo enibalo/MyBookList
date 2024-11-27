@@ -2,9 +2,7 @@ import React from 'react';
 
 function Login () {
 
-  // const handleSubmit = (event) => {
-  // event.preventDefault(); // Prevents the default form submission behavior
-  // document.querySelector('form').submit();
+  // once the user is logged in they're immediately taken to the browse page 
 
   return (
     <div style={styles.body}>

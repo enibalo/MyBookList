@@ -5,6 +5,24 @@ import  MenuIcon from "../assets/Menu.svg";
 import  SearchIcon  from "../assets/Magnifying-Glass.svg";
 
 function SearchBar() {
+
+  const [query, setQuery] = useState("");
+
+  // Handle search input change
+  const handleChange = (event) => {
+    setQuery(event.target.value);
+  };
+
+  // Handle search button click
+  const handleSearchClick = () => {
+    console.log("Searching for:", query); // This is where you can trigger a search action or API call
+  };
+
+  // Handle menu button click
+  const handleMenuClick = () => { // handle the event that the menu button is clicked 
+    console.log("Menu button clicked"); 
+  };
+
   return (
     <div className={styles["header-container"]}>
       <button className={styles["menu-icon"]}>
