@@ -44,7 +44,8 @@ INSERT INTO Genre (`Name`, Main_genre) VALUES
 ('Space Opera', 'Fiction'),
 ('Historical Romance', 'Fiction'),
 ('Detective Fiction', 'Fiction'),
-('Popular Science', 'Non-Fiction');
+('Popular Science', 'Non-Fiction'),
+('Political Drama', 'Fiction');
 
 -- Author
 INSERT INTO Author (ID, Fname, Lname, DOB) VALUES
@@ -94,18 +95,84 @@ INSERT INTO Posseses (Book_isbn, Genre_name) VALUES
 (9780441172719, 'Space Opera'),
 (9780141439518, 'Historical Romance'),
 (9780062073488, 'Detective Fiction'),
-(9780553380163, 'Popular Science');
+(9780553380163, 'Popular Science'),
+(9780261103252, 'Political Drama');
 
 -- Likes
 INSERT INTO Likes (Username, Genre_name) VALUES
 ('bookworm1', 'Epic Fantasy'),
+('bookworm1', 'Political Drama'),
 ('readerlove', 'Space Opera'),
 ('novelguy', 'Historical Romance'),
+('novelguy', 'Political Drama'),
 ('storyseek', 'Detective Fiction'),
-('pagelover', 'Popular Science');
+('pagelover', 'Popular Science'),
+('pagelover', 'Epic Fantasy');
 
 -- Favorites
 INSERT INTO Favorites (Username, Book_isbn) VALUES
 ('admin1', 9780261103252),
 ('superuser', 9780441172719),
 ('admin1', 9780553380163);
+
+
+-- So we can demonstrate filtering reccomednations based on genres, i added more insert statements 
+-- The Lord of the Rings:
+
+--     When filtered by "Epic Fantasy": Users will see recommendations for "The Hobbit", "A Game of Thrones", and "Mistborn: The Final Empire".
+--     When filtered by "Political Drama": Users will see a recommendation for "A Game of Thrones".
+
+-- Dune:
+
+--     When filtered by "Space Opera": Users will see recommendations for "Dune Messiah" and "Children of Dune".
+--     When filtered by "Political Drama": Users will see recommendations for "Dune Messiah", "Children of Dune", and "A Game of Thrones".
+
+
+INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary) VALUES
+(9780547928227, 'The Hobbit', 'https://www.amazon.com/Hobbit-J-R-Tolkien/dp/054792822X', 1, 'HarperCollins', 'A fantasy novel about hobbit Bilbo Baggins who joins a group of dwarves on a quest to reclaim their mountain home from a dragon.'),
+(9780553103540, 'A Game of Thrones', 'https://www.amazon.com/Game-Thrones-Song-Fire-Book/dp/0553103547', 1, 'Penguin Random House', 'The first book in the epic fantasy series A Song of Ice and Fire, set in a world of political intrigue and magical forces.'),
+(9780765311788, 'Mistborn: The Final Empire', 'https://www.amazon.com/Mistborn-Final-Empire-Book-No/dp/0765311785', 1, 'Macmillan Publishers', 'A fantasy novel set in a world where certain people can use ingested metals to gain superhuman abilities.'),
+(9780441013593, 'Dune Messiah', 'https://www.amazon.com/Dune-Messiah-Frank-Herbert/dp/0441013597', 2, 'Penguin Random House', 'The second book in the Dune series, continuing the story of Paul Atreides as he navigates the complexities of his new role.'),
+(9780441104024, 'Children of Dune', 'https://www.amazon.com/Children-Dune-Frank-Herbert/dp/0441104029', 2, 'Penguin Random House', 'The third book in the Dune series, focusing on the twin children of Paul Atreides and their roles in shaping the future of Arrakis.');
+
+INSERT INTO Posseses (Book_isbn, Genre_name) VALUES
+(9780547928227, 'Epic Fantasy'),
+(9780553103540, 'Epic Fantasy'),
+(9780553103540, 'Political Drama'),
+(9780765311788, 'Epic Fantasy'),
+(9780441013593, 'Space Opera'),
+(9780441013593, 'Political Drama'),
+(9780441104024, 'Space Opera'),
+(9780441104024, 'Political Drama');
+
+
+INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, `Comment`, Up_vote, Down_vote) VALUES 
+('bookworm1', 9780261103252, 9780547928227, 'If you loved The Lord of the Rings, you must read The Hobbit! It''s the perfect prequel.', 0, 0),
+('readerlove', 9780261103252, 9780553103540, 'For another epic fantasy with complex world-building, try A Game of Thrones.', 18, 3),
+('novelguy', 9780261103252, 9780765311788, 'Mistborn has a unique magic system and great character development. Highly recommended for LOTR fans!', 15, 2),
+('storyseek', 9780441172719, 9780441013593, 'Continue the Dune saga with Dune Messiah. It''s a great follow-up to the first book.', 12, 1),
+('pagelover', 9780441172719, 9780441104024, 'Children of Dune expands the universe even further. A must-read for Dune fans!', 10, 2),
+('pagelover', 9780441172719, 9780553103540, 'If you enjoy the political aspects of Dune, you''ll love A Game of Thrones.', 8, 1);
+
+
+INSERT INTO Tag (`Name`) VALUES
+('Cozy'),
+('Adventure'),
+('Complex World'),
+('Unique Magic'),
+('Character Dev'),
+('Political Intrigue');
+
+-- Insert recommendation tags
+INSERT INTO Recommendation_tag (Tag_name, Username, Book_isbn, Recommended_isbn) VALUES
+('Cozy', 'bookworm1', 9780261103252, 9780547928227),
+('Adventure', 'bookworm1', 9780261103252, 9780547928227),
+('Cozy', 'readerlove', 9780261103252, 9780553103540),
+('Complex World', 'readerlove', 9780261103252, 9780553103540),
+('Cozy', 'novelguy', 9780261103252, 9780765311788),
+('Unique Magic', 'novelguy', 9780261103252, 9780765311788),
+('Character Dev', 'novelguy', 9780261103252, 9780765311788),
+('Wattpad Era', 'storyseek', 9780441172719, 9780441013593),
+('Wattpad Era', 'pagelover', 9780441172719, 9780441104024),
+('Political Intrigue', 'pagelover', 9780441172719, 9780553103540),
+('Cozy', 'pagelover', 9780441172719, 9780553103540);
