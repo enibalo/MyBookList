@@ -20,13 +20,12 @@ function all(req,res){
     const query = "SELECT * FROM Book";
     db.query(query, (err, data)=>{
         if (err) {
-            return  res.json(err)
+            return  res.status(500).send(err)
         }else {
-            return res.json(data)
+            return res.status(201).json(data)
         }
     })
 }
-
 
 //res.send and ?? and 2d array for add, are only changes that will effect merge!
 
@@ -38,25 +37,13 @@ function add(req,res, tableName, attributes){
     const query = "INSERT INTO ?? VALUES ?";
     return db.query(query, [tableName, attributes], (err, data)=>{
         if (err) {
-            return  res.send(err);
+            return  res.status(500).send({ error: `Error inserting into ${tableName}`, details: err });
         }else {
-            return res.json(data);
+            return res.status(201).json(data);
         }
     })
 }
 
-/**
- * tableName = string,
- * attributes = 2D array of strings, where each sub-array is a row to insert into the table
-*/ 
-function addNoResponse(tableName, attributes){
-    const query = "INSERT INTO ?? VALUES ?";
-    return db.query(query, [tableName, attributes], (err, data)=>{
-        if (err) {
-            console.log(err);
-        }
-    })
-}
 
 /**
  * tableName = string
@@ -67,9 +54,9 @@ function my_delete( req,res, tableName, whereClause){
     const query = "DELETE FROM ?? WHERE ?";
     return db.query(query, [tableName, whereClause], (err, data)=>{
         if (err) {
-            return  res.send(err);
+            return  res.status(500).send({ error: `Error deleting from ${tableName}`, details: err });
         }else {
-            return res.json(data);
+            return res.status(204).json(data);
         }
     })
 
@@ -88,9 +75,9 @@ function get(req,res, tableName, attributes, whereClause){
    
     db.query(query, [attributes, tableName, whereClause], (err, data)=>{
         if (err) {
-            return  res.send(err);
+            return  res.status(500).send({ error: `Error selecting from ${tableName}`, details: err });
         }else {
-            return res.json(data);
+            return res.status(200).json(data);
         }
     })
 
@@ -106,25 +93,9 @@ function modify(req,res, tableName, attributes, whereClause){
     const query = "UPDATE ?? SET ?  WHERE ?";
     db.query(query, [ tableName, attributes, whereClause], (err, data)=>{
         if (err) {
-            return  res.send(err);
+            return  res.status(500).send({ error: `Error modifying ${tableName}`, details: err });
         }else {
-            return res.json(data);
-        }
-    })
-
-}
-
-/**
- * tableName = string
- * attributes = list of objects. where the column name is the key and  the column value is the value 
- * whereClause = list of objects. where the column name is the key and  the column value is the value
- */
-
-function modifyNoResponse( tableName, attributes, whereClause){
-    const query = "UPDATE ?? SET ?  WHERE ?";
-    db.query(query, [ tableName, attributes, whereClause], (err, data)=>{
-        if (err) {
-            console.log(err);
+            return res.status(204).json(data);
         }
     })
 
@@ -145,9 +116,9 @@ GROUP BY Book.ISBN
     `;
     db.query(query, [isbn], (err, data)=>{
         if (err) {
-            return  res.json(err)
+            return  res.status(500).send({ error: `Error selecting from Book`, details: err });
         }else {
-            return res.json(data)
+            return res.status(200).json(data);
         }
     })
 
@@ -164,9 +135,9 @@ WHERE Book.ISBN= ?
     `;
     db.query(query, [isbn], (err, data)=>{
         if (err) {
-            return  res.json(err)
+            return  res.status(500).send({ error: `Error selecting from Book`, details: err });
         }else {
-            return res.json(data)
+            return res.status(200).json(data);
         }
     })
 
@@ -177,14 +148,19 @@ WHERE Book.ISBN= ?
  * username - string
  */
 function getAllLikeInfoRecommendation(req,res, isbn, username){
-    const query = `SELECT Book_isbn, Recommended_isbn, Comment, Up_vote, Down_vote, Username, Title, Fname, Lname FROM (Recommendation JOIN Book ON Book.ISBN=Recommended_isbn) JOIN  Author ON Author.ID=Book..Author_id) WHERE   Book_isbn= ? AND Recommended_isbn IN 
- (SELECT PS.ISBN FROM Possesses AS PS NATURAL JOIN Likes AS LS WHERE Username= ?  )
+    const query = `SELECT Book_isbn, Recommended_isbn, \`Comment\`, Up_vote, Down_vote, Username, Title, Fname, Lname, 
+JSON_ARRAYAGG(Tag_name) AS \`Tag\`
+FROM ((Recommendation JOIN Book ON Book.ISBN=Recommended_isbn) JOIN  Author ON Author.ID=Book.Author_id) 
+NATURAL JOIN Recommendation_tag
+WHERE Book_isbn= ? AND Recommended_isbn IN 
+(SELECT PS.Book_isbn FROM Posseses AS PS NATURAL JOIN Likes AS LS WHERE Username= ?  )
+GROUP BY Book_isbn, Recommended_isbn,Username
     `;
     db.query(query, [isbn, username], (err, data)=>{
         if (err) {
-            return  res.json(err)
+            return  res.status(500).send({ error: `Error selecting Reccomendations`, details: err });
         }else {
-            return res.json(data)
+            return res.status(200).json(data);
         }
     })
 
@@ -195,14 +171,18 @@ function getAllLikeInfoRecommendation(req,res, isbn, username){
  * isbn - string
  */
 function getAllInfoRecommendation(req,res, isbn){
-    const query = `SELECT Book_isbn, Recommended_isbn, Comment, Up_vote, Down_vote, Username, Title, Fname, Lname FROM 
-    (Recommendation JOIN Book ON Book.ISBN=Recommended_isbn) JOIN  Author ON Author.ID=Book.Author_id) WHERE Book_isbn= ?`;
+    const query = `SELECT Book_isbn, Recommended_isbn, \`Comment\`, Up_vote, Down_vote, Username, Title, Fname, Lname, 
+JSON_ARRAYAGG(Tag_name) AS \`Tag\`
+FROM ((Recommendation JOIN Book ON Book.ISBN=Recommended_isbn) JOIN  Author ON Author.ID=Book.Author_id) 
+NATURAL JOIN Recommendation_tag
+WHERE Book_isbn= ?
+GROUP BY Book_isbn, Recommended_isbn,Username`;
 
     db.query(query, [isbn], (err, data)=>{
         if (err) {
-            return  res.json(err)
+            return  res.status(500).send({ error: `Error selecting Reccomendations`, details: err });
         }else {
-            return res.json(data)
+            return res.status(200).json(data);
         }
     })
 
@@ -212,18 +192,144 @@ function getAllInfoRecommendation(req,res, isbn){
 /**
  * values - array of strings 
  */
-function getUsernameRecommendations(req,res, values){
-    const query = `? ?`;
-    db.query(query, values , (err, data)=>{
-        if (err) {
-            return  res.json(err)
-        }else {
-            return res.json(data)
-        }
-    })
 
+//get selected and unselected
+function getUsernameRecommendations(req,res, primaryKey){
+    db.query(query, values , (err, result1)=>{
+        if (err) {
+            console.error('Error fetching data for User\'s Posts:', err);
+            return res.status(500).send({ error: 'Database error for User\'s Posts' });
+        }
+
+        db.query(query,values, (err, result2) =>{
+            if (err) {
+                console.error('Error fetching data for User\'s Posts:', err);
+                return res.status(500).send({ error: 'Database error for User\'s Posts' });
+            }
+
+            return res.status(200).json({ Post: result1, Tags : result2});
+
+        })
+
+    })
 }
 
+
+function addRecommendation(req,res, reccValues, tags){
+    db.beginTransaction((err) => {
+        if (err) {
+          console.error('Error starting transaction:', err);
+          return res.status(500).send({ error: 'Error starting transaction', details: err });
+        }
+    
+        // First insert
+        db.query(
+          'INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, `Comment`, Up_vote, Down_vote) VALUES ?',
+          [reccValues],
+          (err, results) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error('Error inserting into Reccomendation:', err);
+                res.status(500).send({ error: 'Error inserting into Recommendation', details: err });
+              });
+            }
+    
+            // Second insert
+            db.query(
+              'INSERT INTO Recommendation_tag (Tag_name, Username, Book_isbn, Recommended_isbn) VALUES ?',
+              [tags],
+              (err, results) => {
+                if (err) {
+                  return db.rollback(() => {
+                    console.error('Error inserting into Recommendation_tag:', err);
+                    res.status(500).send({ error: 'Error inserting into Recommendation_tag', details: err });
+                  });
+                }
+    
+                // commit 
+                    db.commit((err) => {
+                        if (err) {
+                        return db.rollback(() => {
+                            console.error('Error committing transaction:', err);
+                            res.status(500).send({ error: 'Error committing transaction', details: err });
+                        });
+                        }
+    
+                        console.log('Transaction completed successfully!');
+                        res.status(200).send({ message: 'Transaction completed successfully!' });
+                    });
+              }
+            );
+          }
+        );
+      });
+}
+
+
+function editRecommendation(req,res, values, primaryKey,  tags, tagsOnly){
+    db.beginTransaction((err) => {
+        if (err) {
+          console.error('Error starting transaction:', err);
+          return res.status(500).send({ error: 'Error starting transaction', details: err });
+        }
+    
+        // First 
+        db.query(
+          'UPDATE Recommendation SET ? WHERE ?',
+          [values, primaryKey],
+          (err, results) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error('Error inserting into Reccomendation:', err);
+                res.status(500).send({ error: 'Error inserting into Recommendation', details: err });
+              });
+            }
+    
+            // Second 
+            db.query(
+              'INSERT IGNORE INTO Recommendation_tag (Tag_name, Username, Book_isbn, Recommended_isbn) VALUES ?',
+              [tags],
+              (err, results) => {
+                if (err) {
+                  return db.rollback(() => {
+                    console.error('Error inserting into Recommendation_tag:', err);
+                    res.status(500).send({ error: 'Error inserting into Recommendation_tag', details: err });
+                  });
+                }
+
+
+                 // Third 
+                db.query(
+                    'DELETE FROM Recommendation_tag WHERE ? AND (Tag_name) NOT IN (?)',
+                    [primaryKey, tagsOnly],
+                    (err, results) => {
+                    if (err) {
+                        return db.rollback(() => {
+                        console.error('Error deleting from Recommendation_tag:', err);
+                        res.status(500).send({ error: 'Error deleting from Recommendation_tag', details: err });
+                        });
+                    }
+        
+                    // commit 
+                        db.commit((err) => {
+                            if (err) {
+                            return db.rollback(() => {
+                                console.error('Error committing transaction:', err);
+                                res.status(500).send({ error: 'Error committing transaction', details: err });
+                            });
+                            }
+        
+                            console.log('Transaction completed successfully!');
+                            res.status(200).send({ message: 'Transaction completed successfully!' });
+                        });
+                    }
+                );
+              }
+            );
+          }
+        );
+      });
+}
 
 // get all tags,
 app.get("/tag", (req,res)=>{
@@ -231,7 +337,7 @@ app.get("/tag", (req,res)=>{
 
 });
 
-//getInfoBook and genres of a book !! ( not done sql)
+//getInfoBook and genres of a book 
 app.get("/book/:isbn", (req,res) => {
     const isbn = req.params.isbn;
     getInfoBook(req,res,isbn);
@@ -240,14 +346,13 @@ app.get("/book/:isbn", (req,res) => {
 //addRecommendation
 app.post("users/:user/book/:isbn/recommendation/:reccIsbn", (req, res)=>{
     const reccValues = [req.body.username,req.body.bookIsbn, req.body.reccIsbn, req.body.comment];
-    addNoResponse("Recommendation", [[reccValues]]);
-    next();
-}, (req,res)=>{
     const tags = req.body.tags.map((tag)=>{ return [tag, req.body.username,req.body.bookIsbn, req.body.reccIsbn]} );
-    add("Recommendation_tag", tags);
+ 
+    addRecommendation(req,res, [reccValues], tags);
 });
 
-//getAllInfoRecc and //getallinfoLikeRecc. ( not done sql)
+
+//getAllInfoRecc and //getallinfoLikeRecc.
 app.get("/book/:isbn/recommendation", (req,res) => {
     const isbn = req.params.isbn;
     const username = req.query.username;
@@ -259,14 +364,14 @@ app.get("/book/:isbn/recommendation", (req,res) => {
     }
 });
 
-//getUserPostsForAbook ( NOT DONE sql)
+//getUserPostsForAbook 
 app.get("users/:user/book/:isbn/recommendation", (req,res)=>{
     const user = req.params.user; 
     const isbn = req.params.isbn; 
     getUsernameRecommendations(req,res,"Recommendation",[user,isbn], whereClause);
 });
 
-//upvote/downvote (user can not spam like or downvote)
+//upvote/downvote 
 app.put("users/:user/book/:isbn/recommendation/:reccIsbn/upvote", (req,res)=>{
     const user = {Username : req.params.user}; 
     const isbn = {Book_isbn : req.params.isbn}; 
@@ -284,25 +389,16 @@ app.put("users/:user/book/:isbn/recommendation/:reccIsbn/downvote", (req,res)=>{
     
 })
 
-//editRecc - NOT DONE TAGS SQL
+//editRecc
 app.put("users/:user/book/:isbn/recommendation/:reccIsbn", (req,res, next)=>{
     const user = {Username : req.params.user}; 
     const isbn = {Book_isbn : req.params.isbn}; 
     const reccIsbn = {Recommended_isbn : req.params.reccIsbn};; 
 
     const comment = {Comment : req.body.comment};
-    modifyNoResponse("Recommendation", [comment], [user, isbn, reccIsbn], false);
-    next();
-
-}, (req,res)=>{
-    //not done custom delete and add for tags 
-    const user = {Username : req.params.user}; 
-    const isbn = {Book_isbn : req.params.isbn}; 
-    const reccIsbn = {Recommended_isbn : req.params.reccIsbn};; 
-
+    const tagsOnly = req.body.tags;
     const tags = req.body.tags.map((tag)=>{ return [tag, req.body.username,req.body.bookIsbn, req.body.reccIsbn]} );
-    //modify(req,res,"Recommendation", [downvote], [user, isbn, reccIsbn]);
-
+    editRecommendation([comment], [user, isbn, reccIsbn], tags, tagsOnly);
 })
 
 app.get("/", (req,res)=>{
