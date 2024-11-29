@@ -118,6 +118,7 @@ const styles = {
     fontSize: "14px",
   },
   button: {
+    marginTop: "20px", // Add space between genres and the button
     marginBottom: "15px",
     width: "calc(100% - 20px)",
     padding: "10px",
@@ -127,7 +128,8 @@ const styles = {
     cursor: "pointer",
     fontSize: "16px",
     borderRadius: "4px",
-  },
+},
+
   genres: {
     display: "flex",
     flexWrap: "wrap",
