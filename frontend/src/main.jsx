@@ -2,13 +2,17 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/index.css";
-import Book from "./views/Book";
+import UpSign from "./views/UpSign";
+import BookAdd from "./views/BookAdd";
+import UserSettings from "./views/UserSettings";
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="book/:isbn" element={<Book></Book>}></Route>
+      <Route path="settings" element={<UserSettings />} />
+      <Route path="addBook" element={<BookAdd />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

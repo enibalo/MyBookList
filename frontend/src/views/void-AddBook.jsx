@@ -264,7 +264,7 @@ const styles = {
     gap: "10px",
   },
   genreSection: {
-    marginBottom: "20px",
+    marginBottom: "30px",
   },
   suggestions: {
     position: "relative",
@@ -275,6 +275,7 @@ const styles = {
     overflowY: "auto",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     zIndex: 1000,
+    marginBottom: "20px"
   },
   suggestion: {
     padding: "10px",
