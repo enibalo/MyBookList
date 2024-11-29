@@ -42,8 +42,16 @@ INSERT INTO Genre (`Name`, Main_genre) VALUES
 INSERT INTO Genre (`Name`, Main_genre) VALUES
 ('Epic Fantasy', 'Fiction'),
 ('Space Opera', 'Fiction'),
+('Fantasy', 'Fiction'),
 ('Historical Romance', 'Fiction'),
 ('Detective Fiction', 'Fiction'),
+('Mystery', 'Fiction'),
+('Sci-fi', 'Fiction'),
+('Thriller', 'Fiction'),
+('Horror', 'Fiction'),
+('Self-help', 'Non-Fiction'),
+('Biography', 'Non-Fiction'),
+('History', 'Non-Fiction'),
 ('Popular Science', 'Non-Fiction');
 
 -- Author
@@ -106,8 +114,5 @@ INSERT INTO Likes (Username, Genre_name) VALUES
 
 -- Favorites
 INSERT INTO Favorites (Username, Book_isbn) VALUES
-('bookworm1', 9780261103252),
-('readerlove', 9780441172719),
-('novelguy', 9780141439518),
-('storyseek', 9780062073488),
-('pagelover', 9780553380163);
+('admin1', 9780261103252),
+('superuser', 9780553380163);

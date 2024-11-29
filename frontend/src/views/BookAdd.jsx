@@ -35,23 +35,6 @@ const BookAdd = () => {
     }));
   };
 
-
-
-  const handleSearch = (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
-
-    // Simulate search results (replace with API call if needed)
-    const results = [
-      { ISBN: "123456789", Title: "Example Book 1", Publisher_name: "Publisher 1", Summary: "Summary 1" },
-      { ISBN: "987654321", Title: "Example Book 2", Publisher_name: "Publisher 2", Summary: "Summary 2" },
-    ].filter((book) =>
-      book.Title.toLowerCase().includes(query.toLowerCase())
-    );
-
-    setSearchResults(results);
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
   
@@ -252,7 +235,7 @@ const BookAdd = () => {
                 placeholder="Phone Number"
                 value={formData.Phone} // Ensure this binds to the correct state
                 onChange={handleChange}
-                required
+                //required
                 style={styles.input}
               />
             </div>
@@ -262,7 +245,7 @@ const BookAdd = () => {
                 placeholder="Email"
                 value={formData.Email} // Ensure this binds to the correct state
                 onChange={handleChange}
-                required
+                //required
                 style={styles.input}
               />
 
@@ -278,7 +261,7 @@ const BookAdd = () => {
           <div style={styles.genreSection}>
             <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Fiction</h3>
             <div style={styles.toggleGroup}>
-              {["Space Opera", "Mystery", "Fantasy"].map((genre) => (
+              {["Space Opera", "Mystery", "Fantasy", "Historical Romance", "Sci-fi", "Thriller", "Horror"].map((genre) => (
                 <div key={genre} style={styles.toggle}>
                   <input
                     type="checkbox"
@@ -293,7 +276,7 @@ const BookAdd = () => {
                     htmlFor={genre.toLowerCase()}
                     style={{
                       ...styles.label,
-                      backgroundColor: formData.Genres.includes(genre) ? "#8BC34A" : "#ddd",
+                      backgroundColor: formData.Genres.includes(genre) ? "#2c2c2c" : "#ddd",
                       color: formData.Genres.includes(genre) ? "#fff" : "#000",
                     }}
                   >
@@ -308,7 +291,7 @@ const BookAdd = () => {
 <div style={styles.genreSection}>
   <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Non-Fiction</h3>
   <div style={styles.toggleGroup}>
-    {["History", "Biography", "Self-Help"].map((genre) => (
+    {["History", "Biography", "Self-Help","Popular Science"].map((genre) => (
       <div key={genre} style={styles.toggle}>
         <input
           type="checkbox"
@@ -323,7 +306,7 @@ const BookAdd = () => {
           htmlFor={genre.toLowerCase()}
           style={{
             ...styles.label,
-            backgroundColor: formData.Genres.includes(genre) ? "#8BC34A" : "#ddd", // Dynamic color
+            backgroundColor: formData.Genres.includes(genre) ? "#2c2c2c" : "#ddd", // Dynamic color
             color: formData.Genres.includes(genre) ? "#fff" : "#000", // Dynamic text color
           }}
         >
@@ -364,41 +347,42 @@ const styles = {
     justifyContent: "center",
     minHeight: "100vh",
     margin: 0,
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#f8f4ec", // Light beige background
   },
   formContainer: {
-    backgroundColor: "#fff",
-    padding: "40px", // Increased padding for a larger feel
+    backgroundColor: "#F8F4F2", // White for the form background
+    padding: "40px",
     borderRadius: "8px",
-    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)", // Enhanced shadow for a more prominent form
-    width: "80%", // Take 80% of the screen width
-    maxWidth: "800px", // Maximum width to ensure it doesn't get too wide
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
+    width: "80%",
+    maxWidth: "800px",
   },
   input: {
-    width: "calc(100% - 20px)", // Full width of the form minus padding
-    marginBottom: "20px", // Increased margin between inputs
-    padding: "15px", // Increased padding for better usability
-    border: "1px solid #ccc",
+    width: "calc(100% - 20px)",
+    marginBottom: "20px",
+    padding: "12px",
+    border: "1px solid #cccccc", 
     borderRadius: "4px",
-    fontSize: "16px", // Slightly larger font size
+    fontSize: "14px",
+    backgroundColor: "#f9f9f9", 
   },
   button: {
     width: "100%",
     padding: "15px",
-    backgroundColor: "#333",
-    color: "#fff",
+    backgroundColor: "#7F5539", 
+    color: "#ffffff",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
-    fontSize: "18px",
+    fontSize: "16px",
+    textAlign: "center",
+    fontWeight: "bold",
   },
   toggleGroup: {
     display: "flex",
     flexWrap: "wrap",
     gap: "10px",
     marginBottom: "20px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease",
   },
   toggle: {
     display: "flex",
@@ -409,11 +393,16 @@ const styles = {
   },
   label: {
     padding: "5px 10px",
-    backgroundColor: "#ddd",
+    backgroundColor: "#ececec", // Subtle gray for inactive toggle
     borderRadius: "15px",
     cursor: "pointer",
     fontSize: "14px",
     transition: "background-color 0.3s, color 0.3s",
+    color: "#333333", // Dark text color for inactive toggle
+  },
+  labelSelected: {
+    backgroundColor: "#2c2c2c", // Dark gray for selected toggle
+    color: "#ffffff", // White text for selected toggle
   },
   sideBySide: {
     display: "flex",
@@ -423,23 +412,7 @@ const styles = {
     marginTop: "30px",
     marginBottom: "20px",
   },
-  suggestions: {
-    position: "relative",
-    backgroundColor: "#fff",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    maxHeight: "200px",
-    overflowY: "auto",
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-    zIndex: 1000,
-    marginBottom: "20px"
-  },
-  suggestion: {
-    padding: "10px",
-    cursor: "pointer",
-    fontSize: "14px",
-    transition: "background-color 0.2s",
-  },
 };
+
 
 export default BookAdd;

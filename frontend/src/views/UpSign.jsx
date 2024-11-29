@@ -41,7 +41,7 @@ const UpSign = () => {
 
   return (
     <div style={styles.body}>
-      <h1 style={styles.h1}>My BookList</h1>
+      <h1 style={styles.h1}>My Book List</h1>
       <div style={styles.formContainer}>
         <form onSubmit={handleSubmit}>
           <input
@@ -97,18 +97,18 @@ const styles = {
     justifyContent: 'center',
     minHeight: '100vh',
     margin: 0,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#f8f4ec',
   },
   h1: {
     marginBottom: '20px',
   },
   formContainer: {
     backgroundColor: '#fff',
-    padding: '20px',
+    padding: '80px',
     borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    maxWidth: '400px',
+    boxShadow: '0 2px 15px rgba(0, 0, 0, 0.2)', // Adjusted shadow for better visibility
+    width: '80%',
+    maxWidth: '800px',
   },
   input: {
     width: 'calc(100% - 20px)',
@@ -122,7 +122,7 @@ const styles = {
     display: 'block',
     marginTop: '15px',
     padding: '10px',
-    backgroundColor: '#333',
+    backgroundColor: '#7F5539',
     color: '#fff',
     textAlign: 'center',
     borderRadius: '4px',
