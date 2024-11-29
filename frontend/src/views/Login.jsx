@@ -2,7 +2,42 @@ import React from 'react';
 
 function Login () {
 
+    const handleSubmit = async(event) => {
+        event.preventDefault();
+
+        const login_data = new FormData(event.target);
+
+        const log_in_data = {
+            username: login_data.get("username"),
+            password: login_data.get("password"),
+        };
+        try{
+            const response = await fetch('http://localhost:5173/', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(log_in_data),
+            });
+            
+            if(response.ok){ // successful log in brings you to browse page 
+              const data = await response.json();
+              alert(data.message);
+              window.location.href = '/browse';
+
+            }
+
+
+        }
+
+        catch{
+            console.error('Error logging in:', error);
+            alert('An error occurred. Please try again later.');
+        }
+    }
+
   // once the user is logged in they're immediately taken to the browse page 
+
 
   return (
     <div style={styles.body}>
