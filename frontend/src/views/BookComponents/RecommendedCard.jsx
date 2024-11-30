@@ -6,50 +6,55 @@ import thumbsUp from "../../assets/Thumbs-up.svg";
 import thumbsDown from "../../assets/Thumbs-down.svg";
 import styles from "../../styles/Book.module.css";
 import PropTypes from "prop-types";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 
 export default function RecommendedCard({ recc }) {
-  let [tags, setTags] = useState([]);
-  let [error, setError] = useState(false);
+  let { isbn } = useParams();
   let [upVote, setUpVote] = useState(0);
   let [downVote, setDownVote] = useState(0);
 
-  useEffect(()=>{ setDownVote(recc.Down_vote); console.log("update vote"); },
+  useEffect(()=>{ setDownVote(recc.Down_vote); console.log("update downvote"); },
    []);
   useEffect(()=>{ setUpVote(recc.Up_vote); },
    []);
 
   
-  function handleClick(value) {
-      let temp;
-      if("downVote" == value){
-        temp = downVote; 
-        setDownVote(temp + 1);
-        //send update to server
-      }else{
-        temp = upVote;
-        setUpVote(temp + 1);
-        //send update to server
-      }
-      
+  function handleClick(value, reccIsbn){
+        let temp;
+        if("downVote" == value){
+          temp = downVote + 1; 
+          setDownVote(temp);
+          async function sendDownvote(){
+            let username = "";
+            axios.put("/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/downvote", {data: {
+              downvote: 1
+            }})
+            .catch((error)=>{
+              console.log(error);
+            })
+          }
+          sendDownvote();
+          
+        }else{
+          temp = upVote + 1;
+          setUpVote(temp);
+          //send update to server
+          async function sendUpvote(){
+            let username = "";
+            axios.put("/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/upvote", {data: {
+              upvote: 1
+            }})
+            .catch((error)=>{
+              console.log(error);
+            })
+          }
+          sendUpvote();
+          
+        } 
     }
 
-
-  useEffect(() => {
-    let isMounted = true;
-    fetchReccTags(recc.Book_isbn, recc.Username, recc.Recommended_isbn)
-      .then((result) => {
-        if (isMounted) setTags(result);
-      })
-      .catch(() => {
-        console.log("error");
-        setError(true);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   return (
     <li className={styles.card}>
@@ -67,14 +72,7 @@ export default function RecommendedCard({ recc }) {
         </header>
 
         <ul className={styles.ul} aria-label="Tags for the Recommended Book">
-          {tags == [] ? (
-            error ? (
-              <div>Error</div>
-            ) : (
-              <div>Loading...</div>
-            )
-          ) : (
-            tags.map((tag, index) => {
+          {recc.Tag.map((tag, index) => {
               // eslint-disable-next-line react/prop-types
               return (
                 <li
@@ -82,13 +80,13 @@ export default function RecommendedCard({ recc }) {
                     (index % 2 == 0 ? "primary-bg " : "secondary-bg ") +
                     styles.bubble
                   }
-                  key={tag.Tag_name + "-" + recc.Recommended_isbn}
+                  key={tag + "-" + recc.Recommended_isbn + "-" + recc.Username}
                 >
-                  {tag.Tag_name}
+                  {tag}
                 </li>
               );
             })
-          )}
+          }
         </ul>
         <p>{recc.Comment}</p>
       </section>
@@ -99,7 +97,7 @@ export default function RecommendedCard({ recc }) {
             <span>{upVote}</span>
             <button
               onClick={() => {
-                handleClick("upvote");
+                handleClick("upvote", recc.Recommended_isbn);
               }}
             >
               <img
@@ -129,18 +127,10 @@ export default function RecommendedCard({ recc }) {
   );
 }
 
-
-
-
-async function fetchReccTags(bookIsbn, username, reccIsbn) {
-  const tags = [{ Tag_name: "Tag1" }, { Tag_name: "Tag2" }];
-  return tags;
-}
-
 RecommendedCard.propTypes = {
   recc: PropTypes.shape({
-    Book_isbn: PropTypes.number.isRequired,
-    Recommended_isbn: PropTypes.number.isRequired,
+    Book_isbn: PropTypes.string.isRequired,
+    Recommended_isbn: PropTypes.string.isRequired,
     Comment: PropTypes.string.isRequired,
     Up_vote: PropTypes.number.isRequired,
     Down_vote: PropTypes.number.isRequired,
@@ -148,5 +138,6 @@ RecommendedCard.propTypes = {
     Title: PropTypes.string.isRequired,
     Fname: PropTypes.string.isRequired,
     Lname: PropTypes.string.isRequired,
+    Tag : PropTypes.arrayOf(PropTypes.string)
   }),
 };

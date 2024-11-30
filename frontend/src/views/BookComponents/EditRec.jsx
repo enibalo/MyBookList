@@ -5,23 +5,30 @@ import styles from "../../styles/Book.module.css";
 import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 export default function EditRec() {
   let { isbn } = useParams();
   let [reccs, setReccs] = useState([]);
   let [error, setError] = useState(false);
+  let username = "";
 
   useEffect(() => {
     let isMounted = true;
-    fetchReccs()
-      .then((result) => {
+    async function fetchData() {
+      axios.get("http://localhost:8800/users/" + username + "/book/" + isbn + "/recommendation")
+      .then((result)=>{
         if (isMounted) {
-          setReccs(result);
+          console.log(result.data);
+          setReccs(result.data);
         }
       })
-      .catch(() => {
+      .catch((error)=>{
+        console.log(error);
         setError(true);
       });
+    }
+    fetchData();
     return () => {
       isMounted = false;
     };
@@ -46,22 +53,30 @@ export default function EditRec() {
   );
 }
 
-export function EditForm({ isbn, recc }) {
+
+ function EditForm({ isbn, recc }) {
   const methods = useForm({
     defaultValues: {
-      comment: recc.comment,
+      comment: recc.Comment,
       book_isbn: isbn,
-      recommended_isbn: recc.recommended_isbn,
+      recommended_isbn: recc.Recommended_isbn,
     },
   });
 
   const onSubmit = (data) => {
-    console.log(data, isbn);
+    console.log(data);
+    async function sendData(){
+      let username = "";
+      axios.post("/users/"  + username + "/book/" + isbn +  "/recommendation/" + data.recommended_isbn + "/downvote", {data : data } )
+      .catch(error => {console.log(error)});
+    }
+    sendData();
   };
 
-  async function onClick(recommended_isbn) {
-    methods.setValue("recommended_isbn", recommended_isbn);
-  }
+  //for when search component is added
+  // function onClick(recommended_isbn) {
+  //   methods.setValue("recommended_isbn", recommended_isbn);
+  // }
 
   return (
     <FormProvider {...methods}>
@@ -94,8 +109,8 @@ export function EditForm({ isbn, recc }) {
         ></input>
 
         <ToggleGroup
-          selected={recc.selected}
-          notSelected={recc.notSelected}
+          selected={recc.Selected}
+          notSelected={recc.NotSelected}
           itemName={"Tags"}
         ></ToggleGroup>
 
@@ -119,33 +134,16 @@ export function EditForm({ isbn, recc }) {
   );
 }
 
-EditForm.proptypes = {
-  isbn: PropTypes.string.required,
-  recc: PropTypes.shape.required,
+EditForm.propTypes = {
+  isbn: PropTypes.string.isRequired,
+  recc: PropTypes.shape({
+    Recommended_isbn: PropTypes.string.isRequired,
+    Comment: PropTypes.string.isRequired,
+    Selected : PropTypes.arrayOf(PropTypes.string).isRequired,
+    NotSelected : PropTypes.arrayOf(PropTypes.string.isRequired)
+
+  }).isRequired,
 };
 
-async function fetchReccs(isbn, username) {
-  let recommendation = [
-    {
-      book_isbn: "9781234567890",
-      recommended_isbn: "9780987654321",
-      comment: "Great follow-up for enthusiasts.",
-      selected: ["bestseller", "science fiction", "award-winning"],
-      notSelected: ["classic", "new release", "non-fiction"],
-    },
-    {
-      book_isbn: "9781122334455",
-      recommended_isbn: "9785566778899",
-      comment: "Perfect for readers interested in historical fiction.",
-      selected: ["historical fiction", "top rated"],
-      notSelected: ["romance", "self-help", "new release"],
-    },
-  ];
 
-  return recommendation;
-}
-
-// JSON_ARRAYAGG https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html#function_json-arrayagg
-// OR USE GROUP_CONCAT
-// so use sql, to return one column GROUPCONCAT/JSONARRAY()
-// JOIN Tags on Recommendation_tags does not equal Tags, then JOIN to Recommendation. So have two columns, selected and non selected.
+export { EditForm };

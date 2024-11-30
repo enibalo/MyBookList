@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import styles from "../../styles/Book.module.css";
 import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
+import axios from "axios";
 
 export default function AddRec() {
   const methods = useForm({
@@ -18,28 +19,39 @@ export default function AddRec() {
 
   useEffect(() => {
     let isMounted = true;
-    fetchTags()
-      .then((result) => {
+    async function fetchData() {
+      axios.get("http://localhost:8800/tag")
+      .then((result)=>{
         if (isMounted) {
-          setTags(result);
+          console.log(result.data);
+          setTags(result.data);
         }
       })
-      .catch(() => {
+      .catch((error)=>{
+        console.log(error);
         setError(true);
       });
+    }
+    fetchData();
     return () => {
-      isMounted = false; // Cleanup flag on unmount
+      isMounted = false; 
     };
   }, []);
 
   const onSubmit = (data) => {
     console.log(data);
+    async function sendData(){
+      let username = "";
+      axios.post("/users/"  + username + "/book/" + isbn +  "/recommendation/" + data.recommended_isbn + "/downvote", {data : data } )
+      .catch(error => {console.log(error)});
+    }
+    sendData();
   };
 
   //when search option is clicked, recc_isbn is set, will use when search component is done lol
-  async function onClick(recommended_isbn) {
-    methods.setValue("recommended_isbn", recommended_isbn);
-  }
+  // async function onClick(recommended_isbn) {
+  //   methods.setValue("recommended_isbn", recommended_isbn);
+  // }
 
   return (
     <FormProvider {...methods}>
@@ -96,9 +108,3 @@ export default function AddRec() {
     </FormProvider>
   );
 }
-
-async function fetchTags() {
-  let tags = ["fun", "cool", "awesome"];
-  return tags;
-}
-

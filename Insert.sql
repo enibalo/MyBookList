@@ -1,4 +1,4 @@
--- Tag
+
 DELETE FROM Tag;
 DELETE FROM `User`;
 DELETE FROM Publisher;
@@ -117,16 +117,6 @@ INSERT INTO Favorites (Username, Book_isbn) VALUES
 
 
 -- So we can demonstrate filtering reccomednations based on genres, i added more insert statements 
--- The Lord of the Rings:
-
---     When filtered by "Epic Fantasy": Users will see recommendations for "The Hobbit", "A Game of Thrones", and "Mistborn: The Final Empire".
---     When filtered by "Political Drama": Users will see a recommendation for "A Game of Thrones".
-
--- Dune:
-
---     When filtered by "Space Opera": Users will see recommendations for "Dune Messiah" and "Children of Dune".
---     When filtered by "Political Drama": Users will see recommendations for "Dune Messiah", "Children of Dune", and "A Game of Thrones".
-
 
 INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary) VALUES
 (9780547928227, 'The Hobbit', 'https://www.amazon.com/Hobbit-J-R-Tolkien/dp/054792822X', 1, 'HarperCollins', 'A fantasy novel about hobbit Bilbo Baggins who joins a group of dwarves on a quest to reclaim their mountain home from a dragon.'),

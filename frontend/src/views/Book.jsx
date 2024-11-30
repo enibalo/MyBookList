@@ -11,24 +11,38 @@ import AddRec from "./BookComponents/AddRec.jsx";
 import EditRec from "./BookComponents/EditRec.jsx";
 import DefaultRec from "./BookComponents/DefaultRec.jsx";
 import FilterRec from "./BookComponents/FilterRec.jsx";
+import axios from "axios";
+
 //onclick thumbs up /down 
 function Book() {
   let { isbn } = useParams();
 
   let [book, setBook] = useState(null);
-  let [genres, setGenres] = useState([]);
   let [show, setShow] = useState("Default");
+  let [error, setError] = useState(false);
 
   useEffect(() => {
+    let isMounted; 
     async function fetchData() {
-      const tempBook = await fetchBook(isbn);
-      setBook(tempBook);
-
-      const tempGenres = await fetchGenres(isbn);
-      setGenres(tempGenres);
+      axios.get("http://localhost:8800/book/" + isbn)
+      .then((result)=>{
+        if (isMounted) {
+          console.log(result.data);
+          setBook(result.data);
+        }
+      })
+      .catch((error)=>{
+        console.log(error);
+        setError(true);
+      });
     }
     fetchData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  if (error) return <div>Error</div>;
 
   return (
     <>
@@ -64,7 +78,7 @@ function Book() {
                     </h4>
                   </header>
                   <ul className={styles.ul} aria-label="Genres of this Book">
-                    {genres.map((genre) => {
+                    {book.Genre.map((genre) => {
                       return (
                         <li
                           className={"primary-bg " + styles.bubble}
@@ -148,30 +162,6 @@ export function Menu({ setShow }) {
       </select>
     </>
   );
-}
-
-async function fetchGenres(isbn) {
-  const genres = [{ Genre_name: "Genre1" }, { Genre_name: "Genre2" }];
-  return genres;
-}
-
-async function fetchBook(isbn) {
-  let book = [
-    {
-      ISBN: 1,
-      Title: "Sample Book Title",
-      Purchase_link: "https://example.com/purchase-link",
-      Fname: "John",
-      Username: "Admin",
-      Lname: "Doe",
-      Publisher_name: "Sample Publisher",
-      Summary:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod turpis eu malesuada condimentum. Curabitur magna sem, bibendum sit amet nibh et, interdum egestas arcu. Proin nulla nunc, viverra quis lectus vel, aliquet pharetra arcu. Duis sodales tellus id tellus accumsan pretium at non diam. Cras in interdum sem, a elementum dolor. Nullam hendrerit rhoncus nunc et mollis. Maecenas laoreet at justo at gravida. Suspendisse vitae risus sem. Pellentesque vulputate, ligula et placerat facilisis, ipsum dui pulvinar ex, vitae sagittis est tellus ut tortor. Maecenas id nisi eu lorem venenatis finibus eu lacinia erat. Phasellus tellus justo, sagittis nec nisl at, tempus porta dolor. Integer non ex tristique, interdum metus et, rhoncus diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus tempor tellus non nisi placerat consectetur. Nunc eget sollicitudin ligula.",
-      Series_name: "Sample Series Name",
-    },
-  ];
-
-  return book[0];
 }
 
 export default Book;
