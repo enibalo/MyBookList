@@ -10,7 +10,7 @@ export default function FilterRec() {
   let [reccs, setReccs] = useState(null);
   let [error, setError] = useState(false);
 
-  let username = "";
+  let username = "novelguy";
 
   useEffect(() => {
     let isMounted = true;
@@ -19,7 +19,8 @@ export default function FilterRec() {
       .then((result)=>{
         if (isMounted) {
           console.log(result.data);
-          setReccs(result.data);
+          if (result.data.length == 0 ) setReccs(null);
+          else setReccs(result.data);
         }
       })
       .catch((error)=>{

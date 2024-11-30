@@ -21,16 +21,13 @@ export default function RecommendedCard({ recc }) {
    []);
 
   
-  function handleClick(value, reccIsbn){
-        let temp;
-        if("downVote" == value){
-          temp = downVote + 1; 
-          setDownVote(temp);
+  function handleClick(value, reccIsbn, username){
+        if("downvote" == value){
+          setDownVote(prevCount => prevCount + 1);
           async function sendDownvote(){
-            let username = "";
-            axios.put("/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/downvote", {data: {
+            axios.put("http://localhost:8800/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/downvote",  {
               downvote: 1
-            }})
+            })
             .catch((error)=>{
               console.log(error);
             })
@@ -38,14 +35,12 @@ export default function RecommendedCard({ recc }) {
           sendDownvote();
           
         }else{
-          temp = upVote + 1;
-          setUpVote(temp);
+          setUpVote(prevCount => prevCount + 1);
           //send update to server
           async function sendUpvote(){
-            let username = "";
-            axios.put("/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/upvote", {data: {
+            axios.put("http://localhost:8800/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/upvote",  {
               upvote: 1
-            }})
+            })
             .catch((error)=>{
               console.log(error);
             })
@@ -97,7 +92,7 @@ export default function RecommendedCard({ recc }) {
             <span>{upVote}</span>
             <button
               onClick={() => {
-                handleClick("upvote", recc.Recommended_isbn);
+                handleClick("upvote", recc.Recommended_isbn, recc.Username);
               }}
             >
               <img
@@ -111,7 +106,7 @@ export default function RecommendedCard({ recc }) {
             <span>{downVote}</span>
             <button
               onClick={() => {
-                handleClick("downvote");
+                handleClick("downvote", recc.Recommended_isbn, recc.Username);
               }}
             >
               <img

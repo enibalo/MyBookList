@@ -11,22 +11,29 @@ export default function EditRec() {
   let { isbn } = useParams();
   let [reccs, setReccs] = useState([]);
   let [error, setError] = useState(false);
-  let username = "";
+  let username = "novelguy";
 
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
-      axios.get("http://localhost:8800/users/" + username + "/book/" + isbn + "/recommendation")
-      .then((result)=>{
-        if (isMounted) {
-          console.log(result.data);
-          setReccs(result.data);
-        }
-      })
-      .catch((error)=>{
-        console.log(error);
-        setError(true);
-      });
+      axios
+        .get(
+          "http://localhost:8800/users/" +
+            username +
+            "/book/" +
+            isbn +
+            "/recommendation"
+        )
+        .then((result) => {
+          if (isMounted) {
+            console.log(result.data);
+            setReccs(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        });
     }
     fetchData();
     return () => {
@@ -53,8 +60,7 @@ export default function EditRec() {
   );
 }
 
-
- function EditForm({ isbn, recc }) {
+function EditForm({ isbn, recc }) {
   const methods = useForm({
     defaultValues: {
       comment: recc.Comment,
@@ -65,38 +71,40 @@ export default function EditRec() {
 
   const onSubmit = (data) => {
     console.log(data);
-    async function sendData(){
-      let username = "";
-      axios.post("/users/"  + username + "/book/" + isbn +  "/recommendation/" + data.recommended_isbn + "/downvote", {data : data } )
-      .catch(error => {console.log(error)});
+    async function sendData() {
+      let username = "novelguy";
+      axios
+        .put(
+          "http://localhost:8800/users/" +
+            username +
+            "/book/" +
+            data.book_isbn +
+            "/recommendation/" +
+            data.recommended_isbn,
+          { comment: data.comment, tags: data.checkbox }
+        )
+        .then(() => {
+          console.log("Sucess!");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
     sendData();
   };
 
-  //for when search component is added
-  // function onClick(recommended_isbn) {
-  //   methods.setValue("recommended_isbn", recommended_isbn);
-  // }
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
-        <div className="secondary">Temporary Search Section</div>
-
-        <div aria-label="Information of the selected book.">
-          <h3>You Selected:</h3>
+        <div aria-label="Information for the selected book.">
+          <h3>You Selected</h3>
           <div>
-            <span className={styles.title}>Title</span>
-            <span>Series Name</span>
-            <div>Author</div>
+            <span className={styles.title}>Title: {recc.Title}</span>
+            <div>
+              Author: {recc.Fname} {recc.Lname}
+            </div>
           </div>
         </div>
-
-        <input
-          type="hidden"
-          name="username"
-          {...methods.register("username", { value: "username" })}
-        ></input>
         <input
           type="hidden"
           name="book_isbn"
@@ -127,7 +135,7 @@ export default function EditRec() {
         {methods.formState.errors.comment && (
           <span>{methods.formState.errors.comment.message}</span>
         )}
-        <input type="submit" className="primary-bg"></input>
+        <input type="submit" className="primary-bg" value="Submit"></input>
       </form>
       <hr className={styles.dividor}></hr>
     </FormProvider>
@@ -139,11 +147,12 @@ EditForm.propTypes = {
   recc: PropTypes.shape({
     Recommended_isbn: PropTypes.string.isRequired,
     Comment: PropTypes.string.isRequired,
-    Selected : PropTypes.arrayOf(PropTypes.string).isRequired,
-    NotSelected : PropTypes.arrayOf(PropTypes.string.isRequired)
-
+    Selected: PropTypes.arrayOf(PropTypes.string).isRequired,
+    NotSelected: PropTypes.arrayOf(PropTypes.string.isRequired),
+    Title: PropTypes.string.isRequired,
+    Fname: PropTypes.string.isRequired,
+    Lname: PropTypes.string.isRequired,
   }).isRequired,
 };
-
 
 export { EditForm };

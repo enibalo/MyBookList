@@ -20,30 +20,44 @@ export default function AddRec() {
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
-      axios.get("http://localhost:8800/tag")
-      .then((result)=>{
-        if (isMounted) {
-          console.log(result.data);
-          setTags(result.data);
-        }
-      })
-      .catch((error)=>{
-        console.log(error);
-        setError(true);
-      });
+      axios
+        .get("http://localhost:8800/tag")
+        .then((result) => {
+          if (isMounted) {
+            console.log(result.data);
+            setTags(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        });
     }
     fetchData();
     return () => {
-      isMounted = false; 
+      isMounted = false;
     };
   }, []);
 
   const onSubmit = (data) => {
     console.log(data);
-    async function sendData(){
-      let username = "";
-      axios.post("/users/"  + username + "/book/" + isbn +  "/recommendation/" + data.recommended_isbn + "/downvote", {data : data } )
-      .catch(error => {console.log(error)});
+    async function sendData() {
+      let username = "novelguy";
+      let temp_isbn = "9780553103540";
+      axios
+        .post(
+          "http://localhost:8800/users/" +
+            username +
+            "/book/" +
+            data.book_isbn +
+            "/recommendation/" +
+            // data.recommended_isbn
+            temp_isbn,
+          { comment: data.comment, tags: data.checkbox }
+        )
+        .catch((error) => {
+          console.log(error);
+        });
     }
     sendData();
   };
@@ -64,12 +78,6 @@ export default function AddRec() {
           <span>Series Name</span>
           <div>Author</div>
         </div>
-
-        <input
-          type="hidden"
-          name="username"
-          {...methods.register("username", { value: "username" })}
-        ></input>
         <input
           type="hidden"
           name="book_isbn"
@@ -94,6 +102,10 @@ export default function AddRec() {
           className={styles.textarea}
           {...methods.register("comment", {
             required: "This field is required.",
+            minLength: {
+              value: 15,
+              message: "The comment must contain at least 15 characters.",
+            },
             maxLength: {
               value: 200,
               message: "The comment must contain less than 200 characters.",
@@ -103,8 +115,10 @@ export default function AddRec() {
         {methods.formState.errors.comment && (
           <span>{methods.formState.errors.comment.message}</span>
         )}
-        <input type="submit" className="primary-bg"></input>
+        <input type="submit" className="primary-bg" value="Submit"></input>
       </form>
     </FormProvider>
   );
 }
+
+function Submitted() {}

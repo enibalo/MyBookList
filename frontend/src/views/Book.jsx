@@ -22,13 +22,13 @@ function Book() {
   let [error, setError] = useState(false);
 
   useEffect(() => {
-    let isMounted; 
+    let isMounted = true; 
     async function fetchData() {
       axios.get("http://localhost:8800/book/" + isbn)
       .then((result)=>{
         if (isMounted) {
-          console.log(result.data);
-          setBook(result.data);
+          console.log(result.data[0]);
+          setBook(result.data[0]);
         }
       })
       .catch((error)=>{
@@ -72,7 +72,7 @@ function Book() {
                 <div className={styles.content}>
                   <header className={styles.header}>
                     <h3>{book.Title}</h3>
-                    {book.Series_name != null && <h3>{book.Series_name}</h3>}
+                    {book.Series_name != null && <h3>{book.Series_name}, Book #{book.Book_order}</h3>}
                     <h4 className={"secondary " + styles.h4}>
                       {book.Fname + " " + book.Lname}, {book.Publisher_name}
                     </h4>
@@ -82,9 +82,9 @@ function Book() {
                       return (
                         <li
                           className={"primary-bg " + styles.bubble}
-                          key={genre.Genre_name}
+                          key={genre}
                         >
-                          {genre.Genre_name}
+                          {genre}
                         </li>
                       );
                     })}
@@ -151,10 +151,10 @@ export function Menu({ setShow }) {
         htmlFor={styles.menu}
         aria-label="Choose a Way to Interact With the Recommendation Section"
       ></label>
-      <select onChange={redirectLink} id={styles.menu}>
+      <select onChange={redirectLink}>
         {menuItems.map((item) => {
           return (
-            <option value={item} key={item} className="primary-bg">
+            <option value={item} key={item}>
               {item}
             </option>
           );

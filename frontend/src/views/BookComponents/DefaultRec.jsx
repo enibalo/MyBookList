@@ -17,7 +17,8 @@ export default function DefaultRec() {
       .then((result)=>{
         if (isMounted) {
           console.log(result.data);
-          setReccs(result.data);
+          if (result.data.length == 0 ) setReccs(null);
+          else setReccs(result.data);
         }
       })
       .catch((error)=>{
