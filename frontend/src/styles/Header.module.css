@@ -16,3 +16,8 @@
   max-width: 20px;
   min-width: 16px;
 }
+
+.noDecor {
+  text-decoration: none;
+}
+
