@@ -125,7 +125,7 @@ export default function DummyForm() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <ToggleGroup items={items} itemName={"ToggleGroupName"}></ToggleGroup>
+          <ToggleGroup selected={items} itemName={"ToggleGroupName"}></ToggleGroup>
           <input type="submit"></input>
       </form>
     </FormProvider>
