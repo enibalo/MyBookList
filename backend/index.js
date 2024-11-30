@@ -113,7 +113,6 @@ function getTags(res, tableName, attributes) {
         .status(500)
         .send({ error: `Error selecting from ${tableName}`, details: err });
     } else {
-      console.log(data[0]);
       data[0].Name = JSON.parse(data[0].Name);
       return res.status(200).json(data[0].Name);
     }
@@ -323,8 +322,12 @@ function addRecommendation(res, reccValues, tags) {
         if (err) {
           return db.rollback(() => {
             console.error("Error inserting into Reccomendation:", err);
+            let msg;
+            if (err.code === "ER_DUP_ENTRY") {
+              msg = "Data already exists in the database.";
+            } else msg = "Error inserting into Recommendation";
             res.status(500).send({
-              error: "Error inserting into Recommendation",
+              error: msg,
               details: err,
             });
           });

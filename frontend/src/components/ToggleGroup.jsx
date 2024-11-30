@@ -60,20 +60,32 @@ function ToggleGroup({ selected, notSelected, itemName }) {
           </label>
         );
       })}
-      {notSelected.map((item) => {
+      {notSelected.map((item, index) => {
         return (
           <label
             htmlFor={"input-" + item}
             aria-labelledby={"span-" + item}
             key={item}
           >
-            <input
-              type="checkbox"
-              id={"input-" + item}
-              name="toggleGroup"
-              value={item}
-              {...register("checkbox")}
-            ></input>
+            {index == 0 && selected.length == 0 ? (
+              <input
+                type="checkbox"
+                id={"input-" + item}
+                name="toggleGroup"
+                value={item}
+                {...register("checkbox", {
+                  validate: atLeastOneChecked,
+                })}
+              ></input>
+            ) : (
+              <input
+                type="checkbox"
+                id={"input-" + item}
+                name="toggleGroup"
+                value={item}
+                {...register("checkbox")}
+              ></input>
+            )}
 
             <span
               className={"center"}

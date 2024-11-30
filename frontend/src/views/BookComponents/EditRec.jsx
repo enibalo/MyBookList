@@ -6,11 +6,15 @@ import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import PropTypes from "prop-types";
 import axios from "axios";
+import Alert from "./Alert.jsx";
 
 export default function EditRec() {
   let { isbn } = useParams();
   let [reccs, setReccs] = useState([]);
   let [error, setError] = useState(false);
+
+  const [alert, setAlert] = useState({ type: "", message: "" });
+
   let username = "novelguy";
 
   useEffect(() => {
@@ -47,12 +51,18 @@ export default function EditRec() {
 
   return (
     <>
+      <Alert
+        type={alert.type}
+        message={alert.message}
+        onClose={() => setAlert({ type: "", message: "" })}
+      />
       {reccs.map((recc, index) => {
         return (
           <EditForm
             key={recc.isbn + "-" + index}
             isbn={isbn}
             recc={recc}
+            setAlert={setAlert}
           ></EditForm>
         );
       })}
@@ -60,7 +70,7 @@ export default function EditRec() {
   );
 }
 
-function EditForm({ isbn, recc }) {
+function EditForm({ isbn, recc, setAlert }) {
   const methods = useForm({
     defaultValues: {
       comment: recc.Comment,
@@ -84,9 +94,11 @@ function EditForm({ isbn, recc }) {
           { comment: data.comment, tags: data.checkbox }
         )
         .then(() => {
+          setAlert({ type: "success", message: "Submission successful!" });
           console.log("Sucess!");
         })
         .catch((error) => {
+          setAlert({ type: "error", message: error.message });
           console.log(error);
         });
     }
@@ -99,9 +111,9 @@ function EditForm({ isbn, recc }) {
         <div aria-label="Information for the selected book.">
           <h3>You Selected</h3>
           <div>
-            <span className={styles.title}>Title: {recc.Title}</span>
+            <span className={styles.title}>{recc.Title}</span>
             <div>
-              Author: {recc.Fname} {recc.Lname}
+              By {recc.Fname} {recc.Lname}
             </div>
           </div>
         </div>
@@ -133,9 +145,15 @@ function EditForm({ isbn, recc }) {
           })}
         ></textarea>
         {methods.formState.errors.comment && (
-          <span>{methods.formState.errors.comment.message}</span>
+          <div className={"error " + styles.error}>
+            {methods.formState.errors.comment.message}
+          </div>
         )}
-        <input type="submit" className="primary-bg" value="Submit"></input>
+        <input
+          type="submit"
+          className={"primary-bg " + styles.form_submit}
+          value="Submit"
+        ></input>
       </form>
       <hr className={styles.dividor}></hr>
     </FormProvider>
@@ -144,6 +162,7 @@ function EditForm({ isbn, recc }) {
 
 EditForm.propTypes = {
   isbn: PropTypes.string.isRequired,
+  setAlert: PropTypes.func.isRequired,
   recc: PropTypes.shape({
     Recommended_isbn: PropTypes.string.isRequired,
     Comment: PropTypes.string.isRequired,

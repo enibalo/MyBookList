@@ -5,17 +5,20 @@ import styles from "../../styles/Book.module.css";
 import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import axios from "axios";
+import Alert from "./Alert.jsx";
 
 export default function AddRec() {
   const methods = useForm({
     defaultValues: {
-      comment: `This book has the same tropes, and it's really well written!`,
+      comment: ``,
+      recommended_isbn: "",
     },
   });
 
-  let { isbn } = useParams();
-  let [tags, setTags] = useState([]);
-  let [error, setError] = useState(false);
+  const { isbn } = useParams();
+  const [tags, setTags] = useState([]);
+  const [error, setError] = useState(false);
+  const [alert, setAlert] = useState({ type: "", message: "" });
 
   useEffect(() => {
     let isMounted = true;
@@ -55,7 +58,11 @@ export default function AddRec() {
             temp_isbn,
           { comment: data.comment, tags: data.checkbox }
         )
+        .then(() => {
+          setAlert({ type: "success", message: "Submission successful!" });
+        })
         .catch((error) => {
+          setAlert({ type: "error", message: error.message });
           console.log(error);
         });
     }
@@ -63,12 +70,18 @@ export default function AddRec() {
   };
 
   //when search option is clicked, recc_isbn is set, will use when search component is done lol
+  //also add nothing selected in recommendatioM!!!
   // async function onClick(recommended_isbn) {
   //   methods.setValue("recommended_isbn", recommended_isbn);
   // }
 
   return (
     <FormProvider {...methods}>
+      <Alert
+        type={alert.type}
+        message={alert.message}
+        onClose={() => setAlert({ type: "", message: "" })}
+      />
       <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
         <div className="secondary">Temporary Search Section</div>
 
@@ -86,8 +99,15 @@ export default function AddRec() {
         <input
           type="hidden"
           name="recommended_isbn"
-          {...methods.register("recommended_isbn")}
+          {...methods.register("recommended_isbn", {
+            required: "You must select a book to recommend.",
+          })}
         ></input>
+        {methods.formState.errors.recommended_isbn && (
+          <div className={"error " + styles.error}>
+            {methods.formState.errors.recommended_isbn.message}
+          </div>
+        )}
 
         {tags == [] ? (
           error ? (
@@ -98,6 +118,7 @@ export default function AddRec() {
         ) : (
           <ToggleGroup notSelected={tags} itemName={"Tags"}></ToggleGroup>
         )}
+
         <textarea
           className={styles.textarea}
           {...methods.register("comment", {
@@ -113,12 +134,16 @@ export default function AddRec() {
           })}
         ></textarea>
         {methods.formState.errors.comment && (
-          <span>{methods.formState.errors.comment.message}</span>
+          <div className={"error " + styles.error}>
+            {methods.formState.errors.comment.message}
+          </div>
         )}
-        <input type="submit" className="primary-bg" value="Submit"></input>
+        <input
+          type="submit"
+          className={"primary-bg " + styles.form_submit}
+          value="Submit"
+        ></input>
       </form>
     </FormProvider>
   );
 }
-
-function Submitted() {}
