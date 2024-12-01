@@ -13,9 +13,10 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login/>}></Route>
-        <Route path="browse" element={<Browse/>}> </Route>
-        <Route path="signup" element={<SignUp/>}></Route>
+      <Route path="/" element={<Login/>}></Route>
+      <Route path="browse" element={<Browse/>}></Route>
+      <Route path="signup" element={<SignUp/>}></Route>
+
       </Routes>
     </BrowserRouter>
   </StrictMode>
@@ -23,7 +24,7 @@ createRoot(document.getElementById("root")).render(
 
 /** <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Login/>}></Route>
+     
       <Route path="settings" element={<UserSettings/>}></Route>
       <Route path="signup" element={<SignUp/>}></Route>
       <Route path="browse" element={<Browse/>}></Route>

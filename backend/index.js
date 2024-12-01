@@ -162,7 +162,11 @@ function getUsernameTag(req,res){
 
 
 app.post("/", (req, res) => {
+    const cors = require('cors');
+    app.use(cors());
+
     const { username, password } = req.body;
+    console.log(document.getElementById('password').value);
 
     // if no username or password, enter error message that says that user name and password arr required 
     if (!username || !password) {
@@ -192,7 +196,8 @@ app.post("/", (req, res) => {
         if (user.password === password && user.username == username) {
             // Successful login message 
 
-            return res.status(200)({ message: "Login successful", username: user.username });
+            return res.status(200).json({ message: "Login successful", username: user.Username });
+
         } 
         else {
             // Incorrect password
