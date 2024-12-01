@@ -17,6 +17,15 @@ function all(req,res){
     })
 }
 
+const db = mysql.createConnection({
+  host:"localhost",
+  user: "root",
+  password: "Appl8101*",
+  database: "My_book_list",
+});
+
+
+
 /*
 tableName = string
 attributes = array of strings 
@@ -161,12 +170,12 @@ function getUsernameTag(req,res){
 }
 
 
-app.post("/", (req, res) => {
-    const cors = require('cors');
-    app.use(cors());
-
+app.post("/login", (req, res) => {
+    console.log("hi");
     const { username, password } = req.body;
-    console.log(document.getElementById('password').value);
+    console.log(username);
+    console.log(password);
+
 
     // if no username or password, enter error message that says that user name and password arr required 
     if (!username || !password) {
@@ -176,7 +185,7 @@ app.post("/", (req, res) => {
     // select all usernames from database and see if it matches 
 
     // this will select all attributes of the Username 
-    const query = "SELECT * FROM Users WHERE Username = ?";
+    const query = "SELECT * FROM User WHERE Username = ?";
     db.query(query, [username], (err, results) => {
         if (err) {
             console.error("Error checking for existing usernames", err)
@@ -191,13 +200,19 @@ app.post("/", (req, res) => {
       }
 
         const user = results[0];
-       
+        console.log(user);
+        console.log(user.Username);
+        console.log(user.Password);
+
+
         // if username is in the database grant access 
-        if (user.password === password && user.username == username) {
+        if (user.Password == password && user.Username == username) {
             // Successful login message 
 
             return res.status(200).json({ message: "Login successful", username: user.Username });
 
+           
+            
         } 
         else {
             // Incorrect password
@@ -209,13 +224,6 @@ app.post("/", (req, res) => {
 
 
 
-
-const db = mysql.createConnection({
-    host:"localhost",
-    user: "root",
-    password: "Appl8101*",
-    database: "My_book_list",
-});
 
 //app.get("/", (req,res)=>{
     //res.json("hello this is the backend");
