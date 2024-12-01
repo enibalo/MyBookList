@@ -4,6 +4,7 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #d9d9d9;
+  background-color: #f5e4d3;
 }
 
 .ul {
@@ -20,4 +21,3 @@
 .noDecor {
   text-decoration: none;
 }
-
