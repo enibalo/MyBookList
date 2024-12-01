@@ -20,7 +20,7 @@ function all(req,res){
 const db = mysql.createConnection({
   host:"localhost",
   user: "root",
-  password: "Appl8101*",
+  password: "a252020**",
   database: "My_book_list",
 });
 
@@ -173,6 +173,7 @@ function getUsernameTag(req,res){
 app.post("/login", (req, res) => {
     console.log("hi");
     const { username, password } = req.body;
+    req.session.username = username; 
     console.log(username);
     console.log(password);
 
