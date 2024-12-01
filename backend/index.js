@@ -565,3 +565,19 @@ app.post("/users/:user/book/:isbn/recommendation/:reccIsbn", (req, res) => {
 app.listen(8800, () => {
   console.log("Connected to the backend!");
 });
+
+/**
+ * const missingFields = [];
+if (!ISBN) missingFields.push("ISBN");
+if (!Genres || Genres.length === 0) missingFields.push("At least one genre selection");
+
+if (missingFields.length > 0) {
+  return res.status(400).json({
+    message: `The following required fields are missing: ${missingFields.join(", ")}`,
+  });
+}
+
+
+  // Normalize inputs
+  const normalizedPublisher = Publisher.trim();
+ */
