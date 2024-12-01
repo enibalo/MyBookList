@@ -173,6 +173,7 @@ function getUsernameTag(req,res){
 app.post("/login", (req, res) => {
     console.log("hi");
     const { username, password } = req.body;
+    
     req.session.username = username; 
     console.log(username);
     console.log(password);
@@ -182,6 +183,41 @@ app.post("/login", (req, res) => {
     if (!username || !password) {
         return res.status(400).json({ message: "Username and password are required." });
     }
+
+
+    // first check if the user is an admin 
+    // set the role to admin
+    const adminQuery = "SELECT * FROM Admin WHERE Username = ?";
+    db.query(adminQuery, [username], (err, adminResults) =>{
+        if (err) {
+            console.error("Error checking for admin", err);
+            return res.status(500).json({ message: "Database error." });
+        }
+
+        if (adminResults>0){
+            const admin = adminResults[0];
+
+            if(admin.Username== username && admin.Password == password){
+                return res.status(200).json({
+                    message: "Admin login successful",
+                    role: "admin", // role indicating admin
+                    username: admin.Username
+                });
+
+            }
+
+            else {
+                return res.status(400).json({ error: "Invalid username or password." });
+            }
+
+
+
+        }
+
+
+    }); 
+
+
 
     // select all usernames from database and see if it matches 
 

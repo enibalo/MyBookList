@@ -6,7 +6,7 @@ import Login from "./views/Login";
 //import Book from "./views/Book";
 import Browse from "./views/Browse";
 import SignUp from "./views/SignUp";
-//import AddBook from "./views/AddBook";
+import AddBook from "./views/AddBook";
 //import UserSettings from "./views/UserSettings";
 
 createRoot(document.getElementById("root")).render(
@@ -16,6 +16,7 @@ createRoot(document.getElementById("root")).render(
       <Route path="/" element={<Login/>}></Route>
       <Route path="browse" element={<Browse/>}></Route>
       <Route path="signup" element={<SignUp/>}></Route>
+      <Route path="addBook" element={<AddBook/>}></Route>
 
       </Routes>
     </BrowserRouter>

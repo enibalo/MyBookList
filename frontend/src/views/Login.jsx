@@ -23,10 +23,16 @@ function Login() {
       });
 
       if (response.ok) {
-        // Successful login
         const data = await response.json();
 
+        if (data.role === "admin") {
+          // Redirect to admin page if admin
+          window.location.href = "http://localhost:5173/addBook";
+        }
+        // Successful login
+        else{
         window.location.href = "http://localhost:5173/browse"; // Redirect to browse page
+        }
       } 
 
 
