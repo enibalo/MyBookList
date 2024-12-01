@@ -20,7 +20,7 @@ function all(req,res){
 const db = mysql.createConnection({
   host:"localhost",
   user: "root",
-  password: "a252020**",
+  password: "Appl8101*",
   database: "My_book_list",
 });
 
@@ -238,5 +238,6 @@ app.get("/books", (req,res) => {
 app.listen(8800, ()=> {
     console.log("Connected to the backend!");
 });
+
 
 
