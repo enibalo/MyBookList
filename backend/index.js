@@ -161,6 +161,47 @@ function getUsernameTag(req,res){
 }
 
 
+app.post("/", (req, res) => {
+    const { username, password } = req.body;
+
+    // if no username or password, enter error message that says that user name and password arr required 
+    if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required." });
+    }
+
+    // select all usernames from database and see if it matches 
+
+    // this will select all attributes of the Username 
+    const query = "SELECT * FROM Users WHERE Username = ?";
+    db.query(query, [username], (err, results) => {
+        if (err) {
+            console.error("Error checking for existing usernames", err)
+            return res.status(500).json({ message: "Database error." });
+        }
+
+    // if the username and password is not in the database then say invalid username and password
+        
+    if (results.length === 0) {
+        // Username does not exist
+        return res.status(400).json({ message: "Username does not exist, please make an account" });
+      }
+
+        const user = results[0];
+       
+        // if username is in the database grant access 
+        if (user.password === password && user.username == username) {
+            // Successful login message 
+
+            return res.status(200)({ message: "Login successful", username: user.username });
+        } 
+        else {
+            // Incorrect password
+            return res.status(400).json({ error: "Invalid username or password." });
+        }
+    });
+});
+
+
 
 
 
@@ -171,9 +212,9 @@ const db = mysql.createConnection({
     database: "My_book_list",
 });
 
-app.get("/", (req,res)=>{
-    res.json("hello this is the backend");
-});
+//app.get("/", (req,res)=>{
+    //res.json("hello this is the backend");
+//});
 
 app.get("/books", (req,res) => {
     const query = "SELECT * FROM Book";
