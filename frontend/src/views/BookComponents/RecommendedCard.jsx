@@ -9,47 +9,69 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-
 export default function RecommendedCard({ recc }) {
   let { isbn } = useParams();
   let [upVote, setUpVote] = useState(0);
   let [downVote, setDownVote] = useState(0);
+  let [clickedUp, setClickedUp] = useState(false);
+  let [clickedDown, setClickedDown] = useState(false);
 
-  useEffect(()=>{ setDownVote(recc.Down_vote); console.log("update downvote"); },
-   []);
-  useEffect(()=>{ setUpVote(recc.Up_vote); },
-   []);
+  useEffect(() => {
+    setDownVote(recc.Down_vote);
+    console.log("update downvote");
+  }, []);
+  useEffect(() => {
+    setUpVote(recc.Up_vote);
+  }, []);
 
-  
-  function handleClick(value, reccIsbn, username){
-        if("downvote" == value){
-          setDownVote(prevCount => prevCount + 1);
-          async function sendDownvote(){
-            axios.put("http://localhost:8800/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/downvote",  {
-              downvote: 1
-            })
-            .catch((error)=>{
-              console.log(error);
-            })
-          }
-          sendDownvote();
-          
-        }else{
-          setUpVote(prevCount => prevCount + 1);
-          //send update to server
-          async function sendUpvote(){
-            axios.put("http://localhost:8800/users/"  + username + "/book/" + isbn +  "/recommendation/" + reccIsbn +"/upvote",  {
-              upvote: 1
-            })
-            .catch((error)=>{
-              console.log(error);
-            })
-          }
-          sendUpvote();
-          
-        } 
+  function handleClick(value, reccIsbn, username) {
+    if ("downvote" == value && clickedDown == false) {
+      setClickedDown(true);
+      setDownVote((prevCount) => prevCount + 1);
+      async function sendDownvote() {
+        axios
+          .put(
+            "http://localhost:8800/users/" +
+              username +
+              "/book/" +
+              isbn +
+              "/recommendation/" +
+              reccIsbn +
+              "/downvote",
+            {
+              downvote: 1,
+            }
+          )
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      sendDownvote();
+    } else if (clickedUp == false) {
+      setUpVote((prevCount) => prevCount + 1);
+      setClickedUp(true);
+      //send update to server
+      async function sendUpvote() {
+        axios
+          .put(
+            "http://localhost:8800/users/" +
+              username +
+              "/book/" +
+              isbn +
+              "/recommendation/" +
+              reccIsbn +
+              "/upvote",
+            {
+              upvote: 1,
+            }
+          )
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      sendUpvote();
     }
-
+  }
 
   return (
     <li className={styles.card}>
@@ -68,20 +90,19 @@ export default function RecommendedCard({ recc }) {
 
         <ul className={styles.ul} aria-label="Tags for the Recommended Book">
           {recc.Tag.map((tag, index) => {
-              // eslint-disable-next-line react/prop-types
-              return (
-                <li
-                  className={
-                    (index % 2 == 0 ? "primary-bg " : "secondary-bg ") +
-                    styles.bubble
-                  }
-                  key={tag + "-" + recc.Recommended_isbn + "-" + recc.Username}
-                >
-                  {tag}
-                </li>
-              );
-            })
-          }
+            // eslint-disable-next-line react/prop-types
+            return (
+              <li
+                className={
+                  (index % 2 == 0 ? "primary-bg " : "secondary-bg ") +
+                  styles.bubble
+                }
+                key={tag + "-" + recc.Recommended_isbn + "-" + recc.Username}
+              >
+                {tag}
+              </li>
+            );
+          })}
         </ul>
         <p>{recc.Comment}</p>
       </section>
@@ -133,6 +154,6 @@ RecommendedCard.propTypes = {
     Title: PropTypes.string.isRequired,
     Fname: PropTypes.string.isRequired,
     Lname: PropTypes.string.isRequired,
-    Tag : PropTypes.arrayOf(PropTypes.string)
+    Tag: PropTypes.arrayOf(PropTypes.string),
   }),
 };

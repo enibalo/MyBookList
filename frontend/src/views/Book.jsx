@@ -13,7 +13,7 @@ import DefaultRec from "./BookComponents/DefaultRec.jsx";
 import FilterRec from "./BookComponents/FilterRec.jsx";
 import axios from "axios";
 
-//onclick thumbs up /down 
+//onclick thumbs up /down
 function Book() {
   let { isbn } = useParams();
 
@@ -22,19 +22,20 @@ function Book() {
   let [error, setError] = useState(false);
 
   useEffect(() => {
-    let isMounted = true; 
+    let isMounted = true;
     async function fetchData() {
-      axios.get("http://localhost:8800/book/" + isbn)
-      .then((result)=>{
-        if (isMounted) {
-          console.log(result.data[0]);
-          setBook(result.data[0]);
-        }
-      })
-      .catch((error)=>{
-        console.log(error);
-        setError(true);
-      });
+      axios
+        .get("http://localhost:8800/book/" + isbn)
+        .then((result) => {
+          if (isMounted) {
+            console.log(result.data[0]);
+            setBook(result.data[0]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        });
     }
     fetchData();
     return () => {
@@ -72,7 +73,11 @@ function Book() {
                 <div className={styles.content}>
                   <header className={styles.header}>
                     <h3>{book.Title}</h3>
-                    {book.Series_name != null && <h3>{book.Series_name}, Book #{book.Book_order}</h3>}
+                    {book.Series_name != null && (
+                      <h3>
+                        {book.Series_name}, Book #{book.Book_order}
+                      </h3>
+                    )}
                     <h4 className={"secondary " + styles.h4}>
                       {book.Fname + " " + book.Lname}, {book.Publisher_name}
                     </h4>
@@ -101,7 +106,7 @@ function Book() {
               </>
             )}
           </section>
-          <section className={styles.container}>
+          <section className={styles.container} id={styles.recommendation}>
             <header id={styles.reccomendHeader}>
               <h2>Recommendations</h2>
               <Menu setShow={setShow}></Menu>

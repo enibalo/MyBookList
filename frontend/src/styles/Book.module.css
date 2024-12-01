@@ -31,12 +31,15 @@
 }
 
 #book {
-  background-color: #e6e6e6;
+  background-color: #e7cdbb;
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
+#recommendation {
+  background-color: #f7f2ee;
+}
 .content {
   display: flex;
   flex-direction: column;
@@ -92,14 +95,14 @@
 /*Depends on background of page*/
 .holdThumb button {
   display: flex;
-  border: 1px solid white;
+  border: none;
   padding: 2px;
-  background-color: white;
+  background-color: inherit;
+  cursor: pointer;
 }
 
-.holdThumb button:hover {
-  border: 1px solid grey;
-  border-radius: 0.5em;
+.holdThumb button:active {
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 #holdRatings {
@@ -208,6 +211,7 @@
 }
 
 .form_submit {
+  background-color: #7f5539;
   cursor: pointer;
   transition: all 0.3s ease;
 }
