@@ -13,6 +13,8 @@ createRoot(document.getElementById("root")).render(
       <Routes>
       <Route path="addBook" element={<BookAdd/>}></Route>
       <Route path="signup" element={<UpSign/>}></Route>
+      <Route path="settings" element={<UserSettings/>}></Route>
+
 
       </Routes>
     </BrowserRouter>

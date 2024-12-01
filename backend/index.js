@@ -236,6 +236,85 @@ const insertGenres = () => {
 });
 
 app.post("/settings", (req, res) => {
+  const { username, password, genres } = req.body;
+
+  // Handle Change Password
+  if (password) {
+    if (!username || !password) {
+      return res.status(400).send("Invalid data. Ensure username and password are provided.");
+    }
+
+    const updatePasswordQuery = "UPDATE User SET Password = ? WHERE Username = ?";
+    db.query(updatePasswordQuery, [password, username], (err, result) => {
+      if (err) {
+        console.error("Error updating password:", err.message);
+        return res.status(500).send("Failed to update password.");
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).send("User not found.");
+      }
+
+      console.log("Password updated successfully for username:", username);
+      res.send("Password updated successfully!");
+    });
+
+    return; // Exit after handling "Change Password"
+  }
+
+  // Handle Select Genres
+  if (genres) {
+    if (!username || !Array.isArray(genres)) {
+      return res.status(400).send("Invalid data. Ensure username and genres are provided.");
+    }
+
+    // Delete existing genres for the user
+    const deleteQuery = "DELETE FROM Likes WHERE Username = ?";
+    db.query(deleteQuery, [username], (deleteErr) => {
+      if (deleteErr) {
+        console.error("Error deleting genres:", deleteErr.message);
+        return res.status(500).send("Error removing existing genres.");
+      }
+
+      // If no genres are selected, return success after deletion
+      if (genres.length === 0) {
+        console.log("Genres cleared successfully for username:", username);
+        return res.send("Genres cleared successfully.");
+      }
+
+      // Prepare the data for insertion
+      const values = genres.map((genre) => [username, genre]);
+      console.log("Prepared values for insertion:", values);
+
+      // Insert new genres
+      const insertQuery = "INSERT INTO Likes (Username, Genre_name) VALUES ?";
+      db.query(insertQuery, [values], (insertErr) => {
+        if (insertErr) {
+          console.error("Error inserting genres:", insertErr.message);
+
+          // Specific logging for foreign key constraint violations
+          if (insertErr.code === "ER_NO_REFERENCED_ROW_2") {
+            return res.status(400).send("One or more genres do not exist in the Genre table.");
+          }
+
+          return res.status(500).send("Failed to add genres.");
+        }
+
+        console.log("Genres added successfully for username:", username);
+        res.send("Genres updated successfully!");
+      });
+    });
+
+    return; // Exit after handling "Select Genres"
+  }
+
+  // If neither password nor genres are provided, return an error
+  res.status(400).send("Invalid request. Provide either a password or genres.");
+});
+
+
+/*
+app.post("/settings", (req, res) => {
   const { username, genres } = req.body;
 
   // Validate incoming data
@@ -281,11 +360,8 @@ app.post("/settings", (req, res) => {
   });
 });
 
-
-
-
-
-app.post("/BooookAdd", (req, res) => {
+*/
+/*app.post("/BooookAdd", (req, res) => {
   const {
     ISBN,
     Title,
@@ -369,9 +445,10 @@ app.post("/BooookAdd", (req, res) => {
     }
   });
 });
+*/
 
 
-  // Start the server
+// Start the server
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
