@@ -171,6 +171,24 @@ function getUsernameTag(req,res){
 
 }
 
+// create a function to get the author name from its id
+function getAuthorById(req, res) {
+    const { authorId } = req.params; // Get the authorId from the request parameters
+
+    const query = "SELECT Fname, Lname FROM Author WHERE ID = ?";
+    
+    db.query(query, [authorId], (err, data) => {
+        if (err) {
+            return res.json({ error: "Error fetching author details", details: err });
+        }
+        if (data.length > 0) {
+            return res.json(data[0]); // Return the first and last name
+        } else {
+            return res.status(404).json({ message: "Author not found" });
+        }
+    });
+}
+
 
 app.post("/login", (req, res) => {
     console.log("hi");
@@ -262,7 +280,7 @@ app.post("/login", (req, res) => {
 
 
 
-
+app.get("/author/:authorId", getAuthorById);
 
 //app.get("/", (req,res)=>{
     //res.json("hello this is the backend");
@@ -272,6 +290,9 @@ app.get("/books", (req,res) => {
     const query = "SELECT * FROM Book";
     return all(req,res);
 });
+
+
+
 
 app.listen(8800, ()=> {
     console.log("Connected to the backend!");
