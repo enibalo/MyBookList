@@ -2,11 +2,14 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/index.css";
-import Book from "./views/Book";
+import UpSign from "./views/UpSign";
+import BookAdd from "./views/BookAdd";
+import UserSettings from "./views/UserSettings";
 import Browse from "./views/Browse";
 import SignUp from "./views/SignUp";
 import AddBook from "./views/AddBook";
 import UserSettings from "./views/UserSettings";
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -15,8 +18,10 @@ createRoot(document.getElementById("root")).render(
         <Route path="settings" element={<UserSettings/>}></Route>
         <Route path="signup" element={<SignUp/>}></Route>
         <Route path="add-book" element={<AddBook/>}></Route>
-        <Route path="book/:isbn" element={<Book></Book>}></Route>
+      <Route path="addBook" element={<BookAdd/>}></Route>
+      <Route path="signup" element={<UpSign/>}></Route>
         <Route path="browse" element={<Browse/>}></Route>
+
       </Routes>
     </BrowserRouter>
   </StrictMode>

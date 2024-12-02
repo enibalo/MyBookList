@@ -1,10 +1,40 @@
 import React from 'react';
 
 const SignUp = () => {
-  const handleSubmit = (event) => {
+  /*const handleSubmit = (event) => {
     event.preventDefault(); // Prevents the default form submission behavior
     document.querySelector('form').submit();
+  };*/
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    const formData = new FormData(event.target);
+    const data = {
+      username: formData.get("username"),
+      password: formData.get("password"),
+      book_title: formData.get("book_title"),
+      recommendation: formData.get("recommendation"),
+    };
+  
+    try {
+      const response = await fetch("http://localhost:5000/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+  
+      if (response.ok) {
+        alert("Form submitted successfully!");
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred while submitting the form.");
+    }
   };
+  
 
   return (
     <div style={styles.body}>

@@ -1,36 +1,74 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link for navigation
 
 const UserSettings = () => {
-  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [formData, setFormData] = useState({
+    Genres: [],
+    Username: "novelguy", // Replace with dynamic username if needed
+  });
 
-  const handleToggleGenre = (genre) => {
-    setSelectedGenres((prevGenres) =>
-      prevGenres.includes(genre)
-        ? prevGenres.filter((g) => g !== genre)
-        : [...prevGenres, genre]
-    );
+  const handleGenreToggle = (genre) => {
+    setFormData((prev) => ({
+      ...prev,
+      Genres: prev.Genres.includes(genre)
+        ? prev.Genres.filter((g) => g !== genre)
+        : [...prev.Genres, genre],
+    }));
+  };
+
+  const handleSubmitGenres = async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      username: formData.Username,
+      genres: formData.Genres,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        alert("Genres updated successfully!");
+      } else {
+        console.error("Error updating genres:", response.statusText);
+        alert("Failed to update genres.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while updating genres.");
+    }
   };
 
   return (
     <div style={styles.body}>
-      <h1 style={styles.h1}>Hello, Username</h1>
+      <h1 style={styles.h1}>Hello, {formData.Username}</h1>
       <div style={styles.settingsContainer}>
+        
         {/* Change Password Section */}
         <div style={styles.formSection}>
+        {/* <h2 style={styles.h2}>Settings</h2>
+          <Link to="/addBook" style={styles.button}>
+            Go to Add Book
+          </Link>
+          */}
           <h2 style={styles.h2}>Change Password</h2>
           <form action="/change-password" method="POST">
             <input
               type="password"
               name="password"
               placeholder="Password"
-              required
               style={styles.input}
             />
             <input
               type="password"
               name="confirm_password"
               placeholder="Confirm Password"
-              required
               style={styles.input}
             />
             <button type="submit" style={styles.button}>
@@ -42,7 +80,7 @@ const UserSettings = () => {
         {/* Select Genres Section */}
         <div style={styles.formSection}>
           <h2 style={styles.h2}>Select Your Favorite Genres</h2>
-          <form action="/update-genres" method="POST">
+          <form onSubmit={handleSubmitGenres}>
             <div style={styles.genres}>
               {[
                 "Fiction",
@@ -60,11 +98,11 @@ const UserSettings = () => {
                   key={genre}
                   style={{
                     ...styles.genre,
-                    ...(selectedGenres.includes(genre)
+                    ...(formData.Genres.includes(genre)
                       ? styles.genreSelected
                       : {}),
                   }}
-                  onClick={() => handleToggleGenre(genre)}
+                  onClick={() => handleGenreToggle(genre)}
                 >
                   {genre}
                 </div>
@@ -118,6 +156,7 @@ const styles = {
     fontSize: "14px",
   },
   button: {
+    marginTop: "20px",
     marginBottom: "15px",
     width: "calc(100% - 20px)",
     padding: "10px",
