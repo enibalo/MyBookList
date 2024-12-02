@@ -15,7 +15,7 @@ const {
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // Allow Vite frontend
+app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -105,23 +105,224 @@ app.post("/UpSign", (req, res) => {
       console.log("User inserted:", username);
 
       /* Insert book and recommendation into the database
-            const randomISBN = Math.floor(1000000 + Math.random() * 9000000); // Generate random ISBN
-            const recommendationQuery = `
-              INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, Comment )
-              VALUES (?, ?, '0000000000000', ?)
-            `;
-            db.query(recommendationQuery, [username, randomISBN, recommendation], (err, result) => {
-              if (err) {
-                console.error("Error inserting into Recommendation table:", err);
-                return res.status(500).json({ message: "Database error in recommendation." });
-              }
-      
-              res.status(200).json({ message: "Form submitted successfully!" });
-            });*/
+      const randomISBN = Math.floor(1000000 + Math.random() * 9000000); // Generate random ISBN
+      const recommendationQuery = `
+        INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, Comment )
+        VALUES (?, ?, '0000000000000', ?)
+      `;
+      db.query(recommendationQuery, [username, randomISBN, recommendation], (err, result) => {
+        if (err) {
+          console.error("Error inserting into Recommendation table:", err);
+          return res.status(500).json({ message: "Database error in recommendation." });
+        }
+
+        res.status(200).json({ message: "Form submitted successfully!" });
+      });*/
     });
   });
 });
 app.post("/BookAdd", (req, res) => {
+  const {
+    ISBN,
+    Title,
+    SeriesName,
+    BookOrder,
+    Fname,
+    Lname,
+    DOB,
+    Publisher,
+    Phone,
+    Email,
+    Description,
+    PurchaseLink,
+    isFavourite,
+    adminUsername,
+    Genres,
+  } = req.body;
+
+  // Check for missing fields and construct a detailed error message
+  const missingFields = [];
+  if (!ISBN) missingFields.push("ISBN");
+  if (!Title) missingFields.push("Title");
+  if (!Fname) missingFields.push("First Name (Fname)");
+  if (!Lname) missingFields.push("Last Name (Lname)");
+  if (!Publisher) missingFields.push("Publisher");
+  if (!Genres || Genres.length === 0)
+    missingFields.push("At least one genre selection");
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      message: `The following required fields are missing: ${missingFields.join(
+        ", "
+      )}`,
+    });
+  }
+
+  // Normalize inputs
+  const normalizedPublisher = Publisher.trim();
+  const normalizedFname = Fname.trim();
+  const normalizedLname = Lname.trim();
+
+  // Validate genres to ensure no overlap between fiction and non-fiction
+  const genresQuery = `SELECT Name, Main_genre FROM Genre`;
+  db.query(genresQuery, (err, results) => {
+    if (err) {
+      console.error("Error fetching genres:", err);
+      return res
+        .status(500)
+        .json({ message: "Database error while fetching genres." });
+    }
+
+    // Separate genres into Fiction and Non-Fiction
+    const fictionGenres = results
+      .filter((g) => g.Main_genre === "Fiction")
+      .map((g) => g.Name);
+    const nonFictionGenres = results
+      .filter((g) => g.Main_genre === "Non-Fiction")
+      .map((g) => g.Name);
+
+    // Check if selected genres belong to both categories
+    const hasFiction = Genres.some((genre) => fictionGenres.includes(genre));
+    const hasNonFiction = Genres.some((genre) =>
+      nonFictionGenres.includes(genre)
+    );
+
+    if (hasFiction && hasNonFiction) {
+      return res.status(400).json({
+        message: "A book cannot belong to both Fiction and Non-Fiction genres.",
+      });
+    }
+
+    // If validation passes, proceed with book insertion
+    const insertBook = (authorId) => {
+      const insertBookQuery = `
+        INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary)
+        VALUES (?, ?, ?, ?, ?, ?)`;
+      db.query(
+        insertBookQuery,
+        [ISBN, Title, PurchaseLink, authorId, normalizedPublisher, Description],
+        async (err) => {
+          if (err) {
+            console.error("Error inserting book:", err);
+            return res
+              .status(500)
+              .json({ message: "Database error while inserting book." });
+          }
+          res.status(200).json({ message: "Book added successfully!" });
+
+          if (isFavourite) {
+            const insertFavoriteQuery = `
+            INSERT INTO Favorites (Username, Book_isbn)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE Book_isbn = VALUES(Book_isbn);
+          `;
+            db.query(insertFavoriteQuery, [adminUsername, ISBN], (favErr) => {
+              if (favErr) {
+                console.error("Error inserting into Favorites:", favErr);
+                return res.status(500).json({
+                  message: "Database error while updating favorites.",
+                });
+              }
+              console.log("Favorite status updated successfully!");
+            });
+          }
+
+          try {
+            await insertGenres();
+            console.log("Genres added successfully!");
+          } catch (err) {
+            console.error("Error inserting genres:", err);
+            res
+              .status(500)
+              .json({ message: "Database error while inserting genres." });
+          }
+        }
+      );
+    };
+
+    const insertGenres = () => {
+      if (Genres && Genres.length > 0) {
+        const genreQueries = Genres.map((genre) => {
+          return new Promise((resolve, reject) => {
+            db.query(
+              "INSERT INTO Posseses (Book_isbn, Genre_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE Genre_name = Genre_name",
+              [ISBN, genre],
+              (err) => {
+                if (err) {
+                  console.error(`Error inserting genre: ${genre}`, err);
+                  reject(err);
+                } else {
+                  resolve();
+                }
+              }
+            );
+          });
+        });
+        return Promise.all(genreQueries);
+      } else {
+        console.log("No genres to add.");
+        return Promise.resolve();
+      }
+    };
+
+    // Check if the author exists and proceed
+    const checkAuthorQuery = `SELECT ID FROM Author WHERE Fname = ? AND Lname = ?`;
+    db.query(
+      checkAuthorQuery,
+      [normalizedFname, normalizedLname],
+      (err, authorResults) => {
+        if (err) {
+          console.error("Error checking author:", err);
+          return res
+            .status(500)
+            .json({ message: "Database error while checking author." });
+        }
+
+        let authorId;
+
+        const handlePublisher = () => {
+          const insertPublisherQuery = `INSERT IGNORE INTO Publisher (Name, Email, Phone) VALUES (?, ?, ?)`;
+          db.query(
+            insertPublisherQuery,
+            [normalizedPublisher, Email, Phone],
+            (err) => {
+              if (err) {
+                console.error("Error inserting publisher:", err);
+                return res.status(500).json({
+                  message: "Database error while inserting publisher.",
+                });
+              }
+              insertBook(authorId);
+            }
+          );
+        };
+
+        if (authorResults.length > 0) {
+          authorId = authorResults[0].ID;
+          handlePublisher();
+        } else {
+          const insertAuthorQuery = `INSERT INTO Author (Fname, Lname, DOB) VALUES (?, ?, ?)`;
+          db.query(
+            insertAuthorQuery,
+            [normalizedFname, normalizedLname, DOB],
+            (err, authorInsertResult) => {
+              if (err) {
+                console.error("Error inserting author:", err);
+                return res
+                  .status(500)
+                  .json({ message: "Database error while inserting author." });
+              }
+              authorId = authorInsertResult.insertId;
+              handlePublisher();
+            }
+          );
+        }
+      }
+    );
+  });
+});
+
+app.post("/BoookAdd", (req, res) => {
   const {
     ISBN,
     Title,
@@ -260,10 +461,10 @@ app.post("/BookAdd", (req, res) => {
   };
 
   // Step 1: Check if the author exists
-  const checkAuthorQuery = `SELECT ID FROM Author WHERE Fname = ? AND Lname = ? AND DOB = ?`;
+  const checkAuthorQuery = `SELECT ID FROM Author WHERE Fname = ? AND Lname = ?`;
   db.query(
     checkAuthorQuery,
-    [normalizedFname, normalizedLname, DOB],
+    [normalizedFname, normalizedLname],
     (err, authorResults) => {
       if (err) {
         console.error("Error checking author:", err);
@@ -403,6 +604,91 @@ app.post("/settings", (req, res) => {
 
   // If neither password nor genres are provided, return an error
   res.status(400).send("Invalid request. Provide either a password or genres.");
+});
+
+app.post("/meow", (req, res) => {
+  console.log("hi");
+  const { username, password } = req.body;
+
+  //req.session.username = username;
+  console.log(username);
+  console.log(password);
+
+  // if no username or password, enter error message that says that user name and password arr required
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ message: "Username and password are required." });
+  }
+
+  // first check if the user is an admin
+  // set the role to admin
+  /*const adminQuery = "SELECT * FROM Admin WHERE Username = ?";
+  db.query(adminQuery, [username], (err, adminResults) =>{
+      if (err) {
+          console.error("Error checking for admin", err);
+          return res.status(500).json({ message: "Database error." });
+      }
+
+      if (adminResults>0){
+          const admin = adminResults[0];
+
+          if(admin.Username== username && admin.Password == password){
+              return res.status(200).json({
+                  message: "Admin login successful",
+                  role: "admin", // role indicating admin
+                  username: admin.Username
+              });
+
+          }
+
+          else {
+              return res.status(400).json({ error: "Invalid username or password." });
+          }
+
+
+
+      }
+
+
+  }); */
+
+  // select all usernames from database and see if it matches
+
+  // this will select all attributes of the Username
+  const query = "SELECT * FROM User WHERE Username = ?";
+  db.query(query, [username], (err, results) => {
+    if (err) {
+      console.error("Error checking for existing usernames", err);
+      return res.status(500).json({ message: "Database error." });
+    }
+
+    // if the username and password is not in the database then say invalid username and password
+
+    if (results.length === 0) {
+      // Username does not exist
+      return res
+        .status(400)
+        .json({ message: "Username does not exist, please make an account" });
+    }
+
+    const user = results[0];
+    console.log(user);
+    console.log(user.Username);
+    console.log(user.Password);
+
+    // if username is in the database grant access
+    if (user.Password == password && user.Username == username) {
+      // Successful login message
+
+      return res
+        .status(200)
+        .json({ message: "Login successful", username: user.Username });
+    } else {
+      // Incorrect password
+      return res.status(400).json({ error: "Invalid username or password." });
+    }
+  });
 });
 
 function all(res) {
@@ -1032,19 +1318,17 @@ app.post("/login", (req, res) => {
   console.log("hi");
   const { username, password } = req.body;
 
-  //req.session.username = username;
   console.log(username);
   console.log(password);
 
-  // if no username or password, enter error message that says that user name and password arr required
+  // If no username or password is provided
   if (!username || !password) {
     return res
       .status(400)
       .json({ message: "Username and password are required." });
   }
 
-  // first check if the user is an admin
-  // set the role to admin
+  // First, check if the user is an admin
   const adminQuery = "SELECT * FROM Admin WHERE Username = ?";
   db.query(adminQuery, [username], (err, adminResults) => {
     if (err) {
@@ -1052,57 +1336,50 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Database error." });
     }
 
-    if (adminResults > 0) {
+    if (adminResults.length > 0) {
       const admin = adminResults[0];
-      if (admin.Username == username && admin.Password == password) {
+
+      if (admin.Password === password) {
         return res.status(200).json({
           message: "Admin login successful",
-          role: "admin", // role indicating admin
+          isAdmin: true,
           username: admin.Username,
         });
       } else {
-        return res.status(400).json({ error: "Invalid username or password." });
+        return res
+          .status(400)
+          .json({ error: "Invalid username or password for admin." });
       }
     }
-  });
 
-  // select all usernames from database and see if it matches
+    // If not an admin, check for regular user
+    const userQuery = "SELECT * FROM User WHERE Username = ?";
+    db.query(userQuery, [username], (err, userResults) => {
+      if (err) {
+        console.error("Error checking for existing usernames", err);
+        return res.status(500).json({ message: "Database error." });
+      }
 
-  // this will select all attributes of the Username
-  const query = "SELECT * FROM User WHERE Username = ?";
-  db.query(query, [username], (err, results) => {
-    if (err) {
-      console.error("Error checking for existing usernames", err);
-      return res.status(500).json({ message: "Database error." });
-    }
+      if (userResults.length === 0) {
+        // Username does not exist
+        return res.status(400).json({
+          message: "Username does not exist, please make an account.",
+        });
+      }
 
-    // if the username and password is not in the database then say invalid username and password
-
-    if (results.length === 0) {
-      // Username does not exist
-      return res
-        .status(400)
-        .json({ message: "Username does not exist, please make an account" });
-    }
-
-    const user = results[0];
-    console.log(user);
-    console.log(user.Username);
-    console.log(user.Password);
-
-    // if username is in the database grant access
-    if (user.Password == password && user.Username == username) {
-      // Successful login message
-
-      return res.status(200).json({
-        message: "Login successful",
-        username: user.Username,
-        role: "user",
-      });
-    } else {
-      // Incorrect password
-      return res.status(400).json({ error: "Invalid username or password." });
-    }
+      const user = userResults[0];
+      if (user.Password === password) {
+        // Successful login for regular user
+        return res.status(200).json({
+          message: "Login successful",
+          isAdmin: false, // Role indicating regular user
+          username: user.Username,
+        });
+      } else {
+        // Incorrect password
+        return res.status(400).json({ error: "Invalid username or password." });
+      }
+    });
   });
 });
 

@@ -10,9 +10,9 @@ app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
 // Database connection
 const db = mysql.createConnection({
   host: "localhost", // Update this with your database host
-  user: "root",      // Update with your database username
-  password: "Nizamani123",  // Update with your database password
-  database: "My_book_list" // Database name
+  user: "root", // Update with your database username
+  password: "Nizamani123", // Update with your database password
+  database: "My_book_list", // Database name
 });
 
 // Connect to database
@@ -63,8 +63,6 @@ app.get("/main-genres", (req, res) => {
   });
 });
 
-
-
 // API endpoint for form submission
 //add the thing to make sure passwordsMatch Lol
 app.post("/UpSign", (req, res) => {
@@ -83,7 +81,11 @@ app.post("/UpSign", (req, res) => {
     }
 
     if (results.length > 0) {
-      return res.status(400).json({ message: "Username already exists. Please choose a different one." });
+      return res
+        .status(400)
+        .json({
+          message: "Username already exists. Please choose a different one.",
+        });
     }
 
     // Insert user into `User` table
@@ -139,11 +141,14 @@ app.post("/BookAdd", (req, res) => {
   if (!Fname) missingFields.push("First Name (Fname)");
   if (!Lname) missingFields.push("Last Name (Lname)");
   if (!Publisher) missingFields.push("Publisher");
-  if (!Genres || Genres.length === 0) missingFields.push("At least one genre selection");
+  if (!Genres || Genres.length === 0)
+    missingFields.push("At least one genre selection");
 
   if (missingFields.length > 0) {
     return res.status(400).json({
-      message: `The following required fields are missing: ${missingFields.join(", ")}`,
+      message: `The following required fields are missing: ${missingFields.join(
+        ", "
+      )}`,
     });
   }
 
@@ -157,16 +162,24 @@ app.post("/BookAdd", (req, res) => {
   db.query(genresQuery, (err, results) => {
     if (err) {
       console.error("Error fetching genres:", err);
-      return res.status(500).json({ message: "Database error while fetching genres." });
+      return res
+        .status(500)
+        .json({ message: "Database error while fetching genres." });
     }
 
     // Separate genres into Fiction and Non-Fiction
-    const fictionGenres = results.filter((g) => g.Main_genre === "Fiction").map((g) => g.Name);
-    const nonFictionGenres = results.filter((g) => g.Main_genre === "Non-Fiction").map((g) => g.Name);
+    const fictionGenres = results
+      .filter((g) => g.Main_genre === "Fiction")
+      .map((g) => g.Name);
+    const nonFictionGenres = results
+      .filter((g) => g.Main_genre === "Non-Fiction")
+      .map((g) => g.Name);
 
     // Check if selected genres belong to both categories
     const hasFiction = Genres.some((genre) => fictionGenres.includes(genre));
-    const hasNonFiction = Genres.some((genre) => nonFictionGenres.includes(genre));
+    const hasNonFiction = Genres.some((genre) =>
+      nonFictionGenres.includes(genre)
+    );
 
     if (hasFiction && hasNonFiction) {
       return res.status(400).json({
@@ -179,36 +192,48 @@ app.post("/BookAdd", (req, res) => {
       const insertBookQuery = `
         INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary)
         VALUES (?, ?, ?, ?, ?, ?)`;
-      db.query(insertBookQuery, [ISBN, Title, PurchaseLink, authorId, normalizedPublisher, Description], async (err) => {
-        if (err) {
-          console.error("Error inserting book:", err);
-          return res.status(500).json({ message: "Database error while inserting book." });
-        }
-        res.status(200).json({ message: "Book added successfully!" });
+      db.query(
+        insertBookQuery,
+        [ISBN, Title, PurchaseLink, authorId, normalizedPublisher, Description],
+        async (err) => {
+          if (err) {
+            console.error("Error inserting book:", err);
+            return res
+              .status(500)
+              .json({ message: "Database error while inserting book." });
+          }
+          res.status(200).json({ message: "Book added successfully!" });
 
-        if (isFavourite) {
-          const insertFavoriteQuery = `
+          if (isFavourite) {
+            const insertFavoriteQuery = `
             INSERT INTO Favorites (Username, Book_isbn)
             VALUES (?, ?)
             ON DUPLICATE KEY UPDATE Book_isbn = VALUES(Book_isbn);
           `;
-          db.query(insertFavoriteQuery, [adminUsername, ISBN], (favErr) => {
-            if (favErr) {
-              console.error("Error inserting into Favorites:", favErr);
-              return res.status(500).json({ message: "Database error while updating favorites." });
-            }
-            console.log("Favorite status updated successfully!");
-          });
-        }
+            db.query(insertFavoriteQuery, [adminUsername, ISBN], (favErr) => {
+              if (favErr) {
+                console.error("Error inserting into Favorites:", favErr);
+                return res
+                  .status(500)
+                  .json({
+                    message: "Database error while updating favorites.",
+                  });
+              }
+              console.log("Favorite status updated successfully!");
+            });
+          }
 
-        try {
-          await insertGenres();
-          console.log("Genres added successfully!");
-        } catch (err) {
-          console.error("Error inserting genres:", err);
-          res.status(500).json({ message: "Database error while inserting genres." });
+          try {
+            await insertGenres();
+            console.log("Genres added successfully!");
+          } catch (err) {
+            console.error("Error inserting genres:", err);
+            res
+              .status(500)
+              .json({ message: "Database error while inserting genres." });
+          }
         }
-      });
+      );
     };
 
     const insertGenres = () => {
@@ -238,40 +263,60 @@ app.post("/BookAdd", (req, res) => {
 
     // Check if the author exists and proceed
     const checkAuthorQuery = `SELECT ID FROM Author WHERE Fname = ? AND Lname = ?`;
-    db.query(checkAuthorQuery, [normalizedFname, normalizedLname], (err, authorResults) => {
-      if (err) {
-        console.error("Error checking author:", err);
-        return res.status(500).json({ message: "Database error while checking author." });
-      }
+    db.query(
+      checkAuthorQuery,
+      [normalizedFname, normalizedLname],
+      (err, authorResults) => {
+        if (err) {
+          console.error("Error checking author:", err);
+          return res
+            .status(500)
+            .json({ message: "Database error while checking author." });
+        }
 
-      let authorId;
+        let authorId;
 
-      const handlePublisher = () => {
-        const insertPublisherQuery = `INSERT IGNORE INTO Publisher (Name, Email, Phone) VALUES (?, ?, ?)`;
-        db.query(insertPublisherQuery, [normalizedPublisher, Email, Phone], (err) => {
-          if (err) {
-            console.error("Error inserting publisher:", err);
-            return res.status(500).json({ message: "Database error while inserting publisher." });
-          }
-          insertBook(authorId);
-        });
-      };
+        const handlePublisher = () => {
+          const insertPublisherQuery = `INSERT IGNORE INTO Publisher (Name, Email, Phone) VALUES (?, ?, ?)`;
+          db.query(
+            insertPublisherQuery,
+            [normalizedPublisher, Email, Phone],
+            (err) => {
+              if (err) {
+                console.error("Error inserting publisher:", err);
+                return res
+                  .status(500)
+                  .json({
+                    message: "Database error while inserting publisher.",
+                  });
+              }
+              insertBook(authorId);
+            }
+          );
+        };
 
-      if (authorResults.length > 0) {
-        authorId = authorResults[0].ID;
-        handlePublisher();
-      } else {
-        const insertAuthorQuery = `INSERT INTO Author (Fname, Lname, DOB) VALUES (?, ?, ?)`;
-        db.query(insertAuthorQuery, [normalizedFname, normalizedLname, DOB], (err, authorInsertResult) => {
-          if (err) {
-            console.error("Error inserting author:", err);
-            return res.status(500).json({ message: "Database error while inserting author." });
-          }
-          authorId = authorInsertResult.insertId;
+        if (authorResults.length > 0) {
+          authorId = authorResults[0].ID;
           handlePublisher();
-        });
+        } else {
+          const insertAuthorQuery = `INSERT INTO Author (Fname, Lname, DOB) VALUES (?, ?, ?)`;
+          db.query(
+            insertAuthorQuery,
+            [normalizedFname, normalizedLname, DOB],
+            (err, authorInsertResult) => {
+              if (err) {
+                console.error("Error inserting author:", err);
+                return res
+                  .status(500)
+                  .json({ message: "Database error while inserting author." });
+              }
+              authorId = authorInsertResult.insertId;
+              handlePublisher();
+            }
+          );
+        }
       }
-    });
+    );
   });
 });
 
@@ -294,21 +339,23 @@ app.post("/BoookAdd", (req, res) => {
     Genres,
   } = req.body;
 
- // Check for missing fields and construct a detailed error message
-const missingFields = [];
-if (!ISBN) missingFields.push("ISBN");
-if (!Title) missingFields.push("Title");
-if (!Fname) missingFields.push("First Name (Fname)");
-if (!Lname) missingFields.push("Last Name (Lname)");
-if (!Publisher) missingFields.push("Publisher");
-if (!Genres || Genres.length === 0) missingFields.push("At least one genre selection");
+  // Check for missing fields and construct a detailed error message
+  const missingFields = [];
+  if (!ISBN) missingFields.push("ISBN");
+  if (!Title) missingFields.push("Title");
+  if (!Fname) missingFields.push("First Name (Fname)");
+  if (!Lname) missingFields.push("Last Name (Lname)");
+  if (!Publisher) missingFields.push("Publisher");
+  if (!Genres || Genres.length === 0)
+    missingFields.push("At least one genre selection");
 
-if (missingFields.length > 0) {
-  return res.status(400).json({
-    message: `The following required fields are missing: ${missingFields.join(", ")}`,
-  });
-}
-
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      message: `The following required fields are missing: ${missingFields.join(
+        ", "
+      )}`,
+    });
+  }
 
   // Normalize inputs
   const normalizedPublisher = Publisher.trim();
@@ -320,123 +367,157 @@ if (missingFields.length > 0) {
     const insertBookQuery = `
       INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary)
       VALUES (?, ?, ?, ?, ?, ?)`;
-    db.query(insertBookQuery, [ISBN, Title, PurchaseLink, authorId, normalizedPublisher, Description], async (err) => {
-      if (err) {
-        console.error("Error inserting book:", err);
-        return res.status(500).json({ message: "Database error while inserting book." });
-      }
-      res.status(200).json({ message: "Book added successfully!" });
+    db.query(
+      insertBookQuery,
+      [ISBN, Title, PurchaseLink, authorId, normalizedPublisher, Description],
+      async (err) => {
+        if (err) {
+          console.error("Error inserting book:", err);
+          return res
+            .status(500)
+            .json({ message: "Database error while inserting book." });
+        }
+        res.status(200).json({ message: "Book added successfully!" });
 
-      if (SeriesName && BookOrder) {
-        const insertSeriesQuery = `
+        if (SeriesName && BookOrder) {
+          const insertSeriesQuery = `
           INSERT INTO Book_series (Book_isbn, Series_name, Book_order)
           VALUES (?, ?, ?)`;
-  
-        db.query(insertSeriesQuery, [ISBN, SeriesName, BookOrder], (seriesErr) => {
-          if (seriesErr) {
-            console.error("Error inserting into Book_series:", seriesErr);
-            return res.status(500).json({ message: "Database error while inserting into Book_series." });
-          }
-          console.log("Book series added successfully!");
-        });
-      }
-      // Handle Favorites: Only if isFavourite is true
-      if (isFavourite) {
-        const insertFavoriteQuery = `
+
+          db.query(
+            insertSeriesQuery,
+            [ISBN, SeriesName, BookOrder],
+            (seriesErr) => {
+              if (seriesErr) {
+                console.error("Error inserting into Book_series:", seriesErr);
+                return res
+                  .status(500)
+                  .json({
+                    message: "Database error while inserting into Book_series.",
+                  });
+              }
+              console.log("Book series added successfully!");
+            }
+          );
+        }
+        // Handle Favorites: Only if isFavourite is true
+        if (isFavourite) {
+          const insertFavoriteQuery = `
           INSERT INTO Favorites (Username, Book_isbn)
           VALUES (?, ?)
           ON DUPLICATE KEY UPDATE Book_isbn = VALUES(Book_isbn);
         `;
-      
-        db.query(insertFavoriteQuery, [adminUsername, ISBN], (favErr) => {
-          if (favErr) {
-            console.error("Error inserting into Favorites:", favErr);
-            return res.status(500).json({ message: "Database error while updating favorites." });
-          }
-          console.log("Favorite status updated successfully!");
-        });
-      }
 
-      try {
-        await insertGenres(); // Call the insertGenres function
-        console.log("Genres added successfully!");
-      } catch (err) {
-        console.error("Error inserting genres:", err);
-        res.status(500).json({ message: "Database error while inserting genres." });
+          db.query(insertFavoriteQuery, [adminUsername, ISBN], (favErr) => {
+            if (favErr) {
+              console.error("Error inserting into Favorites:", favErr);
+              return res
+                .status(500)
+                .json({ message: "Database error while updating favorites." });
+            }
+            console.log("Favorite status updated successfully!");
+          });
+        }
+
+        try {
+          await insertGenres(); // Call the insertGenres function
+          console.log("Genres added successfully!");
+        } catch (err) {
+          console.error("Error inserting genres:", err);
+          res
+            .status(500)
+            .json({ message: "Database error while inserting genres." });
+        }
       }
-    });
+    );
   };
 
-  
-  
   // Function to insert genres
-const insertGenres = () => {
-  if (Genres && Genres.length > 0) {
-    const genreQueries = Genres.map((genre) => {
-      return new Promise((resolve, reject) => {
-        db.query(
-          "INSERT INTO Posseses (Book_isbn, Genre_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE Genre_name = Genre_name",
-          [ISBN, genre],
-          (err) => {
-            if (err) {
-              console.error(`Error inserting genre: ${genre}`, err);
-              reject(err);
-            } else {
-              console.log(`Genre added: ${genre}`);
-              resolve();
+  const insertGenres = () => {
+    if (Genres && Genres.length > 0) {
+      const genreQueries = Genres.map((genre) => {
+        return new Promise((resolve, reject) => {
+          db.query(
+            "INSERT INTO Posseses (Book_isbn, Genre_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE Genre_name = Genre_name",
+            [ISBN, genre],
+            (err) => {
+              if (err) {
+                console.error(`Error inserting genre: ${genre}`, err);
+                reject(err);
+              } else {
+                console.log(`Genre added: ${genre}`);
+                resolve();
+              }
             }
-          }
-        );
+          );
+        });
       });
-    });
 
-    return Promise.all(genreQueries);
-  } else {
-    console.log("No genres to add.");
-    return Promise.resolve();
-  }
-};
+      return Promise.all(genreQueries);
+    } else {
+      console.log("No genres to add.");
+      return Promise.resolve();
+    }
+  };
 
   // Step 1: Check if the author exists
   const checkAuthorQuery = `SELECT ID FROM Author WHERE Fname = ? AND Lname = ?`;
-  db.query(checkAuthorQuery, [normalizedFname, normalizedLname], (err, authorResults) => {
-    if (err) {
-      console.error("Error checking author:", err);
-      return res.status(500).json({ message: "Database error while checking author." });
-    }
+  db.query(
+    checkAuthorQuery,
+    [normalizedFname, normalizedLname],
+    (err, authorResults) => {
+      if (err) {
+        console.error("Error checking author:", err);
+        return res
+          .status(500)
+          .json({ message: "Database error while checking author." });
+      }
 
-    let authorId;
+      let authorId;
 
-    const handlePublisher = () => {
-      // Use INSERT IGNORE to add the publisher only if it doesn't exist
-      const insertPublisherQuery = `INSERT IGNORE INTO Publisher (Name, Email, Phone) VALUES (?, ?, ?)`;
-      db.query(insertPublisherQuery, [normalizedPublisher, Email, Phone], (err) => {
-        if (err) {
-          console.error("Error inserting publisher:", err);
-          return res.status(500).json({ message: "Database error while inserting publisher." });
-        }
-        console.log("Publisher verified/added:", normalizedPublisher);
-        insertBook(authorId);
-      });
-    };
+      const handlePublisher = () => {
+        // Use INSERT IGNORE to add the publisher only if it doesn't exist
+        const insertPublisherQuery = `INSERT IGNORE INTO Publisher (Name, Email, Phone) VALUES (?, ?, ?)`;
+        db.query(
+          insertPublisherQuery,
+          [normalizedPublisher, Email, Phone],
+          (err) => {
+            if (err) {
+              console.error("Error inserting publisher:", err);
+              return res
+                .status(500)
+                .json({ message: "Database error while inserting publisher." });
+            }
+            console.log("Publisher verified/added:", normalizedPublisher);
+            insertBook(authorId);
+          }
+        );
+      };
 
-    if (authorResults.length > 0) {
-      // Author exists
-      authorId = authorResults[0].ID;
-      handlePublisher();
-    } else {
-      // Insert new author
-      const insertAuthorQuery = `INSERT INTO Author (Fname, Lname, DOB) VALUES (?, ?, ?)`;
-      db.query(insertAuthorQuery, [normalizedFname, normalizedLname, DOB], (err, authorInsertResult) => {
-        if (err) { 
-          console.error("Error inserting author:", err);
-          return res.status(500).json({ message: "Database error while inserting author." });
-        }
-        authorId = authorInsertResult.insertId;
+      if (authorResults.length > 0) {
+        // Author exists
+        authorId = authorResults[0].ID;
         handlePublisher();
-      });
+      } else {
+        // Insert new author
+        const insertAuthorQuery = `INSERT INTO Author (Fname, Lname, DOB) VALUES (?, ?, ?)`;
+        db.query(
+          insertAuthorQuery,
+          [normalizedFname, normalizedLname, DOB],
+          (err, authorInsertResult) => {
+            if (err) {
+              console.error("Error inserting author:", err);
+              return res
+                .status(500)
+                .json({ message: "Database error while inserting author." });
+            }
+            authorId = authorInsertResult.insertId;
+            handlePublisher();
+          }
+        );
+      }
     }
-  });
+  );
 });
 
 app.post("/settings", (req, res) => {
@@ -445,12 +526,13 @@ app.post("/settings", (req, res) => {
   // Handle Change Password
   if (password) {
     if (!username || !password) {
-      return res.status(400).send("Invalid data. Ensure username and password are provided.");
+      return res
+        .status(400)
+        .send("Invalid data. Ensure username and password are provided.");
     }
-    
 
-
-    const updatePasswordQuery = "UPDATE User SET Password = ? WHERE Username = ?";
+    const updatePasswordQuery =
+      "UPDATE User SET Password = ? WHERE Username = ?";
     db.query(updatePasswordQuery, [password, username], (err, result) => {
       console.log("Username:", username);
       console.log("Password:", password);
@@ -473,7 +555,9 @@ app.post("/settings", (req, res) => {
   // Handle Select Genres
   if (genres) {
     if (!username || !Array.isArray(genres)) {
-      return res.status(400).send("Invalid data. Ensure username and genres are provided.");
+      return res
+        .status(400)
+        .send("Invalid data. Ensure username and genres are provided.");
     }
 
     // Delete existing genres for the user
@@ -502,7 +586,9 @@ app.post("/settings", (req, res) => {
 
           // Specific logging for foreign key constraint violations
           if (insertErr.code === "ER_NO_REFERENCED_ROW_2") {
-            return res.status(400).send("One or more genres do not exist in the Genre table.");
+            return res
+              .status(400)
+              .send("One or more genres do not exist in the Genre table.");
           }
 
           return res.status(500).send("Failed to add genres.");
@@ -520,7 +606,7 @@ app.post("/settings", (req, res) => {
   res.status(400).send("Invalid request. Provide either a password or genres.");
 });
 
-app.post("/", (req, res) => {
+app.post("/login", (req, res) => {
   console.log("hi");
   const { username, password } = req.body;
 
@@ -529,7 +615,9 @@ app.post("/", (req, res) => {
 
   // If no username or password is provided
   if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required." });
+    return res
+      .status(400)
+      .json({ message: "Username and password are required." });
   }
 
   // First, check if the user is an admin
@@ -550,7 +638,9 @@ app.post("/", (req, res) => {
           username: admin.Username,
         });
       } else {
-        return res.status(400).json({ error: "Invalid username or password for admin." });
+        return res
+          .status(400)
+          .json({ error: "Invalid username or password for admin." });
       }
     }
 
@@ -564,7 +654,11 @@ app.post("/", (req, res) => {
 
       if (userResults.length === 0) {
         // Username does not exist
-        return res.status(400).json({ message: "Username does not exist, please make an account." });
+        return res
+          .status(400)
+          .json({
+            message: "Username does not exist, please make an account.",
+          });
       }
 
       const user = userResults[0];
@@ -586,19 +680,19 @@ app.post("/", (req, res) => {
 app.post("/meow", (req, res) => {
   console.log("hi");
   const { username, password } = req.body;
-  
-  //req.session.username = username; 
+
+  //req.session.username = username;
   console.log(username);
   console.log(password);
 
-
-  // if no username or password, enter error message that says that user name and password arr required 
+  // if no username or password, enter error message that says that user name and password arr required
   if (!username || !password) {
-      return res.status(400).json({ message: "Username and password are required." });
+    return res
+      .status(400)
+      .json({ message: "Username and password are required." });
   }
 
-
-  // first check if the user is an admin 
+  // first check if the user is an admin
   // set the role to admin
   /*const adminQuery = "SELECT * FROM Admin WHERE Username = ?";
   db.query(adminQuery, [username], (err, adminResults) =>{
@@ -630,42 +724,41 @@ app.post("/meow", (req, res) => {
 
   }); */
 
+  // select all usernames from database and see if it matches
 
-
-  // select all usernames from database and see if it matches 
-
-  // this will select all attributes of the Username 
+  // this will select all attributes of the Username
   const query = "SELECT * FROM User WHERE Username = ?";
   db.query(query, [username], (err, results) => {
-      if (err) {
-          console.error("Error checking for existing usernames", err)
-          return res.status(500).json({ message: "Database error." });
-      }
-
-  // if the username and password is not in the database then say invalid username and password
-      
-  if (results.length === 0) {
-      // Username does not exist
-      return res.status(400).json({ message: "Username does not exist, please make an account" });
+    if (err) {
+      console.error("Error checking for existing usernames", err);
+      return res.status(500).json({ message: "Database error." });
     }
 
-      const user = results[0];
-      console.log(user);
-      console.log(user.Username);
-      console.log(user.Password);
+    // if the username and password is not in the database then say invalid username and password
 
+    if (results.length === 0) {
+      // Username does not exist
+      return res
+        .status(400)
+        .json({ message: "Username does not exist, please make an account" });
+    }
 
-      // if username is in the database grant access 
-      if (user.Password == password && user.Username == username) {
-          // Successful login message 
+    const user = results[0];
+    console.log(user);
+    console.log(user.Username);
+    console.log(user.Password);
 
-          return res.status(200).json({ message: "Login successful", username: user.Username }); 
-          
-      } 
-      else {
-          // Incorrect password
-          return res.status(400).json({ error: "Invalid username or password." });
-      }
+    // if username is in the database grant access
+    if (user.Password == password && user.Username == username) {
+      // Successful login message
+
+      return res
+        .status(200)
+        .json({ message: "Login successful", username: user.Username });
+    } else {
+      // Incorrect password
+      return res.status(400).json({ error: "Invalid username or password." });
+    }
   });
 });
 
