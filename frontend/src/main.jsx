@@ -5,6 +5,7 @@ import "./styles/index.css";
 import UpSign from "./views/UpSign";
 import BookAdd from "./views/BookAdd";
 import UserSettings from "./views/UserSettings";
+import AddRec from "./views/BookComponents/AddRec";
 import Browse from "./views/Browse";
 import Book from "./views/Book";
 

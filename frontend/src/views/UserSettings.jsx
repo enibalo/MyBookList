@@ -1,10 +1,11 @@
+import Header from "../components/Header";
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
 const UserSettings = () => {
   const [formData, setFormData] = useState({
     Genres: [],
-    Username: "novelguy", // Replace with dynamic username if needed
+    Username: "novelguy", // Replace with dynamic username 
   });
 
   const handleGenreToggle = (genre) => {
@@ -44,6 +45,41 @@ const UserSettings = () => {
       alert("An error occurred while updating genres.");
     }
   };
+  const handleSubmitChangePassword = async (event) => {
+    event.preventDefault();
+  
+    // Check if passwords match
+    if (formData.Password !== formData.ConfirmPassword) {
+      alert("Passwords do not match!");
+      return; // Stop form submission
+    }
+  
+    const payload = {
+      username: formData.Username,
+      password: formData.Password,
+    };
+  
+    try {
+      const response = await fetch("http://localhost:8800/settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        alert("Password updated successfully!");
+      } else {
+        console.error("Error updating password:", response.statusText);
+        alert("Failed to update password.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while updating password.");
+    }
+  };
+  
 
   return (
     <div style={styles.body}>
@@ -57,23 +93,29 @@ const UserSettings = () => {
           </Link>
           */}
           <h2 style={styles.h2}>Change Password</h2>
-          <form action="/change-password" method="POST">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              style={styles.input}
-            />
-            <input
-              type="password"
-              name="confirm_password"
-              placeholder="Confirm Password"
-              style={styles.input}
-            />
-            <button type="submit" style={styles.button}>
-              Submit
-            </button>
-          </form>
+        <form onSubmit={handleSubmitChangePassword}>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.Password}
+            onChange={(e) => setFormData({ ...formData, Password: e.target.value })}
+            style={styles.input}
+          />
+          <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm Password"
+            value={formData.ConfirmPassword}
+            onChange={(e) =>
+              setFormData({ ...formData, ConfirmPassword: e.target.value })
+            }
+            style={styles.input}
+          />
+          <button type="submit" style={styles.button}>
+            Submit
+          </button>
+        </form>
         </div>
 
         {/* Select Genres Section */}
