@@ -1,51 +1,45 @@
-
-
+import React from "react";
 import styles from "../styles/SearchBar.module.css";
-import  MenuIcon from "../assets/Menu.svg";
-import  SearchIcon  from "../assets/Magnifying-Glass.svg";
+import SearchIcon from "../assets/Magnifying-Glass.svg";
 
-function SearchBar() {
-  const [searchQuery, setSearchQuery] = useState(""); // State for the input text
+function SearchBar({ onSearch, onSearchSubmit }) {
+  const [inputValue, setInputValue] = React.useState("");
 
-  const handleSearchInputChange = (e) => {
-    setSearchQuery(e.target.value); // Update search query as user types
+  // Handle input change and update the state
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setInputValue(value);
+    onSearch(value); // Pass the input value to the parent component
   };
 
+  // Handle button click and notify the parent
   const handleSearchClick = () => {
-    onSearch(searchQuery); // Pass the search query to the parent
+    onSearchSubmit(inputValue); // Trigger parent search functionality
   };
 
   return (
     <div className={styles["header-container"]}>
-      <button className={styles["menu-icon"]}>
-      <img
-                  alt="Menu Icon"
-                  aria-label="User Pressed Menu"
-                  className={styles.icon}
-                  src={MenuIcon}
-                  width={15}
-                  height={15}
-                ></img>
-        
-      </button>
       <div className={styles["search-bar"]}>
         <input
           type="text"
           className={styles["search-input"]}
           placeholder="Hinted search text"
-          onChange={handleSearchInputChange}
+          value={inputValue} // Bind input value to state
+          onChange={handleInputChange} // Handle change
         />
-        <button className={styles["search-icon"]} 
-                          aria-label ="Search Button"
-                          onClick={handleSearchClick}> 
-        <img
-                  alt="Search Icon"
-                  aria-label="User Pressed Search"
-                  className={styles.icon}
-                  src={SearchIcon}
-                  width={15}
-                  height={15}
-                ></img>
+        <button
+          className={styles["search-icon"]}
+          aria-label="Search Button"
+          onClick={handleSearchClick} // Handle button click
+        >
+          <img
+            alt="Search Icon"
+            aria-label="User Pressed Search"
+            className={styles.icon}
+            src={SearchIcon}
+            width={15}
+            height={15}
+          />
         </button>
       </div>
     </div>
@@ -53,4 +47,5 @@ function SearchBar() {
 }
 
 export default SearchBar;
+
 
