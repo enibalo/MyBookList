@@ -6,6 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
 function all(req,res){
     const query = "SELECT * FROM Book";
     db.query(query, (err, data)=>{
@@ -18,11 +20,11 @@ function all(req,res){
 }
 
 const db = mysql.createConnection({
-  host:"localhost",
-  user: "root",
-  password: "Appl8101*",
-  database: "My_book_list",
-});
+    host:'localhost',
+    user: 'root',
+    password: "a252020**",
+    database: "My_book_list",
+  });
 
 
 
@@ -268,7 +270,7 @@ app.post("/login", (req, res) => {
 
 app.get("/books", (req,res) => {
     const query = "SELECT * FROM Book";
-    all(req,res);
+    return all(req,res);
 });
 
 app.listen(8800, ()=> {
