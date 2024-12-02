@@ -10,9 +10,11 @@ import Alert from "./Alert.jsx";
 
 export default function EditRec() {
   const [username, setUsername] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setUsername(localStorage.getItem("currentUsername"));
+    setIsAdmin(localStorage.getItem("isAdmin"));
   }, []);
 
   let { isbn } = useParams();
@@ -23,6 +25,7 @@ export default function EditRec() {
 
   useEffect(() => {
     let isMounted = true;
+    if (isAdmin) return;
     async function fetchData() {
       axios
         .get(
@@ -48,6 +51,14 @@ export default function EditRec() {
       isMounted = false;
     };
   }, []);
+
+  if (isAdmin == true) {
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Only users can edit a recommendation!
+      </div>
+    );
+  }
 
   if (error) return <div>Error</div>;
 

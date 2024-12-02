@@ -11,7 +11,7 @@ export default function AddRec() {
   const methods = useForm({
     defaultValues: {
       comment: ``,
-      recommended_isbn: "pagelover",
+      recommended_isbn: "",
     },
   });
 
@@ -21,15 +21,16 @@ export default function AddRec() {
   const [alert, setAlert] = useState({ type: "", message: "" });
 
   const [username, setUsername] = useState("");
-  const [type, setType] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setUsername(localStorage.getItem("currentUsername"));
-    setType(localStorage.getItem("type"));
+    setIsAdmin(localStorage.getItem("isAdmin"));
   }, []);
 
   useEffect(() => {
     let isMounted = true;
+    if (isAdmin) return;
     async function fetchData() {
       axios
         .get("http://localhost:8800/tag")
@@ -82,6 +83,14 @@ export default function AddRec() {
   //   methods.setValue("recommended_isbn", recommended_isbn);
   // }
 
+  if (isAdmin == true) {
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Only users can add a recommendation!
+      </div>
+    );
+  }
+
   return (
     <FormProvider {...methods}>
       <Alert
@@ -89,6 +98,7 @@ export default function AddRec() {
         message={alert.message}
         onClose={() => setAlert({ type: "", message: "" })}
       />
+
       <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
         <div className="secondary">Temporary Search Section</div>
 

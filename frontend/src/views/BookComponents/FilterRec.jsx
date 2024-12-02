@@ -11,16 +11,16 @@ export default function FilterRec() {
   let [error, setError] = useState(false);
 
   const [username, setUsername] = useState("");
-  const [type, setType] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     setUsername(localStorage.getItem("currentUsername"));
-    setType(localStorage.getItem("type"));
+    setIsAdmin(localStorage.getItem("isAdmin"));
   }, []);
 
   useEffect(() => {
     let isMounted = true;
-    if (type == "admin") return;
+    if (isAdmin) return;
     async function fetchData() {
       axios
         .get(
@@ -48,6 +48,14 @@ export default function FilterRec() {
     };
   }, []);
 
+  if (isAdmin == true) {
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Only users can filter recommendations!
+      </div>
+    );
+  }
+
   if (error) return <div>Error</div>;
 
   if (reccs == []) return <div>Loading...</div>;
@@ -55,15 +63,9 @@ export default function FilterRec() {
   return (
     <>
       {reccs == null ? (
-        type == "admin" ? (
-          <div className="secondary" id={styles.noReccs}>
-            Admins, are not allowed to use this setting!
-          </div>
-        ) : (
-          <div className="secondary" id={styles.noReccs}>
-            Be the first to recommend a book!
-          </div>
-        )
+        <div className="secondary" id={styles.noReccs}>
+          Be the first to recommend a book from a genre that you like!
+        </div>
       ) : (
         <ul>
           {reccs.map((recc) => {
