@@ -1,68 +1,117 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar.jsx"; // Adjust the path if needed
-import Header from "../components/Header.jsx";
+import Header from "../components/Header.jsx"; 
 
 function Browse() {
-  // State to handle which button is clicked
-  const [clickedButton, setClickedButton] = useState(null);
+  // fetch the list of books from the backend and their attributes
 
-  // Button styles with click logic
-  const buttonStyle = (buttonId) => ({
-    width: "600px",
-    height: "70px",
-    padding: "20px",
-    backgroundColor: clickedButton === buttonId ? "#dcd0e2" : "#eeeaf4", // Change color if clicked
-    marginBottom: "50px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease", 
-  });
+  const [books, setBooks] = useState ([])
 
-  return (
-    <div>
-      <Header />
-      <div>
-        <SearchBar />
-      </div>
+  useEffect(()=>{
+    const fetchAllBooks = async()=>{
+      try{
+        const results = await fetch("http://localhost:8800/books");
+        const data = await results.json(); 
+        setBooks(data);       
+      }
+      catch(error){
+        console.error("Error fetching books:", error); 
+      }
+    };
 
-      {/* New Section with Text and Buttons */}
-      <br />
-      <div style={{ marginLeft: "30px" }}>
-        <p>Not sure what to search ... click an item below!</p>
-        <br />
-        <br />
-        <div className="button-group">
-          {/* Button 1 */}
-          <button
-            style={buttonStyle(1)} 
-            onClick={() => setClickedButton(1)} 
-          >
-            <p>Title: A Brief History of Time <br /> Author: Stephen Hawking</p>
-          </button>
+    fetchAllBooks(); 
 
-          <br />
+  }, []); 
 
-          {/* Button 2 */}
-          <button
-            style={buttonStyle(2)} // Pass unique button ID for differentiation
-            onClick={() => setClickedButton(2)} // Set the clicked button
-          >
-            Title: The Lord of the Rings<br /> Author: J.R.R. Tolkien
-          </button>
+  
+  
 
-          <br />
+return (
 
-          {/* Button 3 */}
-          <button
-            style={buttonStyle(3)} // Pass unique button ID for differentiation
-            onClick={() => setClickedButton(3)} // Set the clicked button
-          >
-            Title: Dune <br /> Author: Frank Herbert
-          </button>
-        </div>
-      </div>
+  <div>
+    <Header/>
+    <h1 style={styles.h2}>Browse Books</h1>
+
+    <div style={styles.searchBarContainer}> 
+    <SearchBar style={styles.SearchBar} />
     </div>
-  );
+
+
+    <div>
+      <p style={styles.p}>Not sure what to search? Choose a book below!</p>
+    </div>
+
+    <div style={styles.button_container}>
+    <br></br>
+    {books.map((book) => (
+    
+    <div key={book.ISBN}>
+      <a href="/book/:${{book.ISBN}}" style={styles.signupLink}>
+      <button style={styles.button}>
+        Title: {book.Title} 
+        <br />
+
+      </button>
+      </a>
+    </div>
+
+
+    ))}
+    </div>
+
+
+  </div>
+
+); 
+
+
 }
+
+const styles = {
+  h2: {
+    textAlign: "center", // Correct alignment for text
+    fontFamily: "Arial, sans-serif",
+  },
+
+  searchBarContainer: {
+    display: "flex",         // Enable flexbox
+    justifyContent: "center", // Horizontally center
+    alignItems: "center",     // Vertically center (if needed)
+    marginTop: "20px",       // Optional: Add spacing between header and search bar
+  },
+
+  p:{
+    textAlign:"center",
+    marginTop: "10px", 
+  }, 
+
+
+
+  button: {
+    padding: "15px 30px",      // Adjust padding for a larger button
+    fontSize: "15px",          // Make the text larger
+    backgroundColor: "#9c6644", // Green background (you can change this)
+    color: "balck",            // White text color
+    border: "none",            // Remove default border
+    borderRadius: "5px",       // Rounded corners
+    cursor: "pointer",         // Pointer cursor on hover
+    width: "200px",            // Fixed width (optional)
+    textAlign: "center",       // Center the text inside the button
+    marginBottom: "40px",       // Add space between buttons
+  },
+
+  button_container: {
+    display: "flex",              // Use flexbox
+    justifyContent: "center",     // Center buttons horizontally
+    alignItems: "center",         // Center buttons vertically
+    MinHeight: "100vh",           // Make the container take the full height of the viewport
+    MinWidth: "100vh", 
+    flexDirection: "column",      // Stack buttons vertically (optional)
+  },
+  
+};
+
+
 
 export default Browse;
 

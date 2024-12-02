@@ -8,17 +8,16 @@ import UserSettings from "./views/UserSettings";
 import Browse from "./views/Browse";
 import Book from "./views/Book";
 
-
 //change names of ADD AND UPSIGN!!
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-      <Route path="book/:isbn" element={<Book></Book>}></Route>
-        <Route path="settings" element={<UserSettings/>}></Route>
-        <Route path="signup" element={<UpSign/>}></Route>
-        <Route path="add-book" element={<BookAdd/>}></Route>
-        <Route path="browse" element={<Browse/>}></Route>
+        <Route path="book/:isbn" element={<Book></Book>}></Route>
+        <Route path="settings" element={<UserSettings />}></Route>
+        <Route path="signup" element={<UpSign />}></Route>
+        <Route path="add-book" element={<BookAdd />}></Route>
+        <Route path="browse" element={<Browse />}></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>
@@ -26,7 +25,7 @@ createRoot(document.getElementById("root")).render(
 
 /** <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Login/>}></Route>
+     
       <Route path="settings" element={<UserSettings/>}></Route>
       <Route path="signup" element={<SignUp/>}></Route>
       <Route path="browse" element={<Browse/>}></Route>
