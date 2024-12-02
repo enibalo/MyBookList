@@ -5,7 +5,15 @@ import  MenuIcon from "../assets/Menu.svg";
 import  SearchIcon  from "../assets/Magnifying-Glass.svg";
 
 function SearchBar() {
+  const [searchQuery, setSearchQuery] = useState(""); // State for the input text
 
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value); // Update search query as user types
+  };
+
+  const handleSearchClick = () => {
+    onSearch(searchQuery); // Pass the search query to the parent
+  };
 
   return (
     <div className={styles["header-container"]}>
@@ -25,9 +33,11 @@ function SearchBar() {
           type="text"
           className={styles["search-input"]}
           placeholder="Hinted search text"
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={handleSearchInputChange}
         />
-        <button className={styles["search-icon"]} aria-label ="Search Button"> 
+        <button className={styles["search-icon"]} 
+                          aria-label ="Search Button"
+                          onClick={handleSearchClick}> 
         <img
                   alt="Search Icon"
                   aria-label="User Pressed Search"
