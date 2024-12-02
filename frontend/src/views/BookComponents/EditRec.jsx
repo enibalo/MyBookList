@@ -9,13 +9,17 @@ import axios from "axios";
 import Alert from "./Alert.jsx";
 
 export default function EditRec() {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("currentUsername"));
+  }, []);
+
   let { isbn } = useParams();
   let [reccs, setReccs] = useState([]);
   let [error, setError] = useState(false);
 
   const [alert, setAlert] = useState({ type: "", message: "" });
-
-  let username = "novelguy";
 
   useEffect(() => {
     let isMounted = true;
@@ -63,6 +67,7 @@ export default function EditRec() {
             isbn={isbn}
             recc={recc}
             setAlert={setAlert}
+            username={username}
           ></EditForm>
         );
       })}
@@ -70,7 +75,7 @@ export default function EditRec() {
   );
 }
 
-function EditForm({ isbn, recc, setAlert }) {
+function EditForm({ isbn, recc, setAlert, username }) {
   const methods = useForm({
     defaultValues: {
       comment: recc.Comment,
@@ -82,7 +87,6 @@ function EditForm({ isbn, recc, setAlert }) {
   const onSubmit = (data) => {
     console.log(data);
     async function sendData() {
-      let username = "novelguy";
       axios
         .put(
           "http://localhost:8800/users/" +
@@ -162,6 +166,7 @@ function EditForm({ isbn, recc, setAlert }) {
 
 EditForm.propTypes = {
   isbn: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
   setAlert: PropTypes.func.isRequired,
   recc: PropTypes.shape({
     Recommended_isbn: PropTypes.string.isRequired,

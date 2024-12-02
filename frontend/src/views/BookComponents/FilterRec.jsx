@@ -10,23 +10,36 @@ export default function FilterRec() {
   let [reccs, setReccs] = useState(null);
   let [error, setError] = useState(false);
 
-  let username = "novelguy";
+  const [username, setUsername] = useState("");
+  const [type, setType] = useState("");
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("currentUsername"));
+    setType(localStorage.getItem("type"));
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
+    if (type == "admin") return;
     async function fetchData() {
-      axios.get("http://localhost:8800/book/" + isbn + "/recommendation?filter=true&username=" + username)
-      .then((result)=>{
-        if (isMounted) {
-          console.log(result.data);
-          if (result.data.length == 0 ) setReccs(null);
-          else setReccs(result.data);
-        }
-      })
-      .catch((error)=>{
-        console.log(error);
-        setError(true);
-      });
+      axios
+        .get(
+          "http://localhost:8800/book/" +
+            isbn +
+            "/recommendation?filter=true&username=" +
+            username
+        )
+        .then((result) => {
+          if (isMounted) {
+            console.log(result.data);
+            if (result.data.length == 0) setReccs(null);
+            else setReccs(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        });
     }
     fetchData();
 
@@ -42,9 +55,15 @@ export default function FilterRec() {
   return (
     <>
       {reccs == null ? (
-        <div className="secondary" id={styles.noReccs}>
-          Be the first to recommend a book!
-        </div>
+        type == "admin" ? (
+          <div className="secondary" id={styles.noReccs}>
+            Admins, are not allowed to use this setting!
+          </div>
+        ) : (
+          <div className="secondary" id={styles.noReccs}>
+            Be the first to recommend a book!
+          </div>
+        )
       ) : (
         <ul>
           {reccs.map((recc) => {
@@ -60,6 +79,3 @@ export default function FilterRec() {
     </>
   );
 }
-
-
-

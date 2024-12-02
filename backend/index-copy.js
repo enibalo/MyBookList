@@ -457,6 +457,11 @@ function updateRecommendation(res, value, primaryKey, tags, tagsOnly) {
 }
 
 //getAllInfoRecc and //getallinfoLikeRecc.
+/**
+ * isbn - string
+ * filter - string
+ * username - string
+ */
 app.get("/book/:isbn/recommendation", (req, res) => {
   const isbn = req.params.isbn;
   const filter = req.query.filter;
@@ -471,6 +476,10 @@ app.get("/book/:isbn/recommendation", (req, res) => {
 });
 
 //getUserPostsForAbook for edit reccomendations
+/**
+ * username - string
+ * isbn - string
+ */
 app.get("/users/:user/book/:isbn/recommendation", (req, res) => {
   const username = req.params.user;
   const isbn = req.params.isbn;
@@ -478,6 +487,10 @@ app.get("/users/:user/book/:isbn/recommendation", (req, res) => {
 });
 
 //getInfoBook or get Book and author
+/**
+ * isbn - string
+ * short - string
+ */
 app.get("/book/:isbn", (req, res) => {
   const isbn = req.params.isbn;
   const short_response = req.query.short;
@@ -489,11 +502,13 @@ app.get("/book/:isbn", (req, res) => {
 });
 
 //testing123
+//nothing
 app.get("/books", (req, res) => {
   all(res);
 });
 
 // get all tags,
+//nothing
 app.get("/tag", (req, res) => {
   getTags(res, "Tag", ["Name"]);
 });
@@ -504,6 +519,13 @@ app.get("/", (req, res) => {
 });
 
 //upvote/downvote
+/**
+ * username -- string
+ * isbn -- string
+ * reccisbn -- string
+ * value -- number
+ *
+ */
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/upvote",
   (req, res) => {
@@ -515,6 +537,13 @@ app.put(
   }
 );
 
+/**
+ * username -- string
+ * isbn -- string
+ * reccisbn -- string
+ * value -- number
+ *
+ */
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/downvote",
   (req, res) => {
@@ -531,6 +560,13 @@ app.put(
 );
 
 //editRecc - update user's post
+/**
+ * username -- string
+ * isbn -- string
+ * reccisbn -- string
+ * comment --string
+ * tags -- list of strings
+ */
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn",
   (req, res, next) => {
@@ -547,7 +583,13 @@ app.put(
   }
 );
 
-//addRecommendation
+/**
+ * username -- string
+ * isbn -- string
+ * reccisbn -- string
+ * comment --string
+ * tags -- list of strings
+ */
 app.post("/users/:user/book/:isbn/recommendation/:reccIsbn", (req, res) => {
   const reccValues = [
     req.params.user,

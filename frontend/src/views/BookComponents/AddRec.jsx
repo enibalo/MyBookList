@@ -20,6 +20,14 @@ export default function AddRec() {
   const [error, setError] = useState(false);
   const [alert, setAlert] = useState({ type: "", message: "" });
 
+  const [username, setUsername] = useState("");
+  const [type, setType] = useState("");
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("currentUsername"));
+    setType(localStorage.getItem("type"));
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
@@ -45,7 +53,6 @@ export default function AddRec() {
   const onSubmit = (data) => {
     console.log(data);
     async function sendData() {
-      let username = "pagelover";
       let temp_isbn = "9780553103540";
       axios
         .post(

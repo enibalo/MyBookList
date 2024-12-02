@@ -5,11 +5,25 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 require("dotenv").config({ path: "./.env" });
-const { query, validationResult } = require("express-validator");
+const {
+  check,
+  param,
+  query,
+  body,
+  validationResult,
+} = require("express-validator");
 
 const app = express();
 app.use(express.json());
 app.use(cors()); // Allow Vite frontend
+
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -789,36 +803,72 @@ function updateRecommendation(res, value, primaryKey, tags, tagsOnly) {
 }
 
 //getAllInfoRecc and //getallinfoLikeRecc.
-app.get("/book/:isbn/recommendation", (req, res) => {
-  const isbn = req.params.isbn;
-  const filter = req.query.filter;
-  const username = req.query.username;
-  if (filter == "true") {
-    if (username == undefined)
-      return res.status(400).send("Invalid request, username is missing.");
-    else getAllLikeInfoRecommendation(res, isbn, username);
-  } else {
-    getAllInfoRecommendation(res, isbn);
+app.get(
+  "/book/:isbn/recommendation",
+  [
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    query("filter")
+      .optional()
+      .isBoolean()
+      .withMessage("Filter must be a boolean"),
+    query("username")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Invalid username"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const isbn = req.params.isbn;
+    const filter = req.query.filter;
+    const username = req.query.username;
+    if (filter == "true") {
+      if (username == undefined)
+        return res.status(400).send("Invalid request, username is missing.");
+      else getAllLikeInfoRecommendation(res, isbn, username);
+    } else {
+      getAllInfoRecommendation(res, isbn);
+    }
   }
-});
+);
 
 //getUserPostsForAbook for edit reccomendations
-app.get("/users/:user/book/:isbn/recommendation", (req, res) => {
-  const username = req.params.user;
-  const isbn = req.params.isbn;
-  getUsernameRecommendations(res, isbn, username);
-});
+app.get(
+  "/users/:user/book/:isbn/recommendation",
+  [
+    param("user").isString().trim().escape().withMessage("Invalid username"),
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const username = req.params.user;
+    const isbn = req.params.isbn;
+    getUsernameRecommendations(res, isbn, username);
+  }
+);
 
 //getInfoBook or get Book and author
-app.get("/book/:isbn", (req, res) => {
-  const isbn = req.params.isbn;
-  const short_response = req.query.short;
-  if (short_response == "true") {
-    getBookAndAuthor(res, isbn);
-  } else {
-    getInfoBook(res, isbn);
+app.get(
+  "/book/:isbn",
+  [
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    query("short")
+      .optional()
+      .isBoolean()
+      .withMessage("Short must be a boolean"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const isbn = req.params.isbn;
+    const short_response = req.query.short;
+    if (short_response == "true") {
+      getBookAndAuthor(res, isbn);
+    } else {
+      getInfoBook(res, isbn);
+    }
   }
-});
+);
 
 //testing123
 app.get("/books", (req, res) => {
@@ -838,6 +888,13 @@ app.get("/", (req, res) => {
 //upvote/downvote
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/upvote",
+  [
+    param("user").isString().trim().escape().withMessage("Invalid username"),
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    body("upvote").isInt().withMessage("Upvote must be an integer"),
+    handleValidationErrors,
+  ],
   (req, res) => {
     const user = { Username: req.params.user };
     const isbn = { Book_isbn: req.params.isbn };
@@ -849,6 +906,13 @@ app.put(
 
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/downvote",
+  [
+    param("user").isString().trim().escape().withMessage("Invalid username"),
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    body("downvote").isInt().withMessage("Downvote must be an integer"),
+    handleValidationErrors,
+  ],
   (req, res) => {
     const user = { Username: req.params.user };
     const isbn = { Book_isbn: req.params.isbn };
@@ -865,6 +929,19 @@ app.put(
 //editRecc - update user's post
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn",
+  [
+    param("user").isString().trim().escape().withMessage("Invalid username"),
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    body("comment").isString().trim().escape().withMessage("Invalid comment"),
+    body("tags").isArray().withMessage("Tags must be an array of strings"),
+    body("tags.*")
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Each tag must be a string"),
+    handleValidationErrors,
+  ],
   (req, res, next) => {
     const user = { Username: req.params.user };
     const isbn = { Book_isbn: req.params.isbn };
@@ -880,26 +957,42 @@ app.put(
 );
 
 //addRecommendation
-app.post("/users/:user/book/:isbn/recommendation/:reccIsbn", (req, res) => {
-  const reccValues = [
-    req.params.user,
-    req.params.isbn,
-    req.params.reccIsbn,
-    req.body.comment,
-    0,
-    0,
-  ];
-  const tags = req.body.tags.map((tag) => {
-    return [tag, req.params.user, req.params.isbn, req.params.reccIsbn];
-  });
-  addRecommendation(res, reccValues, tags);
-});
+app.post(
+  "/users/:user/book/:isbn/recommendation/:reccIsbn",
+  [
+    param("user").isString().trim().escape().withMessage("Invalid username"),
+    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    body("comment").isString().trim().escape().withMessage("Invalid comment"),
+    body("tags").isArray().withMessage("Tags must be an array of strings"),
+    body("tags.*")
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Each tag must be a string"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const reccValues = [
+      req.params.user,
+      req.params.isbn,
+      req.params.reccIsbn,
+      req.body.comment,
+      0,
+      0,
+    ];
+    const tags = req.body.tags.map((tag) => {
+      return [tag, req.params.user, req.params.isbn, req.params.reccIsbn];
+    });
+    addRecommendation(res, reccValues, tags);
+  }
+);
 
 app.post("/login", (req, res) => {
   console.log("hi");
   const { username, password } = req.body;
 
-  req.session.username = username;
+  //req.session.username = username;
   console.log(username);
   console.log(password);
 
@@ -921,7 +1014,6 @@ app.post("/login", (req, res) => {
 
     if (adminResults > 0) {
       const admin = adminResults[0];
-
       if (admin.Username == username && admin.Password == password) {
         return res.status(200).json({
           message: "Admin login successful",
@@ -962,9 +1054,11 @@ app.post("/login", (req, res) => {
     if (user.Password == password && user.Username == username) {
       // Successful login message
 
-      return res
-        .status(200)
-        .json({ message: "Login successful", username: user.Username });
+      return res.status(200).json({
+        message: "Login successful",
+        username: user.Username,
+        role: "user",
+      });
     } else {
       // Incorrect password
       return res.status(400).json({ error: "Invalid username or password." });
