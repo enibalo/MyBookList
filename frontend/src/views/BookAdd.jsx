@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 const BookAdd = () => {
   const [formData, setFormData] = useState({
     ISBN: "",
@@ -24,8 +23,6 @@ const BookAdd = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-
-  
   const handleGenreToggle = (genre) => {
     setFormData((prev) => ({
       ...prev,
@@ -37,7 +34,7 @@ const BookAdd = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const payload = {
       ISBN: formData.ISBN,
       Title: formData.Title,
@@ -55,14 +52,14 @@ const BookAdd = () => {
       adminUsername: formData.adminUsername,
       Genres: formData.Genres,
     };
-  
+
     try {
-      const response = await fetch("http://localhost:5000/BookAdd", {
+      const response = await fetch("http://localhost:8800/BookAdd", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-  
+
       if (response.ok) {
         alert("Book added successfully!");
       } else {
@@ -74,7 +71,6 @@ const BookAdd = () => {
       alert("An error occurred while submitting the form.");
     }
   };
-  
 
   return (
     <div style={styles.body}>
@@ -82,8 +78,8 @@ const BookAdd = () => {
       <h2>Add A Book</h2>
       <div style={styles.formContainer}>
         <form onSubmit={handleSubmit}>
-         {/* Favorite Toggle */}
-         <div style={{ position: "relative", cursor: "pointer" }}>
+          {/* Favorite Toggle */}
+          <div style={{ position: "relative", cursor: "pointer" }}>
             {/* Hidden checkbox for accessibility */}
             <input
               type="checkbox"
@@ -127,17 +123,16 @@ const BookAdd = () => {
             </label>
           </div>
 
-            <input
-                type="text"
-                name="adminUsername"
-                placeholder="Your Username"
-                value={formData.adminUsername}
-                onChange={handleChange}
-                required
-                style={styles.input}
-            />
+          <input
+            type="text"
+            name="adminUsername"
+            placeholder="Your Username"
+            value={formData.adminUsername}
+            onChange={handleChange}
+            required
+            style={styles.input}
+          />
 
-    
           <input
             type="text"
             name="ISBN"
@@ -164,51 +159,52 @@ const BookAdd = () => {
               placeholder="Series Name (if applicable)"
               value={formData.SeriesName} // Ensure this binds to the correct state
               onChange={handleChange}
-             // required
+              // required
               style={styles.input}
             />
             <select
-                name="BookOrder"
-               // required
-                style={styles.input}
-                value={formData.BookOrder} // Ensure this binds to the correct state
-                onChange={handleChange} // This should update formData.BookOrder
-              >
-                <option value="">Select Book Order</option>
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((order) => (
-                  <option key={order} value={order}>
-                    {order}
-                  </option>
-                ))}
-              </select>
-
+              name="BookOrder"
+              // required
+              style={styles.input}
+              value={formData.BookOrder} // Ensure this binds to the correct state
+              onChange={handleChange} // This should update formData.BookOrder
+            >
+              <option value="">Select Book Order</option>
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((order) => (
+                <option key={order} value={order}>
+                  {order}
+                </option>
+              ))}
+            </select>
           </div>
-            
+
           {/* Add New Section, here is hinted search if author already exists in database do an error */}
           <div style={styles.genreSection}>
-          <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Add Author </h3>
-          <div style={styles.sideBySide}>
-            <input
-              type="text"
-              name="Fname"
-              placeholder="First Name"
-              value={formData.Fname || ""}
-              onChange={handleChange}
-              required
-              style={styles.input}
-           />
-             <input
-              type="text"
-              name="Lname"
-              placeholder="Last Name"
-              value={formData.Lname || ""}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-          </div>
+            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
+              Add Author{" "}
+            </h3>
+            <div style={styles.sideBySide}>
+              <input
+                type="text"
+                name="Fname"
+                placeholder="First Name"
+                value={formData.Fname || ""}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="Lname"
+                placeholder="Last Name"
+                value={formData.Lname || ""}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+            </div>
 
-          <input
+            <input
               type="date"
               name="DOB"
               placeholder="Date of Birth"
@@ -217,9 +213,11 @@ const BookAdd = () => {
               //required
               style={styles.input}
             />
-            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Add Publisher </h3>
+            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
+              Add Publisher{" "}
+            </h3>
             <div style={styles.sideBySide}>
-            <input
+              <input
                 type="text"
                 name="Publisher" // Ensure this matches the formData key
                 placeholder="Publisher"
@@ -240,15 +238,14 @@ const BookAdd = () => {
               />
             </div>
             <input
-                type="text"
-                name="Email"
-                placeholder="Email"
-                value={formData.Email} // Ensure this binds to the correct state
-                onChange={handleChange}
-                //required
-                style={styles.input}
-              />
-
+              type="text"
+              name="Email"
+              placeholder="Email"
+              value={formData.Email} // Ensure this binds to the correct state
+              onChange={handleChange}
+              //required
+              style={styles.input}
+            />
           </div>
 
           <input
@@ -261,7 +258,15 @@ const BookAdd = () => {
           <div style={styles.genreSection}>
             <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Fiction</h3>
             <div style={styles.toggleGroup}>
-              {["Space Opera", "Mystery", "Fantasy", "Historical Romance", "Sci-fi", "Thriller", "Horror"].map((genre) => (
+              {[
+                "Space Opera",
+                "Mystery",
+                "Fantasy",
+                "Historical Romance",
+                "Sci-fi",
+                "Thriller",
+                "Horror",
+              ].map((genre) => (
                 <div key={genre} style={styles.toggle}>
                   <input
                     type="checkbox"
@@ -276,7 +281,9 @@ const BookAdd = () => {
                     htmlFor={genre.toLowerCase()}
                     style={{
                       ...styles.label,
-                      backgroundColor: formData.Genres.includes(genre) ? "#2c2c2c" : "#ddd",
+                      backgroundColor: formData.Genres.includes(genre)
+                        ? "#2c2c2c"
+                        : "#ddd",
                       color: formData.Genres.includes(genre) ? "#fff" : "#000",
                     }}
                   >
@@ -285,38 +292,44 @@ const BookAdd = () => {
                 </div>
               ))}
             </div>
-        </div>
+          </div>
 
-
-<div style={styles.genreSection}>
-  <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Non-Fiction</h3>
-  <div style={styles.toggleGroup}>
-    {["History", "Biography", "Self-Help","Popular Science"].map((genre) => (
-      <div key={genre} style={styles.toggle}>
-        <input
-          type="checkbox"
-          id={genre.toLowerCase()}
-          name="genre[]"
-          value={genre.toLowerCase()}
-          onChange={() => handleGenreToggle(genre)}
-          checked={formData.Genres.includes(genre)} // Pre-check based on state
-          style={styles.checkbox}
-        />
-        <label
-          htmlFor={genre.toLowerCase()}
-          style={{
-            ...styles.label,
-            backgroundColor: formData.Genres.includes(genre) ? "#2c2c2c" : "#ddd", // Dynamic color
-            color: formData.Genres.includes(genre) ? "#fff" : "#000", // Dynamic text color
-          }}
-        >
-          {genre}
-        </label>
-      </div>
-    ))}
-  </div>
-</div>
-
+          <div style={styles.genreSection}>
+            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
+              Non-Fiction
+            </h3>
+            <div style={styles.toggleGroup}>
+              {["History", "Biography", "Self-Help", "Popular Science"].map(
+                (genre) => (
+                  <div key={genre} style={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      id={genre.toLowerCase()}
+                      name="genre[]"
+                      value={genre.toLowerCase()}
+                      onChange={() => handleGenreToggle(genre)}
+                      checked={formData.Genres.includes(genre)} // Pre-check based on state
+                      style={styles.checkbox}
+                    />
+                    <label
+                      htmlFor={genre.toLowerCase()}
+                      style={{
+                        ...styles.label,
+                        backgroundColor: formData.Genres.includes(genre)
+                          ? "#2c2c2c"
+                          : "#ddd", // Dynamic color
+                        color: formData.Genres.includes(genre)
+                          ? "#fff"
+                          : "#000", // Dynamic text color
+                      }}
+                    >
+                      {genre}
+                    </label>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
 
           {/* Additional Inputs */}
           <input
@@ -325,7 +338,7 @@ const BookAdd = () => {
             placeholder="Purchase Link"
             value={formData.PurchaseLink}
             onChange={handleChange}
-           // required
+            // required
             style={styles.input}
           />
           <button type="submit" style={styles.button}>
@@ -336,7 +349,6 @@ const BookAdd = () => {
     </div>
   );
 };
-
 
 const styles = {
   body: {
@@ -361,15 +373,15 @@ const styles = {
     width: "calc(100% - 20px)",
     marginBottom: "20px",
     padding: "12px",
-    border: "1px solid #cccccc", 
+    border: "1px solid #cccccc",
     borderRadius: "4px",
     fontSize: "14px",
-    backgroundColor: "#f9f9f9", 
+    backgroundColor: "#f9f9f9",
   },
   button: {
     width: "100%",
     padding: "15px",
-    backgroundColor: "#7F5539", 
+    backgroundColor: "#7F5539",
     color: "#ffffff",
     border: "none",
     borderRadius: "4px",
@@ -413,6 +425,5 @@ const styles = {
     marginBottom: "20px",
   },
 };
-
 
 export default BookAdd;

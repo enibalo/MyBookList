@@ -25,7 +25,7 @@ const UserSettings = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/settings", {
+      const response = await fetch("http://localhost:8800/settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,10 +49,9 @@ const UserSettings = () => {
     <div style={styles.body}>
       <h1 style={styles.h1}>Hello, {formData.Username}</h1>
       <div style={styles.settingsContainer}>
-        
         {/* Change Password Section */}
         <div style={styles.formSection}>
-        {/* <h2 style={styles.h2}>Settings</h2>
+          {/* <h2 style={styles.h2}>Settings</h2>
           <Link to="/addBook" style={styles.button}>
             Go to Add Book
           </Link>
@@ -120,7 +119,6 @@ const UserSettings = () => {
 
 const styles = {
   body: {
-    fontFamily: "Arial, sans-serif",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

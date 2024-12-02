@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const SignUp = () => {
   /*const handleSubmit = (event) => {
@@ -7,7 +7,7 @@ const SignUp = () => {
   };*/
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const formData = new FormData(event.target);
     const data = {
       username: formData.get("username"),
@@ -15,14 +15,14 @@ const SignUp = () => {
       book_title: formData.get("book_title"),
       recommendation: formData.get("recommendation"),
     };
-  
+
     try {
-      const response = await fetch("http://localhost:5000/submit", {
+      const response = await fetch("http://localhost:8800/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-  
+
       if (response.ok) {
         alert("Form submitted successfully!");
       } else {
@@ -34,7 +34,6 @@ const SignUp = () => {
       alert("An error occurred while submitting the form.");
     }
   };
-  
 
   return (
     <div style={styles.body}>
@@ -87,45 +86,45 @@ const SignUp = () => {
 
 const styles = {
   body: {
-    fontFamily: 'Arial, sans-serif',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
+    fontFamily: "Arial, sans-serif",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "100vh",
     margin: 0,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: "#f7f7f7",
   },
   h1: {
-    marginBottom: '20px',
+    marginBottom: "20px",
   },
   formContainer: {
-    backgroundColor: '#fff',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    maxWidth: '400px',
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+    width: "100%",
+    maxWidth: "400px",
   },
   input: {
-    width: 'calc(100% - 20px)',
-    marginBottom: '15px',
-    padding: '10px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontSize: '14px',
+    width: "calc(100% - 20px)",
+    marginBottom: "15px",
+    padding: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    fontSize: "14px",
   },
   link: {
-    display: 'block',
-    marginTop: '15px',
-    padding: '10px',
-    backgroundColor: '#333',
-    color: '#fff',
-    textAlign: 'center',
-    borderRadius: '4px',
-    textDecoration: 'none',
-    fontSize: '16px',
-    cursor: 'pointer',
+    display: "block",
+    marginTop: "15px",
+    padding: "10px",
+    backgroundColor: "#333",
+    color: "#fff",
+    textAlign: "center",
+    borderRadius: "4px",
+    textDecoration: "none",
+    fontSize: "16px",
+    cursor: "pointer",
   },
 };
 
