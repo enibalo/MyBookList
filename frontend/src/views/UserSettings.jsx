@@ -1,12 +1,85 @@
 import Header from "../components/Header";
-import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Import Link for navigation
+
+
 
 const UserSettings = () => {
+  const [username, setUsername] = useState(""); // Separate state for username
+  const [availableGenres, setAvailableGenres] = useState([]); // Store genres from backend
+
   const [formData, setFormData] = useState({
     Genres: [],
-    Username: "novelguy", // Replace with dynamic username 
+    //Username: "novelguy", // Replace with dynamic username 
   });
+
+  const navigate = useNavigate(); // Initialize useNavigate for redirection
+
+  useEffect(() => {
+    // Fetch username dynamically from localStorage
+    const storedUsername = localStorage.getItem("username");
+    console.log("Stored username:", storedUsername); // Debugging
+    if (storedUsername) {
+      setUsername(storedUsername); // Update the username state dynamically
+    }
+  }, []);
+
+  /*
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const response = await fetch("http://localhost:8800/genres");
+        if (response.ok) {
+          const genres = await response.json();
+          setAvailableGenres(genres); // Update state with fetched genres
+        } else {
+          console.error("Failed to fetch genres:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
+  
+    fetchGenres();
+  }, []);
+  */
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        // Fetch all available genres
+        const genresResponse = await fetch("http://localhost:8800/genres");
+        if (genresResponse.ok) {
+          const genres = await genresResponse.json();
+          setAvailableGenres(genres); // Update state with fetched genres
+        } else {
+          console.error("Failed to fetch genres:", genresResponse.statusText);
+        }
+
+        // Fetch user's selected genres
+        if (username) {
+          const userGenresResponse = await fetch(`http://localhost:8800/user-genres/${username}`);
+          if (userGenresResponse.ok) {
+            const userGenres = await userGenresResponse.json();
+            setFormData((prev) => ({
+              ...prev,
+              Genres: userGenres, // Update state with user's selected genres
+            }));
+          } else {
+            console.error("Failed to fetch user genres:", userGenresResponse.statusText);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching genres or user genres:", error);
+      }
+    };
+
+    fetchGenres();
+  }, [username]); // Fetch genres only after username is set
+
+  const handleLogout = () => {
+    localStorage.removeItem("username"); // Remove username from localStorage
+    navigate("/"); // Redirect to login page
+  };
 
   const handleGenreToggle = (genre) => {
     setFormData((prev) => ({
@@ -21,7 +94,8 @@ const UserSettings = () => {
     event.preventDefault();
 
     const payload = {
-      username: formData.Username,
+      //username: formData.Username,
+      username,
       genres: formData.Genres,
     };
 
@@ -55,7 +129,7 @@ const UserSettings = () => {
     }
   
     const payload = {
-      username: formData.Username,
+      username,
       password: formData.Password,
     };
   
@@ -83,9 +157,10 @@ const UserSettings = () => {
 
   return (
     <div style={styles.body}>
-      <h1 style={styles.h1}>Hello, {formData.Username}</h1>
+    <h1 style={styles.h1}>{username ? `Hello, ${username}` : "Loading..."} </h1>
+   
       <div style={styles.settingsContainer}>
-        
+      
         {/* Change Password Section */}
         <div style={styles.formSection}>
         {/* <h2 style={styles.h2}>Settings</h2>
@@ -117,10 +192,38 @@ const UserSettings = () => {
             Submit
           </button>
         </form>
+        <button onClick={handleLogout} style={styles.logoutButton}>
+              Logout
+        </button>
         </div>
 
         {/* Select Genres Section */}
         <div style={styles.formSection}>
+  <h2 style={styles.h2}>Select Your Favorite Genres</h2>
+  <form onSubmit={handleSubmitGenres}>
+    <div style={styles.genres}>
+      {availableGenres.length > 0 ? (
+        availableGenres.map((genre) => (
+          <div
+            key={genre}
+            style={{
+              ...styles.genre,
+              ...(formData.Genres.includes(genre) // Check if genre is selected
+                ? styles.genreSelected
+                : {}),
+            }}
+            onClick={() => handleGenreToggle(genre)} // Toggle the genre
+          >
+            {genre}
+          </div>
+        ))
+      ) : (
+        <p>Loading genres...</p> // Display a loading message while genres are being fetched
+      )}
+    </div>
+
+        {/* Select Genres Section */}
+      {/* <div style={styles.formSection}>
           <h2 style={styles.h2}>Select Your Favorite Genres</h2>
           <form onSubmit={handleSubmitGenres}>
             <div style={styles.genres}>
@@ -149,7 +252,7 @@ const UserSettings = () => {
                   {genre}
                 </div>
               ))}
-            </div>
+            </div> */}
             <button type="submit" style={styles.button}>
               Submit
             </button>
@@ -213,6 +316,15 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     gap: "10px",
+  },
+  logoutButton: {
+    padding: "10px 20px",
+    backgroundColor: "#333",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "16px",
   },
   genre: {
     display: "inline-block",
