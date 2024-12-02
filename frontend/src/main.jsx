@@ -8,12 +8,14 @@ import UserSettings from "./views/UserSettings";
 import AddRec from "./views/BookComponents/AddRec";
 import Browse from "./views/Browse";
 import Book from "./views/Book";
+import Login from "./views/Login";
 
 //change names of ADD AND UPSIGN!!
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Login></Login>}></Route>
         <Route path="book/:isbn" element={<Book></Book>}></Route>
         <Route path="settings" element={<UserSettings />}></Route>
         <Route path="signup" element={<UpSign />}></Route>

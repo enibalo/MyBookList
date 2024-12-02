@@ -11,7 +11,7 @@ export default function AddRec() {
   const methods = useForm({
     defaultValues: {
       comment: ``,
-      recommended_isbn: "",
+      recommended_isbn: "pagelover",
     },
   });
 
@@ -45,7 +45,7 @@ export default function AddRec() {
   const onSubmit = (data) => {
     console.log(data);
     async function sendData() {
-      let username = "novelguy";
+      let username = "pagelover";
       let temp_isbn = "9780553103540";
       axios
         .post(
