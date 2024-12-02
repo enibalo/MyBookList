@@ -5,6 +5,7 @@ import "./styles/index.css";
 import UpSign from "./views/UpSign";
 import BookAdd from "./views/BookAdd";
 import UserSettings from "./views/UserSettings";
+import AddRec from "./views/BookComponents/AddRec";
 
 
 createRoot(document.getElementById("root")).render(
@@ -14,6 +15,8 @@ createRoot(document.getElementById("root")).render(
       <Route path="addBook" element={<BookAdd/>}></Route>
       <Route path="signup" element={<UpSign/>}></Route>
       <Route path="settings" element={<UserSettings/>}></Route>
+
+
 
 
       </Routes>

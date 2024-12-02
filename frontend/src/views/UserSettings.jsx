@@ -1,10 +1,11 @@
+import Header from "../components/Header";
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link for navigation
 
 const UserSettings = () => {
   const [formData, setFormData] = useState({
     Genres: [],
-    Username: "novelguy", // Replace with dynamic username if needed
+    Username: "novelguy", // Replace with dynamic username 
   });
 
   const handleGenreToggle = (genre) => {
@@ -25,7 +26,7 @@ const UserSettings = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/settings", {
+      const response = await fetch("http://localhost:8800/settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +60,7 @@ const UserSettings = () => {
     };
   
     try {
-      const response = await fetch("http://localhost:5000/settings", {
+      const response = await fetch("http://localhost:8800/settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

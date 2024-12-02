@@ -20,7 +20,7 @@ const UpSign = () => {
     }
 
     try {
-        const response = await fetch("http://localhost:5000/UpSign", {
+        const response = await fetch("http://localhost:8800/UpSign", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: data.username, password: data.password }),
@@ -62,20 +62,6 @@ const UpSign = () => {
             type="password"
             name="confirm_password"
             placeholder="Confirm Password"
-            required
-            style={styles.input}
-          />
-          <input
-            type="text"
-            name="book_title"
-            placeholder="Book Title"
-            required
-            style={styles.input}
-          />
-          <input
-            type="text"
-            name="recommendation"
-            placeholder="Recommendation"
             required
             style={styles.input}
           />
