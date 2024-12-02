@@ -69,6 +69,12 @@ const UpSign = () => {
             Submit
           </button>
         </form>
+        <p style={styles.loginPrompt}>
+          Already have an account?{' '}
+          <a href="/" style={styles.loginLink}>
+            Login here
+          </a>
+        </p>
       </div>
     </div>
   );
@@ -114,6 +120,16 @@ const styles = {
     borderRadius: '4px',
     textDecoration: 'none',
     fontSize: '16px',
+    cursor: 'pointer',
+  },
+  loginPrompt: {
+    marginTop: '30px', // Add more spacing above the login prompt
+    fontSize: '14px',
+    textAlign: 'center',
+  },
+  loginLink: {
+    color: '#7F5539',
+    textDecoration: 'underline',
     cursor: 'pointer',
   },
 };

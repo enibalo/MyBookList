@@ -32,6 +32,45 @@ const db = mysql.createConnection({
   database: "My_book_list",
 });
 
+app.get("/user-genres/:username", (req, res) => {
+  const { username } = req.params;
+  const query = `SELECT Genre_name FROM Likes WHERE Username = ?`;
+
+  db.query(query, [username], (err, results) => {
+    if (err) {
+      console.error("Error fetching user genres:", err);
+      return res.status(500).json({ message: "Database error." });
+    }
+    const userGenres = results.map((row) => row.Genre_name);
+    console.log("User genres fetched:", userGenres); // Log the fetched genres
+    res.json(userGenres);
+  });
+});
+
+app.get("/genres", (req, res) => {
+  const fetchGenresQuery = "SELECT Name FROM Genre";
+  db.query(fetchGenresQuery, (err, results) => {
+    if (err) {
+      console.error("Error fetching genres:", err.message);
+      return res.status(500).send("Failed to fetch genres.");
+    }
+    // Map results to a simple array of genre names
+    res.json(results.map((row) => row.Name));
+  });
+});
+
+app.get("/main-genres", (req, res) => {
+  const query = "SELECT Name, Main_genre FROM Genre";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching genres:", err.message);
+      return res.status(500).send("Failed to fetch genres.");
+    }
+
+    res.json(results); // Send all genres with their main genre
+  });
+});
+
 // API endpoint for form submission
 //add the thing to make sure passwordsMatch Lol
 app.post("/UpSign", (req, res) => {
@@ -82,7 +121,6 @@ app.post("/UpSign", (req, res) => {
     });
   });
 });
-
 app.post("/BookAdd", (req, res) => {
   const {
     ISBN,
@@ -295,6 +333,8 @@ app.post("/settings", (req, res) => {
     const updatePasswordQuery =
       "UPDATE User SET Password = ? WHERE Username = ?";
     db.query(updatePasswordQuery, [password, username], (err, result) => {
+      console.log("Username:", username);
+      console.log("Password:", password);
       if (err) {
         console.error("Error updating password:", err.message);
         return res.status(500).send("Failed to update password.");

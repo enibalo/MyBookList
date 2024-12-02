@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BookAdd = () => {
+  const [username, setUsername] = useState(""); // Separate state for username
   const [formData, setFormData] = useState({
     ISBN: "",
     Title: "",
@@ -12,11 +14,48 @@ const BookAdd = () => {
     PurchaseLink: "",
     Genres: [],
     isFavourite: false, // Track favorite status
-    adminUsername: "",
+    //adminUsername: "",
   });
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  //const [searchQuery, setSearchQuery] = useState("");
+  //const [searchResults, setSearchResults] = useState([]);
+
+  const [genres, setGenres] = useState([]); // Store all genres
+
+  const handleLogout = () => {
+    localStorage.removeItem("username"); // Remove username from localStorage
+    navigate("/"); // Redirect to login page
+  };
+
+  useEffect(() => {
+    // Fetch genres from the backend
+    const fetchGenres = async () => {
+      try {
+        const response = await fetch("http://localhost:8800/main-genres");
+        if (response.ok) {
+          const fetchedGenres = await response.json();
+          setGenres(fetchedGenres); // Update state with fetched genres
+        } else {
+          console.error("Failed to fetch genres:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
+
+    fetchGenres();
+  }, []);
+
+  const navigate = useNavigate(); // Initialize useNavigate for redirection
+
+  useEffect(() => {
+    // Fetch username dynamically from localStorage
+    const storedUsername = localStorage.getItem("username");
+    console.log("Stored username:", storedUsername); // Debugging
+    if (storedUsername) {
+      setUsername(storedUsername); // Update the username state dynamically
+    }
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -49,7 +88,8 @@ const BookAdd = () => {
       Description: formData.Description,
       PurchaseLink: formData.PurchaseLink,
       isFavourite: formData.isFavourite,
-      adminUsername: formData.adminUsername,
+      //adminUsername: formData.adminUsername,
+      adminUsername: username,
       Genres: formData.Genres,
     };
 
@@ -71,6 +111,10 @@ const BookAdd = () => {
       alert("An error occurred while submitting the form.");
     }
   };
+
+  // Filter genres based on Main_genre
+  const fictionGenres = genres.filter((g) => g.Main_genre === "Fiction");
+  const nonFictionGenres = genres.filter((g) => g.Main_genre === "Non-Fiction");
 
   return (
     <div style={styles.body}>
@@ -123,15 +167,15 @@ const BookAdd = () => {
             </label>
           </div>
 
-          <input
-            type="text"
-            name="adminUsername"
-            placeholder="Your Username"
-            value={formData.adminUsername}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
+          {/*<input
+                type="text"
+                name="adminUsername"
+                placeholder="Your Username"
+                value={formData.adminUsername}
+                onChange={handleChange}
+                required
+                style={styles.input}
+            />*/}
 
           <input
             type="text"
@@ -250,12 +294,81 @@ const BookAdd = () => {
 
           <input
             type="text"
-            name="description"
+            name="Description"
             placeholder="Book Description"
+            value={formData.Description}
+            onChange={handleChange}
             required
             style={styles.input}
           />
+
+          {/* Dynamic Genres Section */}
           <div style={styles.genreSection}>
+            <h3>Fiction</h3>
+            <div style={styles.toggleGroup}>
+              {fictionGenres.map((genre) => (
+                <div key={genre.Name} style={styles.toggle}>
+                  <input
+                    type="checkbox"
+                    id={genre.Name.toLowerCase()}
+                    name="genre[]"
+                    value={genre.Name}
+                    onChange={() => handleGenreToggle(genre.Name)}
+                    checked={formData.Genres.includes(genre.Name)}
+                    style={styles.checkbox}
+                  />
+                  <label
+                    htmlFor={genre.Name.toLowerCase()}
+                    style={{
+                      ...styles.label,
+                      backgroundColor: formData.Genres.includes(genre.Name)
+                        ? "#2c2c2c"
+                        : "#ddd",
+                      color: formData.Genres.includes(genre.Name)
+                        ? "#fff"
+                        : "#000",
+                    }}
+                  >
+                    {genre.Name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={styles.genreSection}>
+            <h3>Non-Fiction</h3>
+            <div style={styles.toggleGroup}>
+              {nonFictionGenres.map((genre) => (
+                <div key={genre.Name} style={styles.toggle}>
+                  <input
+                    type="checkbox"
+                    id={genre.Name.toLowerCase()}
+                    name="genre[]"
+                    value={genre.Name}
+                    onChange={() => handleGenreToggle(genre.Name)}
+                    checked={formData.Genres.includes(genre.Name)}
+                    style={styles.checkbox}
+                  />
+                  <label
+                    htmlFor={genre.Name.toLowerCase()}
+                    style={{
+                      ...styles.label,
+                      backgroundColor: formData.Genres.includes(genre.Name)
+                        ? "#2c2c2c"
+                        : "#ddd",
+                      color: formData.Genres.includes(genre.Name)
+                        ? "#fff"
+                        : "#000",
+                    }}
+                  >
+                    {genre.Name}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* <div style={styles.genreSection}>
             <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Fiction</h3>
             <div style={styles.toggleGroup}>
               {[
@@ -294,43 +407,35 @@ const BookAdd = () => {
             </div>
           </div>
 
-          <div style={styles.genreSection}>
-            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
-              Non-Fiction
-            </h3>
-            <div style={styles.toggleGroup}>
-              {["History", "Biography", "Self-Help", "Popular Science"].map(
-                (genre) => (
-                  <div key={genre} style={styles.toggle}>
-                    <input
-                      type="checkbox"
-                      id={genre.toLowerCase()}
-                      name="genre[]"
-                      value={genre.toLowerCase()}
-                      onChange={() => handleGenreToggle(genre)}
-                      checked={formData.Genres.includes(genre)} // Pre-check based on state
-                      style={styles.checkbox}
-                    />
-                    <label
-                      htmlFor={genre.toLowerCase()}
-                      style={{
-                        ...styles.label,
-                        backgroundColor: formData.Genres.includes(genre)
-                          ? "#2c2c2c"
-                          : "#ddd", // Dynamic color
-                        color: formData.Genres.includes(genre)
-                          ? "#fff"
-                          : "#000", // Dynamic text color
-                      }}
-                    >
-                      {genre}
-                    </label>
-                  </div>
-                )
-              )}
-            </div>
-          </div>
 
+<div style={styles.genreSection}>
+  <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Non-Fiction</h3>
+  <div style={styles.toggleGroup}>
+    {["History", "Biography", "Self-Help","Popular Science"].map((genre) => (
+      <div key={genre} style={styles.toggle}>
+        <input
+          type="checkbox"
+          id={genre.toLowerCase()}
+          name="genre[]"
+          value={genre.toLowerCase()}
+          onChange={() => handleGenreToggle(genre)}
+          checked={formData.Genres.includes(genre)} // Pre-check based on state
+          style={styles.checkbox}
+        />
+        <label
+          htmlFor={genre.toLowerCase()}
+          style={{
+            ...styles.label,
+            backgroundColor: formData.Genres.includes(genre) ? "#2c2c2c" : "#ddd", // Dynamic color
+            color: formData.Genres.includes(genre) ? "#fff" : "#000", // Dynamic text color
+          }}
+        >
+          {genre}
+        </label>
+      </div>
+    ))}
+  </div>
+</div> */}
           {/* Additional Inputs */}
           <input
             type="text"
@@ -345,6 +450,9 @@ const BookAdd = () => {
             Submit
           </button>
         </form>
+        <button onClick={handleLogout} style={styles.logoutButton}>
+          Logout
+        </button>
       </div>
     </div>
   );
@@ -369,6 +477,15 @@ const styles = {
     width: "80%",
     maxWidth: "800px",
   },
+  logoutButton: {
+    padding: "10px 20px",
+    backgroundColor: "#333",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
   input: {
     width: "calc(100% - 20px)",
     marginBottom: "20px",
@@ -389,6 +506,7 @@ const styles = {
     fontSize: "16px",
     textAlign: "center",
     fontWeight: "bold",
+    marginBottom: "20px",
   },
   toggleGroup: {
     display: "flex",

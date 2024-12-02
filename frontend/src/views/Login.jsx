@@ -14,7 +14,7 @@ function Login() {
     };
 
     try {
-      const response = await fetch("http://localhost:8800/login", {
+      const response = await fetch("http://localhost:8800/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,15 +22,13 @@ function Login() {
         body: JSON.stringify(log_in_data),
       });
 
-      const data = await response.json();
       if (response.ok) {
-        //const data = await response.json();
-        localStorage.setItem("currentUsername", data.username);
-        localStorage.setItem("type", data.role);
+        const data = await response.json();
+        // Save the username to localStorage
+        localStorage.setItem("username", log_in_data.username);
 
-        if (data.isAdmin) {
+        if (data.role === "admin") {
           // Redirect to admin page if admin
-
           window.location.href = "http://localhost:5173/addBook";
         }
         // Successful login
@@ -90,6 +88,7 @@ function Login() {
 
 const styles = {
   body: {
+    fontFamily: "Arial, sans-serif",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
