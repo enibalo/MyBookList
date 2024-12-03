@@ -1111,6 +1111,7 @@ app.get(
   }
 );
 
+//testing123
 app.get("/books", (req, res) => {
   all(res);
 });
@@ -1228,6 +1229,39 @@ app.post(
   }
 );
 
+app.post("/adminSettings", (req, res) => {
+  const { username, password } = req.body;
+
+  // Handle Change Password
+  if (password) {
+    if (!username || !password) {
+      return res
+        .status(400)
+        .send("Invalid data. Ensure username and password are provided.");
+    }
+
+    const updatePasswordQuery =
+      "UPDATE Admin SET Password = ? WHERE Username = ?";
+    db.query(updatePasswordQuery, [password, username], (err, result) => {
+      console.log("Username:", username);
+      console.log("Password:", password);
+      if (err) {
+        console.error("Error updating password:", err.message);
+        return res.status(500).send("Failed to update password.");
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).send("admin not found.");
+      }
+
+      console.log("Password updated successfully for username:", username);
+      res.send("Password updated successfully!");
+    });
+
+    return; // Exit after handling "Change Password"
+  }
+});
+
 app.post("/login", (req, res) => {
   console.log("hi");
   const { username, password } = req.body;
@@ -1296,26 +1330,6 @@ app.post("/login", (req, res) => {
     });
   });
 });
-
-// create a function to get the author name from its id
-function getAuthorById(req, res) {
-  const { authorId } = req.params; // Get the authorId from the request parameters
-
-  const query = "SELECT Fname, Lname FROM Author WHERE ID = ?";
-
-  db.query(query, [authorId], (err, data) => {
-    if (err) {
-      return res.json({ error: "Error fetching author details", details: err });
-    }
-    if (data.length > 0) {
-      return res.json(data[0]); // Return the first and last name
-    } else {
-      return res.status(404).json({ message: "Author not found" });
-    }
-  });
-}
-
-app.get("/author/:authorId", getAuthorById);
 
 // Start the server
 app.listen(8800, () => {

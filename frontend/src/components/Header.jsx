@@ -71,7 +71,7 @@ export function HeaderLinks({ username, isAdmin }) {
           </Link>
         </li>
         <li>
-          <Link className={styles.noDecor} to={"../settings"}>
+          <Link className={styles.noDecor} to={"../adminSettings"}>
             {" "}
             User
           </Link>
