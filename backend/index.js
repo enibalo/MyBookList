@@ -1315,6 +1315,37 @@ function getAuthorById(req, res) {
   });
 }
 
+app.get("/search/browse", (req, res) => {
+  const searchTerm = req.query.q; // The word the user typed in
+  const searchPattern = `%${searchTerm}%`; // For partial matches
+
+  const searchQuery = `
+    SELECT 
+      Book.ISBN, 
+      Book.Title, 
+      CONCAT(Author.Fname, ' ', Author.Lname) AS AuthorName 
+    FROM 
+      Book
+    LEFT JOIN 
+      Author 
+    ON 
+      Book.Author_id = Author.ID
+    WHERE 
+      Book.Title LIKE ? OR CONCAT(Author.Fname, ' ', Author.Lname) LIKE ?
+  `;
+
+  db.query(searchQuery, [searchPattern, searchPattern], (err, results) => {
+    if (err) {
+      console.error("Error executing search query:", err.message);
+      return res.status(500).send("Failed to fetch search results.");
+    }
+
+    res.json(results); // Send the results back to the frontend
+  });
+});
+
+
+
 app.get("/author/:authorId", getAuthorById);
 
 // Start the server
