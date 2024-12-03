@@ -3,7 +3,7 @@
   align-items: center;
   background-color: #ede0d4;
   border-radius: 10px;
-  width: 1000px;
+  width: 800px;
   height: 40px;
   padding: 10px;
   margin-top: 30px;
@@ -18,18 +18,19 @@
   width: 500px;
   outline: none;
   background: transparent;
-  font-size: 20px;
+  font-size: 15px;
   color: #0e0d0d;
   padding: 5px;
 }
 
 .search-input::placeholder {
   color: #aaa;
+  font-size: 15px;
 }
 
 .search-icon {
   background: none;
   border: none;
   cursor: pointer;
-  transform: translateX(400px);
+  transform: translateX(200px);
 }

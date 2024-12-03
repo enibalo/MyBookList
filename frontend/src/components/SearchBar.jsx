@@ -26,7 +26,7 @@ function SearchBar({ onSearch, onSearchSubmit, customStyle }) {
         <input
           type="text"
           className={styles["search-input"]}
-          placeholder="Hinted search text"
+          placeholder="Type a book or author name..."
           value={inputValue} // Bind input value to state
           onChange={handleInputChange} // Handle change
         />

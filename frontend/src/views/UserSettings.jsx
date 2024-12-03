@@ -278,7 +278,7 @@ const styles = {
     alignItems: "center",
     margin: 0,
     padding: "20px",
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#F3EAE0",
   },
   h1: {
     marginBottom: "30px",
@@ -290,7 +290,7 @@ const styles = {
     maxWidth: "800px",
   },
   formSection: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F8F4F2",
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
@@ -312,7 +312,7 @@ const styles = {
     marginBottom: "15px",
     width: "calc(100% - 20px)",
     padding: "10px",
-    backgroundColor: "#333",
+    backgroundColor: "#9c6644",
     color: "#fff",
     border: "none",
     cursor: "pointer",
@@ -326,12 +326,12 @@ const styles = {
   },
   logoutButton: {
     padding: "10px 20px",
-    backgroundColor: "#333",
     color: "#fff",
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
     fontSize: "16px",
+    backgroundColor: "#9c6644",
   },
   genre: {
     display: "inline-block",

@@ -124,6 +124,7 @@ const BookAdd = () => {
       <Header></Header>
       <div style={styles.body}>
         <h1>Hello, Admin</h1>
+        <br />
         <h2>Add A Book</h2>
         <div style={styles.formContainer}>
           <form onSubmit={handleSubmit}>
@@ -152,8 +153,8 @@ const BookAdd = () => {
               {/* SVG Star Icon */}
               <label htmlFor="isFavourite">
                 <svg
-                  width="48"
-                  height="48"
+                  width="40"
+                  height="40"
                   viewBox="0 0 48 48"
                   fill={formData.isFavourite ? "#FFEC40" : "none"} // Change fill dynamically
                   xmlns="http://www.w3.org/2000/svg"
@@ -465,6 +466,8 @@ const BookAdd = () => {
 };
 
 const styles = {
+
+  
   body: {
     fontFamily: "Arial, sans-serif",
     display: "flex",
@@ -476,8 +479,9 @@ const styles = {
     backgroundColor: "#f8f4ec", // Light beige background
   },
   formContainer: {
+    marginTop: "50px",
     backgroundColor: "#F8F4F2", // White for the form background
-    padding: "40px",
+    padding: "50px",
     borderRadius: "8px",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
     width: "80%",
@@ -485,7 +489,7 @@ const styles = {
   },
   logoutButton: {
     padding: "10px 20px",
-    backgroundColor: "#333",
+    backgroundColor: "#7F5539",
     color: "#fff",
     border: "none",
     borderRadius: "4px",
@@ -494,7 +498,8 @@ const styles = {
   },
   input: {
     width: "calc(100% - 20px)",
-    marginBottom: "20px",
+    marginBottom: "10px",
+    marginTop: "30px",
     padding: "12px",
     border: "1px solid #cccccc",
     borderRadius: "4px",
