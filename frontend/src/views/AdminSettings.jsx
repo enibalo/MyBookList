@@ -21,7 +21,6 @@ const UserSettings = () => {
     }
   }, []);
 
-  
   const handleLogout = () => {
     localStorage.removeItem("username"); // Remove username from localStorage
     navigate("/"); // Redirect to login page
@@ -110,7 +109,6 @@ const UserSettings = () => {
         <div style={styles.settingsContainer}>
           {/* Change Password Section */}
           <div style={styles.formSection}>
-          
             <h2 style={styles.h2}>Change Password</h2>
             <form onSubmit={handleSubmitChangePassword}>
               <input
@@ -155,22 +153,18 @@ const styles = {
     alignItems: "center", // Center horizontally
     height: "100vh", // Make the container take the full viewport height    margin: 0,
     padding: "20px",
-    backgroundColor: "#E7CDBB", // Light beige color
-
   },
   h1: {
     marginBottom: "30px",
-    
   },
   settingsContainer: {
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
     maxWidth: "800px",
-    
   },
   formSection: {
-    backgroundColor: "#F3EAE0",
+    backgroundColor: "rgb(248, 244, 242)",
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
@@ -186,8 +180,6 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "4px",
     fontSize: "14px",
-    
-
   },
   button: {
     marginTop: "20px",

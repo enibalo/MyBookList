@@ -93,7 +93,6 @@ function ToggleGroup({ selected, notSelected, itemName }) {
               tabIndex="-1"
               id={"span-" + item}
             >
-              <img src={check}></img>
               <div className="inner-text">{item}</div>
             </span>
           </label>

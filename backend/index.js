@@ -803,10 +803,24 @@ function getBookAndAuthor(res, isbn) {
 }
 
 function getBookByTitle(res, search) {
-  const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS authorName, Series_name, Book_order 
+  const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS AuthorName, Series_name, Book_order 
     FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
     WHERE Book.Title LIKE ? OR Author.Fname LIKE ? OR Author.Lname LIKE ? `;
   db.query(query, [search, search, search], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error selecting from Book`, details: err });
+    } else {
+      return res.status(200).json(data);
+    }
+  });
+}
+
+function getAllBookAndAuthor(res) {
+  const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS AuthorName, Series_name, Book_order 
+    FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN`;
+  db.query(query, (err, data) => {
     if (err) {
       return res
         .status(500)
@@ -1144,7 +1158,7 @@ app.get(
     if (search != undefined) {
       getBookByTitle(res, "%" + search + "%");
     } else {
-      all(res);
+      getAllBookAndAuthor(res);
     }
   }
 );

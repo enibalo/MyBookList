@@ -57,7 +57,7 @@ function Search({ handleClick }) {
                 <br />
                 <br />
                 <span style={{ fontWeight: "bold" }}>Author: </span>{" "}
-                {book.authorName}
+                {book.AuthorName}
                 <br />
               </button>
             </li>
@@ -102,6 +102,7 @@ const styles = {
     textAlign: "center",
   },
   button_container: {
+    // padding: "0px 25px",
     display: "grid",
     gap: "15px",
   },

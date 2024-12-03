@@ -123,7 +123,7 @@ const BookAdd = () => {
     <>
       <Header></Header>
       <div style={styles.body}>
-        <h1>Hello, Admin</h1>
+        <h1 style={{ marginTop: "30px" }}>Hello, Admin</h1>
         <br />
         <h2>Add A Book</h2>
         <div style={styles.formContainer}>
@@ -298,15 +298,15 @@ const BookAdd = () => {
               />
             </div>
 
-            <input
+            <textarea
               type="text"
               name="Description"
               placeholder="Book Description"
               value={formData.Description}
               onChange={handleChange}
               required
-              style={styles.input}
-            />
+              style={styles.textarea}
+            ></textarea>
 
             {/* Dynamic Genres Section */}
             <div style={styles.genreSection}>
@@ -466,8 +466,19 @@ const BookAdd = () => {
 };
 
 const styles = {
-
-  
+  textarea: {
+    minHeight: "150px",
+    resize: "none",
+    width: "calc(100% - 20px)",
+    marginBottom: "10px",
+    marginTop: "30px",
+    padding: "12px",
+    border: "1px solid #cccccc",
+    borderRadius: "4px",
+    fontSize: "14px",
+    backgroundColor: "#f9f9f9",
+    fontFamily: "inherit",
+  },
   body: {
     fontFamily: "Arial, sans-serif",
     display: "flex",
@@ -476,7 +487,6 @@ const styles = {
     justifyContent: "center",
     minHeight: "100vh",
     margin: 0,
-    backgroundColor: "#f8f4ec", // Light beige background
   },
   formContainer: {
     marginTop: "50px",
@@ -505,6 +515,7 @@ const styles = {
     borderRadius: "4px",
     fontSize: "14px",
     backgroundColor: "#f9f9f9",
+    fontFamily: "inherit",
   },
   button: {
     width: "100%",

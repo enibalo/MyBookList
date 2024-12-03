@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="browse" element={<Browse />}></Route>
         <Route path="add-book" element={<BookAdd />}></Route>
         <Route path="settings" element={<UserSettings />}></Route>
-        <Route path="admin-settings" element={<AdminSettings />}></Route>
+        <Route path="adminSettings" element={<AdminSettings />}></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>

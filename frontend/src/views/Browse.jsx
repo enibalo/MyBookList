@@ -3,6 +3,7 @@ import SearchBar from "../components/SearchBar.jsx"; // Adjust the path if neede
 import Header from "../components/Header.jsx";
 import { Link } from "react-router-dom";
 
+//fix search styling
 function Browse() {
   const [books, setBooks] = useState([]); // Books displayed on the page
   const [searchTerm, setSearchTerm] = useState(""); // Current search term
@@ -27,7 +28,7 @@ function Browse() {
   useEffect(() => {
     const fetchAllBooks = async () => {
       try {
-        const response = await fetch("http://localhost:8800/books");
+        const response = await fetch("http://localhost:8800/book");
         const data = await response.json();
         setAllBooks(data); // Store all books
         setBooks(data); // Display all books initially
@@ -97,9 +98,6 @@ function Browse() {
 }
 
 const styles = {
-  background: {
-    backgroundColor: "#ede0d4",
-  },
   h2: {
     padding: "40px",
     textAlign: "center",
@@ -130,10 +128,10 @@ const styles = {
     height: "100px",
     textAlign: "center",
     marginBottom: "40px",
+    fontFamily: "inherit",
   },
   button_container: {
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
     minHeight: "100vh",
     flexDirection: "column",

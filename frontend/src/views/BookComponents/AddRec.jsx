@@ -78,7 +78,7 @@ export default function AddRec() {
   function handleClick(book) {
     methods.setValue("recommended_isbn", book.ISBN);
     setReccTitle(book.Title);
-    setReccAuthor(book.authorName);
+    setReccAuthor(book.AuthorName);
     window.scrollTo(0, document.body.scrollHeight);
   }
 
