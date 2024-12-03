@@ -95,7 +95,7 @@ function Browse() {
             </div>
           ))
         ) : (
-          <p>No books found.</p>
+          <p style={styles.no_books_found}>No books found.</p>
         )}
       </div>
     </div>
@@ -123,6 +123,10 @@ const styles = {
     textAlign: "center",
     marginTop: "10px",
   },
+
+  no_books_found:{
+    marginBottom: "500px", 
+  }, 
   button: {
     padding: "15px 30px",
     fontSize: "20px",
