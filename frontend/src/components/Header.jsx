@@ -3,16 +3,20 @@ import coffeeLogo from "../assets/Coffee.svg";
 import { Link } from "react-router-dom";
 import styles from "../styles/Header.module.css";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 //import { Link } from "react-router-dom";
 
 function Header() {
   const [username, setUsername] = useState("");
-  const [isAdmin, setIsAdmin] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setUsername(localStorage.getItem("currentUsername"));
-    setIsAdmin(localStorage.getItem("isAdmin"));
-    console.log(isAdmin);
+    const storedUsername = localStorage.getItem("currentUsername");
+    const storedIsAdmin = localStorage.getItem("isAdmin") === "true";
+    setUsername(storedUsername);
+    setIsAdmin(storedIsAdmin);
+    //console.log("local storage");
+    //console.log(isAdmin);
   }, []);
 
   return (
@@ -26,55 +30,60 @@ function Header() {
   );
 }
 
-export function HeaderLinks(username, isAdmin) {
+export function HeaderLinks({ username, isAdmin }) {
+  console.log("header");
+  console.log(isAdmin);
   if (username == "") {
     return null;
+  } else if (isAdmin == false) {
+    return (
+      <ul className={styles.ul}>
+        <li>
+          {" "}
+          <Link className={styles.noDecor} to={"../browse"}>
+            {" "}
+            Browse
+          </Link>
+        </li>
+        <li>
+          <Link className={styles.noDecor} to={"../settings"}>
+            {" "}
+            User
+          </Link>
+        </li>
+      </ul>
+    );
   } else {
-    if (isAdmin == false) {
-      return (
-        <ul className={styles.ul}>
-          <li>
+    return (
+      <ul className={styles.ul}>
+        <li>
+          {" "}
+          <Link className={styles.noDecor} to={"../add-book"}>
             {" "}
-            <Link className={styles.noDecor} to={"../browse"}>
-              {" "}
-              Browse
-            </Link>
-          </li>
-          <li>
-            <Link className={styles.noDecor} to={"../settings"}>
-              {" "}
-              User
-            </Link>
-          </li>
-        </ul>
-      );
-    } else {
-      return (
-        <ul className={styles.ul}>
-          <li>
+            Add Book
+          </Link>
+        </li>
+        <li>
+          {" "}
+          <Link className={styles.noDecor} to={"../browse"}>
             {" "}
-            <Link className={styles.noDecor} to={"../add-book"}>
-              {" "}
-              Add Book
-            </Link>
-          </li>
-          <li>
+            Browse
+          </Link>
+        </li>
+        <li>
+          <Link className={styles.noDecor} to={"../settings"}>
             {" "}
-            <Link className={styles.noDecor} to={"../browse"}>
-              {" "}
-              Browse
-            </Link>
-          </li>
-          <li>
-            <Link className={styles.noDecor} to={"../settings"}>
-              {" "}
-              User
-            </Link>
-          </li>
-        </ul>
-      );
-    }
+            User
+          </Link>
+        </li>
+      </ul>
+    );
   }
 }
+
+HeaderLinks.propTypes = {
+  username: PropTypes.string.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+};
 
 export default Header;

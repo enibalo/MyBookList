@@ -1,5 +1,5 @@
 import Header from "../components/Header";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Import Link for navigation
 
 const UserSettings = () => {
@@ -158,77 +158,79 @@ const UserSettings = () => {
   };
 
   return (
-    <div style={styles.body}>
-      <h1 style={styles.h1}>
-        {username ? `Hello, ${username}` : "Loading..."}{" "}
-      </h1>
+    <>
+      <Header></Header>
+      <div style={styles.body}>
+        <h1 style={styles.h1}>
+          {username ? `Hello, ${username}` : "Loading..."}{" "}
+        </h1>
 
-      <div style={styles.settingsContainer}>
-        {/* Change Password Section */}
-        <div style={styles.formSection}>
-          {/* <h2 style={styles.h2}>Settings</h2>
+        <div style={styles.settingsContainer}>
+          {/* Change Password Section */}
+          <div style={styles.formSection}>
+            {/* <h2 style={styles.h2}>Settings</h2>
           <Link to="/addBook" style={styles.button}>
             Go to Add Book
           </Link>
           */}
-          <h2 style={styles.h2}>Change Password</h2>
-          <form onSubmit={handleSubmitChangePassword}>
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.Password}
-              onChange={(e) =>
-                setFormData({ ...formData, Password: e.target.value })
-              }
-              style={styles.input}
-            />
-            <input
-              type="password"
-              name="confirm_password"
-              placeholder="Confirm Password"
-              value={formData.ConfirmPassword}
-              onChange={(e) =>
-                setFormData({ ...formData, ConfirmPassword: e.target.value })
-              }
-              style={styles.input}
-            />
-            <button type="submit" style={styles.button}>
-              Submit
+            <h2 style={styles.h2}>Change Password</h2>
+            <form onSubmit={handleSubmitChangePassword}>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.Password}
+                onChange={(e) =>
+                  setFormData({ ...formData, Password: e.target.value })
+                }
+                style={styles.input}
+              />
+              <input
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm Password"
+                value={formData.ConfirmPassword}
+                onChange={(e) =>
+                  setFormData({ ...formData, ConfirmPassword: e.target.value })
+                }
+                style={styles.input}
+              />
+              <button type="submit" style={styles.button}>
+                Submit
+              </button>
+            </form>
+            <button onClick={handleLogout} style={styles.logoutButton}>
+              Logout
             </button>
-          </form>
-          <button onClick={handleLogout} style={styles.logoutButton}>
-            Logout
-          </button>
-        </div>
+          </div>
 
-        {/* Select Genres Section */}
-        <div style={styles.formSection}>
-          <h2 style={styles.h2}>Select Your Favorite Genres</h2>
-          <form onSubmit={handleSubmitGenres}>
-            <div style={styles.genres}>
-              {availableGenres.length > 0 ? (
-                availableGenres.map((genre) => (
-                  <div
-                    key={genre}
-                    style={{
-                      ...styles.genre,
-                      ...(formData.Genres.includes(genre) // Check if genre is selected
-                        ? styles.genreSelected
-                        : {}),
-                    }}
-                    onClick={() => handleGenreToggle(genre)} // Toggle the genre
-                  >
-                    {genre}
-                  </div>
-                ))
-              ) : (
-                <p>Loading genres...</p> // Display a loading message while genres are being fetched
-              )}
-            </div>
+          {/* Select Genres Section */}
+          <div style={styles.formSection}>
+            <h2 style={styles.h2}>Select Your Favorite Genres</h2>
+            <form onSubmit={handleSubmitGenres}>
+              <div style={styles.genres}>
+                {availableGenres.length > 0 ? (
+                  availableGenres.map((genre) => (
+                    <div
+                      key={genre}
+                      style={{
+                        ...styles.genre,
+                        ...(formData.Genres.includes(genre) // Check if genre is selected
+                          ? styles.genreSelected
+                          : {}),
+                      }}
+                      onClick={() => handleGenreToggle(genre)} // Toggle the genre
+                    >
+                      {genre}
+                    </div>
+                  ))
+                ) : (
+                  <p>Loading genres...</p> // Display a loading message while genres are being fetched
+                )}
+              </div>
 
-            {/* Select Genres Section */}
-            {/* <div style={styles.formSection}>
+              {/* Select Genres Section */}
+              {/* <div style={styles.formSection}>
           <h2 style={styles.h2}>Select Your Favorite Genres</h2>
           <form onSubmit={handleSubmitGenres}>
             <div style={styles.genres}>
@@ -258,13 +260,14 @@ const UserSettings = () => {
                 </div>
               ))}
             </div> */}
-            <button type="submit" style={styles.button}>
-              Submit
-            </button>
-          </form>
+              <button type="submit" style={styles.button}>
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Header from "../components/Header";
 
 function Login() {
   const [errorMessage, setErrorMessage] = useState(""); // Define error message state
@@ -51,41 +52,44 @@ function Login() {
   };
 
   return (
-    <div style={styles.body}>
-      <h1 style={styles.h1}>My BookList</h1>
-      <div style={styles.formContainer}>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
-            style={styles.input}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            style={styles.input}
-          />
+    <>
+      <Header></Header>
+      <div style={styles.body}>
+        <h1 style={styles.h1}>My BookList</h1>
+        <div style={styles.formContainer}>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              style={styles.input}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              style={styles.input}
+            />
 
-          <button type="submit" style={styles.button}>
-            Login
-          </button>
-        </form>
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <div style={styles.signupLinkContainer}>
-          <br></br>
-          <p>
-            Don't have an account?{" "}
-            <Link to="../signup" style={styles.signupLink}>
-              Sign up here
-            </Link>
-          </p>
+            <button type="submit" style={styles.button}>
+              Login
+            </button>
+          </form>
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          <div style={styles.signupLinkContainer}>
+            <br></br>
+            <p>
+              Don't have an account?{" "}
+              <Link to="../signup" style={styles.signupLink}>
+                Sign up here
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../components/Header";
 
 const UpSign = () => {
   const handleSubmit = async (event) => {
@@ -42,43 +43,46 @@ const UpSign = () => {
   };
 
   return (
-    <div style={styles.body}>
-      <h1 style={styles.h1}>My Book List</h1>
-      <div style={styles.formContainer}>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
-            style={styles.input}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            style={styles.input}
-          />
-          <input
-            type="password"
-            name="confirm_password"
-            placeholder="Confirm Password"
-            required
-            style={styles.input}
-          />
-          <button type="submit" style={styles.link}>
-            Submit
-          </button>
-        </form>
-        <p style={styles.loginPrompt}>
-          Already have an account?{" "}
-          <a href="/" style={styles.loginLink}>
-            Login here
-          </a>
-        </p>
+    <>
+      <Header></Header>
+      <div style={styles.body}>
+        <h1 style={styles.h1}>My Book List</h1>
+        <div style={styles.formContainer}>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              style={styles.input}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              style={styles.input}
+            />
+            <input
+              type="password"
+              name="confirm_password"
+              placeholder="Confirm Password"
+              required
+              style={styles.input}
+            />
+            <button type="submit" style={styles.link}>
+              Submit
+            </button>
+          </form>
+          <p style={styles.loginPrompt}>
+            Already have an account?{" "}
+            <a href="/" style={styles.loginLink}>
+              Login here
+            </a>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

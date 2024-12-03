@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 const BookAdd = () => {
   const [username, setUsername] = useState(""); // Separate state for username
@@ -117,57 +118,59 @@ const BookAdd = () => {
   const nonFictionGenres = genres.filter((g) => g.Main_genre === "Non-Fiction");
 
   return (
-    <div style={styles.body}>
-      <h1>Hello, Admin</h1>
-      <h2>Add A Book</h2>
-      <div style={styles.formContainer}>
-        <form onSubmit={handleSubmit}>
-          {/* Favorite Toggle */}
-          <div style={{ position: "relative", cursor: "pointer" }}>
-            {/* Hidden checkbox for accessibility */}
-            <input
-              type="checkbox"
-              id="isFavourite"
-              name="isFavourite"
-              checked={formData.isFavourite} // Bind to the boolean value
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  isFavourite: e.target.checked, // Update based on checkbox state
-                }))
-              }
-              style={{
-                position: "absolute",
-                opacity: 0,
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-              }}
-            />
-            {/* SVG Star Icon */}
-            <label htmlFor="isFavourite">
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 48 48"
-                fill={formData.isFavourite ? "#FFEC40" : "none"} // Change fill dynamically
-                xmlns="http://www.w3.org/2000/svg"
+    <>
+      <Header></Header>
+      <div style={styles.body}>
+        <h1>Hello, Admin</h1>
+        <h2>Add A Book</h2>
+        <div style={styles.formContainer}>
+          <form onSubmit={handleSubmit}>
+            {/* Favorite Toggle */}
+            <div style={{ position: "relative", cursor: "pointer" }}>
+              {/* Hidden checkbox for accessibility */}
+              <input
+                type="checkbox"
+                id="isFavourite"
+                name="isFavourite"
+                checked={formData.isFavourite} // Bind to the boolean value
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    isFavourite: e.target.checked, // Update based on checkbox state
+                  }))
+                }
                 style={{
-                  transition: "fill 0.3s ease", // Smooth transition
+                  position: "absolute",
+                  opacity: 0,
+                  width: "100%",
+                  height: "100%",
+                  cursor: "pointer",
                 }}
-              >
-                <path
-                  d="M24 4L30.18 16.52L44 18.54L34 28.28L36.36 42.04L24 35.54L11.64 42.04L14 28.28L4 18.54L17.82 16.52L24 4Z"
-                  stroke="#1E1E1E"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </label>
-          </div>
+              />
+              {/* SVG Star Icon */}
+              <label htmlFor="isFavourite">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 48 48"
+                  fill={formData.isFavourite ? "#FFEC40" : "none"} // Change fill dynamically
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    transition: "fill 0.3s ease", // Smooth transition
+                  }}
+                >
+                  <path
+                    d="M24 4L30.18 16.52L44 18.54L34 28.28L36.36 42.04L24 35.54L11.64 42.04L14 28.28L4 18.54L17.82 16.52L24 4Z"
+                    stroke="#1E1E1E"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </label>
+            </div>
 
-          {/*<input
+            {/*<input
                 type="text"
                 name="adminUsername"
                 placeholder="Your Username"
@@ -177,198 +180,198 @@ const BookAdd = () => {
                 style={styles.input}
             />*/}
 
-          <input
-            type="text"
-            name="ISBN"
-            placeholder="ISBN"
-            value={formData.ISBN}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-          <input
-            type="text"
-            name="Title"
-            placeholder="Title"
-            value={formData.Title}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-          {/* Side-by-Side Inputs */}
-          <div style={styles.sideBySide}>
             <input
               type="text"
-              name="SeriesName"
-              placeholder="Series Name (if applicable)"
-              value={formData.SeriesName} // Ensure this binds to the correct state
+              name="ISBN"
+              placeholder="ISBN"
+              value={formData.ISBN}
               onChange={handleChange}
-              // required
+              required
               style={styles.input}
             />
-            <select
-              name="BookOrder"
-              // required
+            <input
+              type="text"
+              name="Title"
+              placeholder="Title"
+              value={formData.Title}
+              onChange={handleChange}
+              required
               style={styles.input}
-              value={formData.BookOrder} // Ensure this binds to the correct state
-              onChange={handleChange} // This should update formData.BookOrder
-            >
-              <option value="">Select Book Order</option>
-              {Array.from({ length: 10 }, (_, i) => i + 1).map((order) => (
-                <option key={order} value={order}>
-                  {order}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Add New Section, here is hinted search if author already exists in database do an error */}
-          <div style={styles.genreSection}>
-            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
-              Add Author{" "}
-            </h3>
+            />
+            {/* Side-by-Side Inputs */}
             <div style={styles.sideBySide}>
               <input
                 type="text"
-                name="Fname"
-                placeholder="First Name"
-                value={formData.Fname || ""}
+                name="SeriesName"
+                placeholder="Series Name (if applicable)"
+                value={formData.SeriesName} // Ensure this binds to the correct state
                 onChange={handleChange}
-                required
+                // required
                 style={styles.input}
               />
-              <input
-                type="text"
-                name="Lname"
-                placeholder="Last Name"
-                value={formData.Lname || ""}
-                onChange={handleChange}
-                required
+              <select
+                name="BookOrder"
+                // required
                 style={styles.input}
-              />
+                value={formData.BookOrder} // Ensure this binds to the correct state
+                onChange={handleChange} // This should update formData.BookOrder
+              >
+                <option value="">Select Book Order</option>
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((order) => (
+                  <option key={order} value={order}>
+                    {order}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <input
-              type="date"
-              name="DOB"
-              placeholder="Date of Birth"
-              value={formData.DOB || ""}
-              onChange={handleChange}
-              //required
-              style={styles.input}
-            />
-            <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
-              Add Publisher{" "}
-            </h3>
-            <div style={styles.sideBySide}>
-              <input
-                type="text"
-                name="Publisher" // Ensure this matches the formData key
-                placeholder="Publisher"
-                value={formData.Publisher} // Ensure this binds to the correct state
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
+            {/* Add New Section, here is hinted search if author already exists in database do an error */}
+            <div style={styles.genreSection}>
+              <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
+                Add Author{" "}
+              </h3>
+              <div style={styles.sideBySide}>
+                <input
+                  type="text"
+                  name="Fname"
+                  placeholder="First Name"
+                  value={formData.Fname || ""}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="Lname"
+                  placeholder="Last Name"
+                  value={formData.Lname || ""}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </div>
 
               <input
+                type="date"
+                name="DOB"
+                placeholder="Date of Birth"
+                value={formData.DOB || ""}
+                onChange={handleChange}
+                //required
+                style={styles.input}
+              />
+              <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>
+                Add Publisher{" "}
+              </h3>
+              <div style={styles.sideBySide}>
+                <input
+                  type="text"
+                  name="Publisher" // Ensure this matches the formData key
+                  placeholder="Publisher"
+                  value={formData.Publisher} // Ensure this binds to the correct state
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+
+                <input
+                  type="text"
+                  name="Phone"
+                  placeholder="Phone Number"
+                  value={formData.Phone} // Ensure this binds to the correct state
+                  onChange={handleChange}
+                  //required
+                  style={styles.input}
+                />
+              </div>
+              <input
                 type="text"
-                name="Phone"
-                placeholder="Phone Number"
-                value={formData.Phone} // Ensure this binds to the correct state
+                name="Email"
+                placeholder="Email"
+                value={formData.Email} // Ensure this binds to the correct state
                 onChange={handleChange}
                 //required
                 style={styles.input}
               />
             </div>
+
             <input
               type="text"
-              name="Email"
-              placeholder="Email"
-              value={formData.Email} // Ensure this binds to the correct state
+              name="Description"
+              placeholder="Book Description"
+              value={formData.Description}
               onChange={handleChange}
-              //required
+              required
               style={styles.input}
             />
-          </div>
 
-          <input
-            type="text"
-            name="Description"
-            placeholder="Book Description"
-            value={formData.Description}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-
-          {/* Dynamic Genres Section */}
-          <div style={styles.genreSection}>
-            <h3>Fiction</h3>
-            <div style={styles.toggleGroup}>
-              {fictionGenres.map((genre) => (
-                <div key={genre.Name} style={styles.toggle}>
-                  <input
-                    type="checkbox"
-                    id={genre.Name.toLowerCase()}
-                    name="genre[]"
-                    value={genre.Name}
-                    onChange={() => handleGenreToggle(genre.Name)}
-                    checked={formData.Genres.includes(genre.Name)}
-                    style={styles.checkbox}
-                  />
-                  <label
-                    htmlFor={genre.Name.toLowerCase()}
-                    style={{
-                      ...styles.label,
-                      backgroundColor: formData.Genres.includes(genre.Name)
-                        ? "#2c2c2c"
-                        : "#ddd",
-                      color: formData.Genres.includes(genre.Name)
-                        ? "#fff"
-                        : "#000",
-                    }}
-                  >
-                    {genre.Name}
-                  </label>
-                </div>
-              ))}
+            {/* Dynamic Genres Section */}
+            <div style={styles.genreSection}>
+              <h3>Fiction</h3>
+              <div style={styles.toggleGroup}>
+                {fictionGenres.map((genre) => (
+                  <div key={genre.Name} style={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      id={genre.Name.toLowerCase()}
+                      name="genre[]"
+                      value={genre.Name}
+                      onChange={() => handleGenreToggle(genre.Name)}
+                      checked={formData.Genres.includes(genre.Name)}
+                      style={styles.checkbox}
+                    />
+                    <label
+                      htmlFor={genre.Name.toLowerCase()}
+                      style={{
+                        ...styles.label,
+                        backgroundColor: formData.Genres.includes(genre.Name)
+                          ? "#2c2c2c"
+                          : "#ddd",
+                        color: formData.Genres.includes(genre.Name)
+                          ? "#fff"
+                          : "#000",
+                      }}
+                    >
+                      {genre.Name}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div style={styles.genreSection}>
-            <h3>Non-Fiction</h3>
-            <div style={styles.toggleGroup}>
-              {nonFictionGenres.map((genre) => (
-                <div key={genre.Name} style={styles.toggle}>
-                  <input
-                    type="checkbox"
-                    id={genre.Name.toLowerCase()}
-                    name="genre[]"
-                    value={genre.Name}
-                    onChange={() => handleGenreToggle(genre.Name)}
-                    checked={formData.Genres.includes(genre.Name)}
-                    style={styles.checkbox}
-                  />
-                  <label
-                    htmlFor={genre.Name.toLowerCase()}
-                    style={{
-                      ...styles.label,
-                      backgroundColor: formData.Genres.includes(genre.Name)
-                        ? "#2c2c2c"
-                        : "#ddd",
-                      color: formData.Genres.includes(genre.Name)
-                        ? "#fff"
-                        : "#000",
-                    }}
-                  >
-                    {genre.Name}
-                  </label>
-                </div>
-              ))}
+            <div style={styles.genreSection}>
+              <h3>Non-Fiction</h3>
+              <div style={styles.toggleGroup}>
+                {nonFictionGenres.map((genre) => (
+                  <div key={genre.Name} style={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      id={genre.Name.toLowerCase()}
+                      name="genre[]"
+                      value={genre.Name}
+                      onChange={() => handleGenreToggle(genre.Name)}
+                      checked={formData.Genres.includes(genre.Name)}
+                      style={styles.checkbox}
+                    />
+                    <label
+                      htmlFor={genre.Name.toLowerCase()}
+                      style={{
+                        ...styles.label,
+                        backgroundColor: formData.Genres.includes(genre.Name)
+                          ? "#2c2c2c"
+                          : "#ddd",
+                        color: formData.Genres.includes(genre.Name)
+                          ? "#fff"
+                          : "#000",
+                      }}
+                    >
+                      {genre.Name}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          {/* <div style={styles.genreSection}>
+            {/* <div style={styles.genreSection}>
             <h3 style={{ marginBottom: "20px", marginTop: "20px" }}>Fiction</h3>
             <div style={styles.toggleGroup}>
               {[
@@ -436,25 +439,26 @@ const BookAdd = () => {
     ))}
   </div>
 </div> */}
-          {/* Additional Inputs */}
-          <input
-            type="text"
-            name="PurchaseLink"
-            placeholder="Purchase Link"
-            value={formData.PurchaseLink}
-            onChange={handleChange}
-            // required
-            style={styles.input}
-          />
-          <button type="submit" style={styles.button}>
-            Submit
+            {/* Additional Inputs */}
+            <input
+              type="text"
+              name="PurchaseLink"
+              placeholder="Purchase Link"
+              value={formData.PurchaseLink}
+              onChange={handleChange}
+              // required
+              style={styles.input}
+            />
+            <button type="submit" style={styles.button}>
+              Submit
+            </button>
+          </form>
+          <button onClick={handleLogout} style={styles.logoutButton}>
+            Logout
           </button>
-        </form>
-        <button onClick={handleLogout} style={styles.logoutButton}>
-          Logout
-        </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
