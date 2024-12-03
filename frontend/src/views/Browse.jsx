@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar.jsx"; // Adjust the path if needed
 import Header from "../components/Header.jsx";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 function Browse() {
   const [books, setBooks] = useState([]); // Books displayed on the page
