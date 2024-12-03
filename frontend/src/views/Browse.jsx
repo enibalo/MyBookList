@@ -60,6 +60,7 @@ function Browse() {
   };
 
   return (
+  <div style={styles.background}>
     <div>
       <Header />
       <h1 style={styles.h2}>Browse Books</h1>
@@ -86,7 +87,6 @@ function Browse() {
                   <span style={{ fontWeight: "bold" }}>Title:</span>{" "}
                   {book.Title}
                   <br />
-                  <br />
                   <span style={{ fontWeight: "bold" }}>Author: </span>{" "}
                   {book.authorName}
                   <br />
@@ -99,11 +99,17 @@ function Browse() {
         )}
       </div>
     </div>
+  </div>
   );
 }
 
 const styles = {
+   background:{
+    backgroundColor: "#ede0d4", 
+   }, 
+
   h2: {
+    padding: "40px",
     textAlign: "center",
     fontFamily: "Arial, sans-serif",
   },
@@ -113,18 +119,20 @@ const styles = {
     marginTop: "20px",
   },
   p: {
+    padding: "40px",
     textAlign: "center",
     marginTop: "10px",
   },
   button: {
     padding: "15px 30px",
-    fontSize: "15px",
+    fontSize: "20px",
     backgroundColor: "#e6ccb2",
     color: "black",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
-    width: "200px",
+    width: "500px",
+    height: "100px",
     textAlign: "center",
     marginBottom: "40px",
   },
