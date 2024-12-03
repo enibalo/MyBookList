@@ -1114,23 +1114,12 @@ app.get(
       .isBoolean()
       .withMessage("Short must be a boolean"),
     handleValidationErrors,
-    query("search")
-      .optional()
-      .isString()
-      .trim()
-      .escape()
-      .withMessage("Search must be a boolean"),
-    handleValidationErrors,
   ],
   (req, res) => {
     const isbn = req.params.isbn;
     const short_response = req.query.short;
-    const search = req.query.search;
     if (short_response == "true") {
       getBookAndAuthor(res, isbn);
-      if (search != undefined) {
-        getBookByTitle(res, "%" + search + "%");
-      }
     } else {
       getInfoBook(res, isbn);
     }

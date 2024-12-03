@@ -13,8 +13,7 @@ function SearchBar({ onSearch, onSearchSubmit, customStyle }) {
   };
 
   // Handle button click and notify the parent
-  const handleSearchClick = (event) => {
-    event.preventDefault();
+  const handleSearchClick = () => {
     onSearchSubmit(inputValue); // Trigger parent search functionality
   };
 
