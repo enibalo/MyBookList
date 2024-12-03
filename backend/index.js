@@ -103,7 +103,7 @@ app.post("/UpSign", (req, res) => {
       }
 
       console.log("User inserted:", username);
-
+      res.status(200).json({ message: "New user added successfully!" });
       /* Insert book and recommendation into the database
       const randomISBN = Math.floor(1000000 + Math.random() * 9000000); // Generate random ISBN
       const recommendationQuery = `
@@ -604,126 +604,6 @@ app.post("/settings", (req, res) => {
 
   // If neither password nor genres are provided, return an error
   res.status(400).send("Invalid request. Provide either a password or genres.");
-});
-
-app.post("/meow", (req, res) => {
-  console.log("hi");
-  const { username, password } = req.body;
-
-  //req.session.username = username;
-  console.log(username);
-  console.log(password);
-
-  // if no username or password, enter error message that says that user name and password arr required
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required." });
-  }
-  // if no username or password, enter error message that says that user name and password arr required
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Username and password are required." });
-  }
-
-  // first check if the user is an admin
-  // set the role to admin
-  /*const adminQuery = "SELECT * FROM Admin WHERE Username = ?";
-  db.query(adminQuery, [username], (err, adminResults) =>{
-      if (err) {
-          console.error("Error checking for admin", err);
-          return res.status(500).json({ message: "Database error." });
-      }
-
-      if (adminResults>0){
-          const admin = adminResults[0];
-
-          if(admin.Username== username && admin.Password == password){
-              return res.status(200).json({
-                  message: "Admin login successful",
-                  role: "admin", // role indicating admin
-                  username: admin.Username
-              });
-
-          }
-
-          else {
-              return res.status(400).json({ error: "Invalid username or password." });
-          }
-
-
-
-      }
-
-
-  }); */
-
-  // select all usernames from database and see if it matches
-  // select all usernames from database and see if it matches
-
-  // this will select all attributes of the Username
-  const query = "SELECT * FROM User WHERE Username = ?";
-  db.query(query, [username], (err, results) => {
-    if (err) {
-      console.error("Error checking for existing usernames", err);
-      return res.status(500).json({ message: "Database error." });
-    }
-  // this will select all attributes of the Username
-  const query = "SELECT * FROM User WHERE Username = ?";
-  db.query(query, [username], (err, results) => {
-    if (err) {
-      console.error("Error checking for existing usernames", err);
-      return res.status(500).json({ message: "Database error." });
-    }
-
-    // if the username and password is not in the database then say invalid username and password
-
-
-    if (results.length === 0) {
-      // Username does not exist
-      return res
-        .status(400)
-        .json({ message: "Username does not exist, please make an account" });
-    }
-      // Username does not exist
-      return res
-        .status(400)
-        .json({ message: "Username does not exist, please make an account" });
-    }
-
-    const user = results[0];
-    console.log(user);
-    console.log(user.Username);
-    console.log(user.Password);
-    const user = results[0];
-    console.log(user);
-    console.log(user.Username);
-    console.log(user.Password);
-
-    // if username is in the database grant access
-    if (user.Password == password && user.Username == username) {
-      // Successful login message
-    // if username is in the database grant access
-    if (user.Password == password && user.Username == username) {
-      // Successful login message
-
-      return res
-        .status(200)
-        .json({ message: "Login successful", username: user.Username });
-    } else {
-      // Incorrect password
-      return res.status(400).json({ error: "Invalid username or password." });
-    }
-  });
-      return res
-        .status(200)
-        .json({ message: "Login successful", username: user.Username });
-    } else {
-      // Incorrect password
-      return res.status(400).json({ error: "Invalid username or password." });
-    }
-  });
 });
 
 function all(res) {

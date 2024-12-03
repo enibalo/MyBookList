@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const UpSign = () => {
   const handleSubmit = async (event) => {
@@ -20,12 +20,14 @@ const UpSign = () => {
     }
 
     try {
-        const response = await fetch("http://localhost:8800/UpSign", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: data.username, password: data.password }),
-          });
-          
+      const response = await fetch("http://localhost:8800/UpSign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: data.username,
+          password: data.password,
+        }),
+      });
 
       if (response.ok) {
         alert("Form submitted successfully!");
@@ -70,7 +72,7 @@ const UpSign = () => {
           </button>
         </form>
         <p style={styles.loginPrompt}>
-          Already have an account?{' '}
+          Already have an account?{" "}
           <a href="/" style={styles.loginLink}>
             Login here
           </a>
@@ -82,55 +84,55 @@ const UpSign = () => {
 
 const styles = {
   body: {
-    fontFamily: 'Arial, sans-serif',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
+    fontFamily: "Arial, sans-serif",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "100vh",
     margin: 0,
-    backgroundColor: '#f8f4ec',
+    backgroundColor: "#f8f4ec",
   },
   h1: {
-    marginBottom: '20px',
+    marginBottom: "20px",
   },
   formContainer: {
-    backgroundColor: '#fff',
-    padding: '80px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 15px rgba(0, 0, 0, 0.2)', // Adjusted shadow for better visibility
-    width: '80%',
-    maxWidth: '800px',
+    backgroundColor: "#fff",
+    padding: "80px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 15px rgba(0, 0, 0, 0.2)", // Adjusted shadow for better visibility
+    width: "80%",
+    maxWidth: "800px",
   },
   input: {
-    width: 'calc(100% - 20px)',
-    marginBottom: '15px',
-    padding: '10px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontSize: '14px',
+    width: "calc(100% - 20px)",
+    marginBottom: "15px",
+    padding: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    fontSize: "14px",
   },
   link: {
-    display: 'block',
-    marginTop: '15px',
-    padding: '10px',
-    backgroundColor: '#7F5539',
-    color: '#fff',
-    textAlign: 'center',
-    borderRadius: '4px',
-    textDecoration: 'none',
-    fontSize: '16px',
-    cursor: 'pointer',
+    display: "block",
+    marginTop: "15px",
+    padding: "10px",
+    backgroundColor: "#7F5539",
+    color: "#fff",
+    textAlign: "center",
+    borderRadius: "4px",
+    textDecoration: "none",
+    fontSize: "16px",
+    cursor: "pointer",
   },
   loginPrompt: {
-    marginTop: '30px', // Add more spacing above the login prompt
-    fontSize: '14px',
-    textAlign: 'center',
+    marginTop: "30px", // Add more spacing above the login prompt
+    fontSize: "14px",
+    textAlign: "center",
   },
   loginLink: {
-    color: '#7F5539',
-    textDecoration: 'underline',
-    cursor: 'pointer',
+    color: "#7F5539",
+    textDecoration: "underline",
+    cursor: "pointer",
   },
 };
 

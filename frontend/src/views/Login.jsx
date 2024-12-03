@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [errorMessage, setErrorMessage] = useState(""); // Define error message state
@@ -14,7 +15,7 @@ function Login() {
     };
 
     try {
-      const response = await fetch("http://localhost:8800/", {
+      const response = await fetch("http://localhost:8800/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,11 +23,11 @@ function Login() {
         body: JSON.stringify(log_in_data),
       });
 
-      const data = await response.json();
       if (response.ok) {
         const data = await response.json();
         // Save the username to localStorage
-        localStorage.setItem("username", log_in_data.username);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("isAdmin", data.isAdmin);
 
         if (data.isAdmin) {
           // Redirect to admin page if admin
@@ -36,17 +37,13 @@ function Login() {
         // Successful login
         else {
           window.location.href = "http://localhost:5173/browse"; // Redirect to browse page
-        else {
-          window.location.href = "http://localhost:5173/browse"; // Redirect to browse page
         }
-      } else {
       } else {
         // Handle case where username/password doesn't match
         setErrorMessage(
           "Username or password is incorrect. Please try again or create a new account."
         );
       }
-    } catch (error) {
     } catch (error) {
       console.error("Error logging in:", error);
       alert("An error occurred. Please try again later.");
@@ -82,9 +79,9 @@ function Login() {
           <br></br>
           <p>
             Don't have an account?{" "}
-            <a href="/signup" style={styles.signupLink}>
+            <Link to="../signup" style={styles.signupLink}>
               Sign up here
-            </a>
+            </Link>
           </p>
         </div>
       </div>

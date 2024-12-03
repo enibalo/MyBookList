@@ -7,11 +7,12 @@ import { useState, useEffect } from "react";
 
 function Header() {
   const [username, setUsername] = useState("");
-  const [type, setType] = useState("");
+  const [isAdmin, setIsAdmin] = useState("");
 
   useEffect(() => {
     setUsername(localStorage.getItem("currentUsername"));
-    setType(localStorage.getItem("type"));
+    setIsAdmin(localStorage.getItem("isAdmin"));
+    console.log(isAdmin);
   }, []);
 
   return (
@@ -19,23 +20,24 @@ function Header() {
       <img className={styles.img} aria-hidden="true" src={coffeeLogo}></img>
 
       <nav>
-        <HeaderLinks username={username} type={type}></HeaderLinks>
+        <HeaderLinks username={username} isAdmin={isAdmin}></HeaderLinks>
       </nav>
     </header>
   );
 }
 
-export function HeaderLinks(username, type) {
+export function HeaderLinks(username, isAdmin) {
   if (username == "") {
     return null;
   } else {
-    if (type == "user") {
+    if (isAdmin == false) {
       return (
         <ul className={styles.ul}>
           <li>
             {" "}
             <Link className={styles.noDecor} to={"../browse"}>
               {" "}
+              Browse
             </Link>
           </li>
           <li>
@@ -53,12 +55,14 @@ export function HeaderLinks(username, type) {
             {" "}
             <Link className={styles.noDecor} to={"../add-book"}>
               {" "}
+              Add Book
             </Link>
           </li>
           <li>
             {" "}
             <Link className={styles.noDecor} to={"../browse"}>
               {" "}
+              Browse
             </Link>
           </li>
           <li>
