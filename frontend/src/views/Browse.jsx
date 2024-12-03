@@ -4,16 +4,39 @@ import Header from "../components/Header.jsx";
 import { Link } from "react-router-dom";
 
 function Browse() {
-  // fetch the list of books from the backend and their attributes
-
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState([]); // Full list of books
+  const [filteredBooks, setFilteredBooks] = useState([]); // Filtered books for display
+  const [searchTerm, setSearchTerm] = useState(""); // Current search term
 
   useEffect(() => {
+    const fetchAuthorName = async (authorId) => {
+      try {
+        const response = await fetch(
+          `http://localhost:8800/author/${authorId}`
+        );
+        const authorData = await response.json();
+        return `${authorData.Fname} ${authorData.Lname}`;
+      } catch (error) {
+        console.error("Error fetching author:", error);
+        return "Unknown Author";
+      }
+    };
+
     const fetchAllBooks = async () => {
       try {
         const results = await fetch("http://localhost:8800/books");
         const data = await results.json();
-        setBooks(data);
+
+        // Update books with the author names
+        const booksWithAuthors = await Promise.all(
+          data.map(async (book) => {
+            const authorName = await fetchAuthorName(book.Author_id);
+            return { ...book, authorName }; // Add authorName to each book
+          })
+        );
+
+        setBooks(booksWithAuthors);
+        setFilteredBooks(booksWithAuthors); // Initially display all books
       } catch (error) {
         console.error("Error fetching books:", error);
       }
@@ -22,13 +45,31 @@ function Browse() {
     fetchAllBooks();
   }, []);
 
+  const handleSearch = (value) => {
+    setSearchTerm(value); // Update search term as the user types
+  };
+
+  const handleSearchSubmit = () => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    const results = books.filter(
+      (book) =>
+        book.Title.toLowerCase().includes(lowerSearchTerm) ||
+        book.authorName.toLowerCase().includes(lowerSearchTerm)
+    );
+    setFilteredBooks(results); // Update displayed books
+  };
+
   return (
     <div>
       <Header />
       <h1 style={styles.h2}>Browse Books</h1>
 
       <div style={styles.searchBarContainer}>
-        <SearchBar style={styles.SearchBar} />
+        <SearchBar
+          style={styles.SearchBar}
+          onSearch={handleSearch}
+          onSearchSubmit={handleSearchSubmit}
+        />
       </div>
 
       <div>
@@ -36,17 +77,26 @@ function Browse() {
       </div>
 
       <div style={styles.button_container}>
-        <br></br>
-        {books.map((book) => (
-          <div key={book.ISBN}>
-            <Link to={"../book/" + book.ISBN} style={styles.signupLink}>
-              <button style={styles.button}>
-                Title: {book.Title}
-                <br />
-              </button>
-            </Link>
-          </div>
-        ))}
+        <br />
+        {filteredBooks.length > 0 ? (
+          filteredBooks.map((book) => (
+            <div key={book.ISBN}>
+              <Link to={"../book/" + book.ISBN} style={styles.signupLink}>
+                <button style={styles.button}>
+                  <span style={{ fontWeight: "bold" }}>Title:</span>{" "}
+                  {book.Title}
+                  <br />
+                  <br />
+                  <span style={{ fontWeight: "bold" }}>Author: </span>{" "}
+                  {book.authorName}
+                  <br />
+                </button>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No books found.</p>
+        )}
       </div>
     </div>
   );
@@ -54,42 +104,36 @@ function Browse() {
 
 const styles = {
   h2: {
-    textAlign: "center", // Correct alignment for text
+    textAlign: "center",
     fontFamily: "Arial, sans-serif",
   },
-
   searchBarContainer: {
-    display: "flex", // Enable flexbox
-    justifyContent: "center", // Horizontally center
-    alignItems: "center", // Vertically center (if needed)
-    marginTop: "20px", // Optional: Add spacing between header and search bar
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px",
   },
-
   p: {
     textAlign: "center",
     marginTop: "10px",
   },
-
   button: {
-    padding: "15px 30px", // Adjust padding for a larger button
-    fontSize: "15px", // Make the text larger
-    backgroundColor: "#9c6644", // Green background (you can change this)
-    color: "balck", // White text color
-    border: "none", // Remove default border
-    borderRadius: "5px", // Rounded corners
-    cursor: "pointer", // Pointer cursor on hover
-    width: "200px", // Fixed width (optional)
-    textAlign: "center", // Center the text inside the button
-    marginBottom: "40px", // Add space between buttons
+    padding: "15px 30px",
+    fontSize: "15px",
+    backgroundColor: "#e6ccb2",
+    color: "black",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    width: "200px",
+    textAlign: "center",
+    marginBottom: "40px",
   },
-
   button_container: {
-    display: "flex", // Use flexbox
-    justifyContent: "center", // Center buttons horizontally
-    alignItems: "center", // Center buttons vertically
-    MinHeight: "100vh", // Make the container take the full height of the viewport
-    MinWidth: "100vh",
-    flexDirection: "column", // Stack buttons vertically (optional)
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    flexDirection: "column",
   },
 };
 

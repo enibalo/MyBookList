@@ -22,25 +22,31 @@ function Login() {
         body: JSON.stringify(log_in_data),
       });
 
+      const data = await response.json();
       if (response.ok) {
         const data = await response.json();
         // Save the username to localStorage
         localStorage.setItem("username", log_in_data.username);
 
-        if (data.role === "admin") {
+        if (data.isAdmin) {
           // Redirect to admin page if admin
+
           window.location.href = "http://localhost:5173/addBook";
         }
         // Successful login
         else {
           window.location.href = "http://localhost:5173/browse"; // Redirect to browse page
+        else {
+          window.location.href = "http://localhost:5173/browse"; // Redirect to browse page
         }
+      } else {
       } else {
         // Handle case where username/password doesn't match
         setErrorMessage(
           "Username or password is incorrect. Please try again or create a new account."
         );
       }
+    } catch (error) {
     } catch (error) {
       console.error("Error logging in:", error);
       alert("An error occurred. Please try again later.");
@@ -88,7 +94,6 @@ function Login() {
 
 const styles = {
   body: {
-    fontFamily: "Arial, sans-serif",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
