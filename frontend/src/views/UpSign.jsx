@@ -127,6 +127,9 @@ const styles = {
     textDecoration: "none",
     fontSize: "16px",
     cursor: "pointer",
+    width: "calc(100% - 20px)",
+    marginBottom: "15px",
+    border: "1px solid #ccc",
   },
   loginPrompt: {
     marginTop: "30px", // Add more spacing above the login prompt

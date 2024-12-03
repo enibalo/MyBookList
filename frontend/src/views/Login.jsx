@@ -33,7 +33,7 @@ function Login() {
         if (data.isAdmin) {
           // Redirect to admin page if admin
 
-          window.location.href = "http://localhost:5173/addBook";
+          window.location.href = "http://localhost:5173/add-book";
         }
         // Successful login
         else {
@@ -101,13 +101,11 @@ const styles = {
     justifyContent: "center",
     minHeight: "100vh",
     margin: 0,
-    backgroundColor: "#f7f7f7",
   },
   h1: {
     marginBottom: "20px",
   },
   formContainer: {
-    backgroundColor: "#fff",
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
@@ -121,6 +119,7 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "4px",
     fontSize: "14px",
+    // backgroundColor: "#f5e4d3",
   },
   button: {
     display: "block",
