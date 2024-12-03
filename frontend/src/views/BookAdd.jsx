@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
+// make sure that boook summary text section is bigger lol. or adjustable.
+
 const BookAdd = () => {
   const [username, setUsername] = useState(""); // Separate state for username
   const [formData, setFormData] = useState({

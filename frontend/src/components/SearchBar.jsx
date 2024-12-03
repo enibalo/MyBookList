@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../styles/SearchBar.module.css";
 import SearchIcon from "../assets/Magnifying-Glass.svg";
 
-function SearchBar({ onSearch, onSearchSubmit }) {
+function SearchBar({ onSearch, onSearchSubmit, customStyle }) {
   const [inputValue, setInputValue] = React.useState("");
 
   // Handle input change and update the state
@@ -13,12 +13,16 @@ function SearchBar({ onSearch, onSearchSubmit }) {
   };
 
   // Handle button click and notify the parent
-  const handleSearchClick = () => {
+  const handleSearchClick = (event) => {
+    event.preventDefault();
     onSearchSubmit(inputValue); // Trigger parent search functionality
   };
 
   return (
-    <div className={styles["header-container"]}>
+    <div
+      className={styles["header-container"]}
+      style={customStyle ? customStyle.header : null}
+    >
       <div className={styles["search-bar"]}>
         <input
           type="text"
@@ -30,6 +34,7 @@ function SearchBar({ onSearch, onSearchSubmit }) {
         <button
           className={styles["search-icon"]}
           aria-label="Search Button"
+          style={customStyle ? customStyle.icon : null}
           onClick={handleSearchClick} // Handle button click
         >
           <img

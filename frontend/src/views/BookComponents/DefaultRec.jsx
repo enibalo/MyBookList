@@ -13,18 +13,20 @@ export default function DefaultRec() {
   useEffect(() => {
     let isMounted = true;
     async function fetchData() {
-      axios.get("http://localhost:8800/book/" + isbn + "/recommendation?filter=false")
-      .then((result)=>{
-        if (isMounted) {
-          console.log(result.data);
-          if (result.data.length == 0 ) setReccs(null);
-          else setReccs(result.data);
-        }
-      })
-      .catch((error)=>{
-        console.log(error);
-        setError(true);
-      });
+      axios
+        .get(
+          "http://localhost:8800/book/" + isbn + "/recommendation?filter=false"
+        )
+        .then((result) => {
+          if (isMounted) {
+            console.log(result.data);
+            setReccs(result.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError(true);
+        });
     }
     fetchData();
     return () => {
@@ -32,29 +34,41 @@ export default function DefaultRec() {
     };
   }, []);
 
-  if (error) return <div>Error</div>;
+  if (error) {
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Error, please try again.
+      </div>
+    );
+  }
 
-  if (reccs == []) return <div>Loading...</div>;
+  if (reccs == null) {
+    console.log(`reccs is ${reccs}`);
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Loading...
+      </div>
+    );
+  }
 
+  if (reccs.length == 0) {
+    console.log(`reccs is ${reccs}`);
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Be the first to recommend a book!
+      </div>
+    );
+  }
   return (
-    <>
-      {reccs == null ? (
-        <div className="secondary" id={styles.noReccs}>
-          Be the first to recommend a book!
-        </div>
-      ) : (
-        <ul>
-          {reccs.map((recc) => {
-            return (
-              <RecommendedCard
-                key={recc.Username + "-" + recc.Recommended_isbn}
-                recc={recc}
-              ></RecommendedCard>
-            );
-          })}
-        </ul>
-      )}
-    </>
+    <ul>
+      {reccs.map((recc) => {
+        return (
+          <RecommendedCard
+            key={recc.Username + "-" + recc.Recommended_isbn}
+            recc={recc}
+          ></RecommendedCard>
+        );
+      })}
+    </ul>
   );
 }
-

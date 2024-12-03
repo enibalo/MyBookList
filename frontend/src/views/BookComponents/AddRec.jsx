@@ -6,6 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import axios from "axios";
 import Alert from "./Alert.jsx";
+import Search from "../Search.jsx";
 
 export default function AddRec() {
   const methods = useForm({
@@ -19,14 +20,13 @@ export default function AddRec() {
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(false);
   const [alert, setAlert] = useState({ type: "", message: "" });
+  const [reccAuthor, setReccAuthor] = useState("");
+  const [reccTitle, setReccTitle] = useState("");
 
-  const [username, setUsername] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    setUsername(localStorage.getItem("currentUsername"));
-    setIsAdmin(localStorage.getItem("isAdmin"));
-  }, []);
+  let [username, setUsername] = useState(localStorage.getItem("username"));
+  let [isAdmin, setIsAdmin] = useState(
+    JSON.parse(localStorage.getItem("isAdmin"))
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -54,7 +54,6 @@ export default function AddRec() {
   const onSubmit = (data) => {
     console.log(data);
     async function sendData() {
-      let temp_isbn = "9780553103540";
       axios
         .post(
           "http://localhost:8800/users/" +
@@ -62,8 +61,7 @@ export default function AddRec() {
             "/book/" +
             data.book_isbn +
             "/recommendation/" +
-            // data.recommended_isbn
-            temp_isbn,
+            data.recommended_isbn,
           { comment: data.comment, tags: data.checkbox }
         )
         .then(() => {
@@ -77,11 +75,12 @@ export default function AddRec() {
     sendData();
   };
 
-  //when search option is clicked, recc_isbn is set, will use when search component is done lol
-  //also add nothing selected in recommendatioM!!!
-  // async function onClick(recommended_isbn) {
-  //   methods.setValue("recommended_isbn", recommended_isbn);
-  // }
+  function handleClick(book) {
+    methods.setValue("recommended_isbn", book.ISBN);
+    setReccTitle(book.Title);
+    setReccAuthor(book.authorName);
+    window.scrollTo(0, document.body.scrollHeight);
+  }
 
   if (isAdmin == true) {
     return (
@@ -92,75 +91,74 @@ export default function AddRec() {
   }
 
   return (
-    <FormProvider {...methods}>
-      <Alert
-        type={alert.type}
-        message={alert.message}
-        onClose={() => setAlert({ type: "", message: "" })}
-      />
-
-      <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
-        <div className="secondary">Temporary Search Section</div>
-
-        <div>
-          <h3>You Selected</h3>
-          <span className={styles.title}>Title</span>
-          <span>Series Name</span>
-          <div>Author</div>
-        </div>
-        <input
-          type="hidden"
-          name="book_isbn"
-          {...methods.register("book_isbn", { value: isbn })}
-        ></input>
-        <input
-          type="hidden"
-          name="recommended_isbn"
-          {...methods.register("recommended_isbn", {
-            required: "You must select a book to recommend.",
-          })}
-        ></input>
-        {methods.formState.errors.recommended_isbn && (
-          <div className={"error " + styles.error}>
-            {methods.formState.errors.recommended_isbn.message}
+    <>
+      <Search handleClick={handleClick}></Search>
+      <FormProvider {...methods}>
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert({ type: "", message: "" })}
+        />
+        <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
+          <div>
+            <h3>You Selected</h3>
+            <span className={styles.title}>Title: {reccTitle}</span>
+            <div>Author: {reccAuthor}</div>
           </div>
-        )}
+          <input
+            type="hidden"
+            name="book_isbn"
+            {...methods.register("book_isbn", { value: isbn })}
+          ></input>
+          <input
+            type="hidden"
+            name="recommended_isbn"
+            {...methods.register("recommended_isbn", {
+              required: "You must select a book to recommend.",
+            })}
+          ></input>
+          {methods.formState.errors.recommended_isbn && (
+            <div className={"error " + styles.error}>
+              {methods.formState.errors.recommended_isbn.message}
+            </div>
+          )}
 
-        {tags == [] ? (
-          error ? (
-            <div>Error</div>
+          {tags.length == 0 ? (
+            error ? (
+              <div>Error</div>
+            ) : (
+              <div>Loading...</div>
+            )
           ) : (
-            <div>Loading...</div>
-          )
-        ) : (
-          <ToggleGroup notSelected={tags} itemName={"Tags"}></ToggleGroup>
-        )}
+            <ToggleGroup notSelected={tags} itemName={"Tags"}></ToggleGroup>
+          )}
 
-        <textarea
-          className={styles.textarea}
-          {...methods.register("comment", {
-            required: "This field is required.",
-            minLength: {
-              value: 15,
-              message: "The comment must contain at least 15 characters.",
-            },
-            maxLength: {
-              value: 200,
-              message: "The comment must contain less than 200 characters.",
-            },
-          })}
-        ></textarea>
-        {methods.formState.errors.comment && (
-          <div className={"error " + styles.error}>
-            {methods.formState.errors.comment.message}
-          </div>
-        )}
-        <input
-          type="submit"
-          className={"primary-bg " + styles.form_submit}
-          value="Submit"
-        ></input>
-      </form>
-    </FormProvider>
+          <textarea
+            className={styles.textarea}
+            {...methods.register("comment", {
+              required: "This field is required.",
+              minLength: {
+                value: 15,
+                message: "The comment must contain at least 15 characters.",
+              },
+              maxLength: {
+                value: 200,
+                message: "The comment must contain less than 200 characters.",
+              },
+            })}
+          ></textarea>
+          {methods.formState.errors.comment && (
+            <div className={"error " + styles.error}>
+              {methods.formState.errors.comment.message}
+            </div>
+          )}
+          <input
+            type="submit"
+            className={"primary-bg " + styles.form_submit}
+            value="Submit"
+          ></input>
+        </form>
+      </FormProvider>
+    </>
   );
 }

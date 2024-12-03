@@ -213,11 +213,6 @@
 .form_submit {
   background-color: #7f5539;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.form_submit:hover {
-  background-color: #3c3c3c;
 }
 
 .form_submit:active {

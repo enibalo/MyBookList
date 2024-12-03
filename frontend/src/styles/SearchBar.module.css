@@ -11,8 +11,8 @@
   justify-content: space-between; /* Ensures items are spaced out from left to right */
 }
 
-
 .search-input {
+  font-family: inherit;
   flex-grow: 1; /* Makes search input expand to fill available space */
   border: none;
   width: 500px;
@@ -33,10 +33,3 @@
   cursor: pointer;
   transform: translateX(400px);
 }
-
-
-
-
-
-
-  

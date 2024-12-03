@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar.jsx"; // Adjust the path if needed
 import Header from "../components/Header.jsx";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Browse() {
   const [books, setBooks] = useState([]); // Full list of books
@@ -51,12 +52,17 @@ function Browse() {
 
   const handleSearchSubmit = () => {
     const lowerSearchTerm = searchTerm.toLowerCase();
-    const results = books.filter(
-      (book) =>
-        book.Title.toLowerCase().includes(lowerSearchTerm) ||
-        book.authorName.toLowerCase().includes(lowerSearchTerm)
-    );
-    setFilteredBooks(results); // Update displayed books
+    async function getData() {
+      axios
+        .get("http://localhost:8800/book?search=" + lowerSearchTerm)
+        .then((result) => {
+          setFilteredBooks(result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    getData();
   };
 
   return (

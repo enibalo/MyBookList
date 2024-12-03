@@ -788,10 +788,25 @@ GROUP BY Book.ISBN
  * isbn - string
  */
 function getBookAndAuthor(res, isbn) {
-  const query = `SELECT Book.ISBN, Fname, Lname, Series_name, Book_order 
+  const query = `SELECT Book.ISBN, Book.Title, Fname, Lname, Series_name, Book_order 
     FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
     WHERE Book.ISBN= ?`;
   db.query(query, [isbn], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error selecting from Book`, details: err });
+    } else {
+      return res.status(200).json(data);
+    }
+  });
+}
+
+function getBookByTitle(res, search) {
+  const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS authorName, Series_name, Book_order 
+    FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
+    WHERE Book.Title LIKE ? OR Author.Fname LIKE ? OR Author.Lname LIKE ? `;
+  db.query(query, [search, search, search], (err, data) => {
     if (err) {
       return res
         .status(500)
@@ -1089,7 +1104,7 @@ app.get(
   }
 );
 
-//getInfoBook or get Book and author
+//getInfoBook or get Book and author or search by title
 app.get(
   "/book/:isbn",
   [
@@ -1099,14 +1114,48 @@ app.get(
       .isBoolean()
       .withMessage("Short must be a boolean"),
     handleValidationErrors,
+    query("search")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Search must be a boolean"),
+    handleValidationErrors,
   ],
   (req, res) => {
     const isbn = req.params.isbn;
     const short_response = req.query.short;
+    const search = req.query.search;
     if (short_response == "true") {
       getBookAndAuthor(res, isbn);
+      if (search != undefined) {
+        getBookByTitle(res, "%" + search + "%");
+      }
     } else {
       getInfoBook(res, isbn);
+    }
+  }
+);
+
+//getInfoBook or get Book and author or search by title
+app.get(
+  "/book",
+  [
+    query("search")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Search must be a string"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const search = req.query.search;
+
+    if (search != undefined) {
+      getBookByTitle(res, "%" + search + "%");
+    } else {
+      all(res);
     }
   }
 );

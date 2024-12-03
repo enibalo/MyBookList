@@ -10,13 +10,10 @@ export default function FilterRec() {
   let [reccs, setReccs] = useState(null);
   let [error, setError] = useState(false);
 
-  const [username, setUsername] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    setUsername(localStorage.getItem("currentUsername"));
-    setIsAdmin(localStorage.getItem("isAdmin"));
-  }, []);
+  let [username, setUsername] = useState(localStorage.getItem("username"));
+  let [isAdmin, setIsAdmin] = useState(
+    JSON.parse(localStorage.getItem("isAdmin"))
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -32,8 +29,7 @@ export default function FilterRec() {
         .then((result) => {
           if (isMounted) {
             console.log(result.data);
-            if (result.data.length == 0) setReccs(null);
-            else setReccs(result.data);
+            setReccs(result.data);
           }
         })
         .catch((error) => {
@@ -56,28 +52,37 @@ export default function FilterRec() {
     );
   }
 
-  if (error) return <div>Error</div>;
+  if (error)
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Error
+      </div>
+    );
 
-  if (reccs == []) return <div>Loading...</div>;
+  if (reccs == null)
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Loading...
+      </div>
+    );
+
+  if (reccs.length == 0)
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Be the first to recommend a book from a genre that you like!
+      </div>
+    );
 
   return (
-    <>
-      {reccs == null ? (
-        <div className="secondary" id={styles.noReccs}>
-          Be the first to recommend a book from a genre that you like!
-        </div>
-      ) : (
-        <ul>
-          {reccs.map((recc) => {
-            return (
-              <RecommendedCard
-                key={recc.Username + "-" + recc.Recommended_isbn}
-                recc={recc}
-              ></RecommendedCard>
-            );
-          })}
-        </ul>
-      )}
-    </>
+    <ul>
+      {reccs.map((recc) => {
+        return (
+          <RecommendedCard
+            key={recc.Username + "-" + recc.Recommended_isbn}
+            recc={recc}
+          ></RecommendedCard>
+        );
+      })}
+    </ul>
   );
 }

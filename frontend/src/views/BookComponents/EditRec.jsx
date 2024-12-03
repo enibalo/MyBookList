@@ -9,24 +9,27 @@ import axios from "axios";
 import Alert from "./Alert.jsx";
 
 export default function EditRec() {
-  const [username, setUsername] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    setUsername(localStorage.getItem("currentUsername"));
-    setIsAdmin(localStorage.getItem("isAdmin"));
-  }, []);
+  let [username, setUsername] = useState(localStorage.getItem("username"));
+  let [isAdmin, setIsAdmin] = useState(
+    JSON.parse(localStorage.getItem("isAdmin"))
+  );
 
   let { isbn } = useParams();
-  let [reccs, setReccs] = useState([]);
+  let [reccs, setReccs] = useState(null);
   let [error, setError] = useState(false);
 
   const [alert, setAlert] = useState({ type: "", message: "" });
 
   useEffect(() => {
     let isMounted = true;
+
+    console.log("hi from useffect");
+    console.log(username);
+    console.log(`isAdmin is ${isAdmin}`);
+
     if (isAdmin) return;
     async function fetchData() {
+      console.log(`tried to fetch with ${username}`);
       axios
         .get(
           "http://localhost:8800/users/" +
@@ -44,9 +47,15 @@ export default function EditRec() {
         .catch((error) => {
           console.log(error);
           setError(true);
+        })
+        .finally(() => {
+          console.log("Sent a request!!");
         });
     }
+
     fetchData();
+    console.log("after fetchSdATA");
+
     return () => {
       isMounted = false;
     };
@@ -60,9 +69,26 @@ export default function EditRec() {
     );
   }
 
-  if (error) return <div>Error</div>;
+  if (error)
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Error
+      </div>
+    );
 
-  if (reccs == []) return <div>Loading</div>;
+  if (reccs == null)
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        Loading...
+      </div>
+    );
+
+  if (reccs.length == 0)
+    return (
+      <div className="secondary" id={styles.noReccs}>
+        You have made no recommendations for this book.
+      </div>
+    );
 
   return (
     <>
