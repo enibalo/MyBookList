@@ -5,7 +5,6 @@ import styles from "../../styles/Book.module.css";
 import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import axios from "axios";
-import Alert from "./Alert.jsx";
 import Search from "../Search.jsx";
 
 export default function AddRec() {
@@ -19,7 +18,6 @@ export default function AddRec() {
   const { isbn } = useParams();
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(false);
-  const [alert, setAlert] = useState({ type: "", message: "" });
   const [reccAuthor, setReccAuthor] = useState("");
   const [reccTitle, setReccTitle] = useState("");
 
@@ -65,10 +63,10 @@ export default function AddRec() {
           { comment: data.comment, tags: data.checkbox }
         )
         .then(() => {
-          setAlert({ type: "success", message: "Submission successful!" });
+          alert("Submission successful!");
         })
         .catch((error) => {
-          setAlert({ type: "error", message: error.message });
+          alert(error.message);
           console.log(error);
         });
     }
@@ -94,11 +92,6 @@ export default function AddRec() {
     <>
       <Search handleClick={handleClick}></Search>
       <FormProvider {...methods}>
-        <Alert
-          type={alert.type}
-          message={alert.message}
-          onClose={() => setAlert({ type: "", message: "" })}
-        />
         <form onSubmit={methods.handleSubmit(onSubmit)} id={styles.form}>
           <div>
             <h3>You Selected</h3>

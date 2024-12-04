@@ -6,7 +6,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import PropTypes from "prop-types";
 import axios from "axios";
-import Alert from "./Alert.jsx";
 
 export default function EditRec() {
   let [username, setUsername] = useState(localStorage.getItem("username"));
@@ -17,8 +16,6 @@ export default function EditRec() {
   let { isbn } = useParams();
   let [reccs, setReccs] = useState(null);
   let [error, setError] = useState(false);
-
-  const [alert, setAlert] = useState({ type: "", message: "" });
 
   useEffect(() => {
     let isMounted = true;
@@ -92,18 +89,12 @@ export default function EditRec() {
 
   return (
     <>
-      <Alert
-        type={alert.type}
-        message={alert.message}
-        onClose={() => setAlert({ type: "", message: "" })}
-      />
       {reccs.map((recc, index) => {
         return (
           <EditForm
             key={recc.isbn + "-" + index}
             isbn={isbn}
             recc={recc}
-            setAlert={setAlert}
             username={username}
           ></EditForm>
         );
@@ -112,7 +103,7 @@ export default function EditRec() {
   );
 }
 
-function EditForm({ isbn, recc, setAlert, username }) {
+function EditForm({ isbn, recc, username }) {
   const methods = useForm({
     defaultValues: {
       comment: recc.Comment,
@@ -135,11 +126,11 @@ function EditForm({ isbn, recc, setAlert, username }) {
           { comment: data.comment, tags: data.checkbox }
         )
         .then(() => {
-          setAlert({ type: "success", message: "Submission successful!" });
+          alert("Submission successful!");
           console.log("Sucess!");
         })
         .catch((error) => {
-          setAlert({ type: "error", message: error.message });
+          alert(error.message);
           console.log(error);
         });
     }
@@ -204,7 +195,6 @@ function EditForm({ isbn, recc, setAlert, username }) {
 EditForm.propTypes = {
   isbn: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  setAlert: PropTypes.func.isRequired,
   recc: PropTypes.shape({
     Recommended_isbn: PropTypes.string.isRequired,
     Comment: PropTypes.string.isRequired,
