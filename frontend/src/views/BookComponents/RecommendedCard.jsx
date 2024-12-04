@@ -24,10 +24,13 @@ export default function RecommendedCard({ recc }) {
     setUpVote(recc.Up_vote);
   }, []);
 
-  function handleClick(value, reccIsbn, username) {
-    if ("downvote" == value && clickedDown == false) {
-      setClickedDown(true);
-      setDownVote((prevCount) => prevCount + 1);
+  function handleClick(type, reccIsbn, username) {
+    if ("downvote" == type) {
+      let value = clickedDown ? -1 : 1;
+      setDownVote((prevCount) => prevCount + value);
+      let newDown = !clickedDown;
+      setClickedDown(newDown);
+
       async function sendDownvote() {
         axios
           .put(
@@ -39,7 +42,7 @@ export default function RecommendedCard({ recc }) {
               reccIsbn +
               "/downvote",
             {
-              downvote: 1,
+              downvote: value,
             }
           )
           .catch((error) => {
@@ -47,9 +50,11 @@ export default function RecommendedCard({ recc }) {
           });
       }
       sendDownvote();
-    } else if (clickedUp == false) {
-      setUpVote((prevCount) => prevCount + 1);
-      setClickedUp(true);
+    } else {
+      let value = clickedUp ? -1 : 1;
+      setUpVote((prevCount) => prevCount + value);
+      let newUp = !clickedUp;
+      setClickedUp(newUp);
       //send update to server
       async function sendUpvote() {
         axios
@@ -62,7 +67,7 @@ export default function RecommendedCard({ recc }) {
               reccIsbn +
               "/upvote",
             {
-              upvote: 1,
+              upvote: value,
             }
           )
           .catch((error) => {
