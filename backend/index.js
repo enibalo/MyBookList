@@ -104,20 +104,6 @@ app.post("/UpSign", (req, res) => {
 
       console.log("User inserted:", username);
       res.status(200).json({ message: "New user added successfully!" });
-      /* Insert book and recommendation into the database
-      const randomISBN = Math.floor(1000000 + Math.random() * 9000000); // Generate random ISBN
-      const recommendationQuery = `
-        INSERT INTO Recommendation (Username, Book_isbn, Recommended_isbn, Comment )
-        VALUES (?, ?, '0000000000000', ?)
-      `;
-      db.query(recommendationQuery, [username, randomISBN, recommendation], (err, result) => {
-        if (err) {
-          console.error("Error inserting into Recommendation table:", err);
-          return res.status(500).json({ message: "Database error in recommendation." });
-        }
-
-        res.status(200).json({ message: "Form submitted successfully!" });
-      });*/
     });
   });
 });
@@ -157,6 +143,20 @@ app.post("/BookAdd", (req, res) => {
       )}`,
     });
   }
+  if (!Phone || Phone.length !== 10 || isNaN(Phone)) {
+    return res.status(400).json({
+      message: "Invalid Phone number, must be 10 digits",
+    });  } else {
+    console.log("Phone number is valid");
+  }
+  if (!Email || !Email.includes("@") || !Email.includes(".")) {
+    return res.status(400).json({
+      message: "Invalid email format",
+    });    } else {
+    console.log("Email format is valid");
+  }
+  
+  
 
   // Normalize inputs
   const normalizedPublisher = Publisher.trim();
@@ -322,204 +322,6 @@ app.post("/BookAdd", (req, res) => {
   });
 });
 
-app.post("/BoookAdd", (req, res) => {
-  const {
-    ISBN,
-    Title,
-    SeriesName,
-    BookOrder,
-    Fname,
-    Lname,
-    DOB,
-    Publisher,
-    Phone,
-    Email,
-    Description,
-    PurchaseLink,
-    isFavourite,
-    adminUsername,
-    Genres,
-  } = req.body;
-
-  // Check for missing fields and construct a detailed error message
-  const missingFields = [];
-  if (!ISBN) missingFields.push("ISBN");
-  if (!Title) missingFields.push("Title");
-  if (!Fname) missingFields.push("First Name (Fname)");
-  if (!Lname) missingFields.push("Last Name (Lname)");
-  if (!Publisher) missingFields.push("Publisher");
-  if (!Genres || Genres.length === 0)
-    missingFields.push("At least one genre selection");
-
-  if (missingFields.length > 0) {
-    return res.status(400).json({
-      message: `The following required fields are missing: ${missingFields.join(
-        ", "
-      )}`,
-    });
-  }
-
-  // Normalize inputs
-  const normalizedPublisher = Publisher.trim();
-  const normalizedFname = Fname.trim();
-  const normalizedLname = Lname.trim();
-
-  // Helper function to insert the book
-  const insertBook = (authorId) => {
-    const insertBookQuery = `
-      INSERT INTO Book (ISBN, Title, Purchase_link, Author_id, Publisher_name, Summary)
-      VALUES (?, ?, ?, ?, ?, ?)`;
-    db.query(
-      insertBookQuery,
-      [ISBN, Title, PurchaseLink, authorId, normalizedPublisher, Description],
-      async (err) => {
-        if (err) {
-          console.error("Error inserting book:", err);
-          return res
-            .status(500)
-            .json({ message: "Database error while inserting book." });
-        }
-        res.status(200).json({ message: "Book added successfully!" });
-
-        if (SeriesName && BookOrder) {
-          const insertSeriesQuery = `
-          INSERT INTO Book_series (Book_isbn, Series_name, Book_order)
-          VALUES (?, ?, ?)`;
-
-          db.query(
-            insertSeriesQuery,
-            [ISBN, SeriesName, BookOrder],
-            (seriesErr) => {
-              if (seriesErr) {
-                console.error("Error inserting into Book_series:", seriesErr);
-                return res.status(500).json({
-                  message: "Database error while inserting into Book_series.",
-                });
-              }
-              console.log("Book series added successfully!");
-            }
-          );
-        }
-        // Handle Favorites: Only if isFavourite is true
-        if (isFavourite) {
-          const insertFavoriteQuery = `
-          INSERT INTO Favorites (Username, Book_isbn)
-          VALUES (?, ?)
-          ON DUPLICATE KEY UPDATE Book_isbn = VALUES(Book_isbn);
-        `;
-
-          db.query(insertFavoriteQuery, [adminUsername, ISBN], (favErr) => {
-            if (favErr) {
-              console.error("Error inserting into Favorites:", favErr);
-              return res
-                .status(500)
-                .json({ message: "Database error while updating favorites." });
-            }
-            console.log("Favorite status updated successfully!");
-          });
-        }
-
-        try {
-          await insertGenres(); // Call the insertGenres function
-          console.log("Genres added successfully!");
-        } catch (err) {
-          console.error("Error inserting genres:", err);
-          res
-            .status(500)
-            .json({ message: "Database error while inserting genres." });
-        }
-      }
-    );
-  };
-
-  // Function to insert genres
-  const insertGenres = () => {
-    if (Genres && Genres.length > 0) {
-      const genreQueries = Genres.map((genre) => {
-        return new Promise((resolve, reject) => {
-          db.query(
-            "INSERT INTO Posseses (Book_isbn, Genre_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE Genre_name = Genre_name",
-            [ISBN, genre],
-            (err) => {
-              if (err) {
-                console.error(`Error inserting genre: ${genre}`, err);
-                reject(err);
-              } else {
-                console.log(`Genre added: ${genre}`);
-                resolve();
-              }
-            }
-          );
-        });
-      });
-
-      return Promise.all(genreQueries);
-    } else {
-      console.log("No genres to add.");
-      return Promise.resolve();
-    }
-  };
-
-  // Step 1: Check if the author exists
-  const checkAuthorQuery = `SELECT ID FROM Author WHERE Fname = ? AND Lname = ?`;
-  db.query(
-    checkAuthorQuery,
-    [normalizedFname, normalizedLname],
-    (err, authorResults) => {
-      if (err) {
-        console.error("Error checking author:", err);
-        return res
-          .status(500)
-          .json({ message: "Database error while checking author." });
-      }
-
-      let authorId;
-
-      const handlePublisher = () => {
-        // Use INSERT IGNORE to add the publisher only if it doesn't exist
-        const insertPublisherQuery = `INSERT IGNORE INTO Publisher (Name, Email, Phone) VALUES (?, ?, ?)`;
-        db.query(
-          insertPublisherQuery,
-          [normalizedPublisher, Email, Phone],
-          (err) => {
-            if (err) {
-              console.error("Error inserting publisher:", err);
-              return res
-                .status(500)
-                .json({ message: "Database error while inserting publisher." });
-            }
-            console.log("Publisher verified/added:", normalizedPublisher);
-            insertBook(authorId);
-          }
-        );
-      };
-
-      if (authorResults.length > 0) {
-        // Author exists
-        authorId = authorResults[0].ID;
-        handlePublisher();
-      } else {
-        // Insert new author
-        const insertAuthorQuery = `INSERT INTO Author (Fname, Lname, DOB) VALUES (?, ?, ?)`;
-        db.query(
-          insertAuthorQuery,
-          [normalizedFname, normalizedLname, DOB],
-          (err, authorInsertResult) => {
-            if (err) {
-              console.error("Error inserting author:", err);
-              return res
-                .status(500)
-                .json({ message: "Database error while inserting author." });
-            }
-            authorId = authorInsertResult.insertId;
-            handlePublisher();
-          }
-        );
-      }
-    }
-  );
-});
-
 app.post("/settings", (req, res) => {
   const { username, password, genres } = req.body;
 
@@ -619,6 +421,77 @@ function all(res) {
 
 /**
  * tableName = string,
+ * attributes = an array of strings
+ */
+function add(res, tableName, attributes) {
+  const query = "INSERT INTO ?? VALUES (?)";
+  return db.query(query, [tableName, attributes], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error inserting into ${tableName}`, details: err });
+    } else {
+      return res.status(201).send({ msg: "Operation was succseful!" });
+    }
+  });
+}
+
+/**
+ * tableName = string
+ * whereClause = list of objects. where the column name is the key and value is the column value
+ */
+
+function my_delete(res, tableName, whereClause) {
+  const query =
+    "DELETE FROM ?? WHERE " +
+    whereClause
+      .map((item) => {
+        return mysql.escape(item);
+      })
+      .join(" AND ");
+
+  return db.query(query, [tableName, whereClause], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error deleting from ${tableName}`, details: err });
+    } else {
+      return res.status(204).end();
+    }
+  });
+}
+
+/**
+ * tableName = string,
+ * attributes = array of strings,
+ * whereClause = list of objects. where the column name is the key and value is the column value
+ */
+function get(res, tableName, attributes, whereClause) {
+  let query =
+    "SELECT ?? FROM ?? WHERE " +
+    whereClause
+      .map((item) => {
+        return mysql.escape(item);
+      })
+      .join(" AND ");
+
+  if (whereClause.length == 0) {
+    query = "SELECT ?? FROM ??";
+  }
+
+  db.query(query, [attributes, tableName, whereClause], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error selecting from ${tableName}`, details: err });
+    } else {
+      return res.status(200).json(data);
+    }
+  });
+}
+
+/**
+ * tableName = string,
  * attributes = array of strings,
  */
 function getTags(res, tableName, attributes) {
@@ -632,6 +505,32 @@ function getTags(res, tableName, attributes) {
     } else {
       data[0].Name = JSON.parse(data[0].Name);
       return res.status(200).json(data[0].Name);
+    }
+  });
+}
+
+/**
+ * tableName = string
+ * attributes = an object. For each key-val pair the column name is the key and  the column value is the new value
+ * whereClause = list of objects. where the column name is the key and  the column value is the value
+ */
+
+function modify(res, tableName, attributes, whereClause) {
+  const query =
+    "UPDATE ?? SET ? WHERE " +
+    whereClause
+      .map((item) => {
+        return mysql.escape(item);
+      })
+      .join(" AND ");
+
+  db.query(query, [tableName, attributes], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error modifying ${tableName}`, details: err });
+    } else {
+      return res.status(204).end();
     }
   });
 }
@@ -691,39 +590,10 @@ GROUP BY Book.ISBN
  * isbn - string
  */
 function getBookAndAuthor(res, isbn) {
-  const query = `SELECT Book.ISBN, Book.Title, Fname, Lname, Series_name, Book_order 
+  const query = `SELECT Book.ISBN, Fname, Lname, Series_name, Book_order 
     FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
     WHERE Book.ISBN= ?`;
   db.query(query, [isbn], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error selecting from Book`, details: err });
-    } else {
-      return res.status(200).json(data);
-    }
-  });
-}
-
-function getBookByTitle(res, search) {
-  const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS AuthorName, Series_name, Book_order 
-    FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
-    WHERE Book.Title LIKE ? OR Author.Fname LIKE ? OR Author.Lname LIKE ? `;
-  db.query(query, [search, search, search], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error selecting from Book`, details: err });
-    } else {
-      return res.status(200).json(data);
-    }
-  });
-}
-
-function getAllBookAndAuthor(res) {
-  const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS AuthorName, Series_name, Book_order 
-    FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN`;
-  db.query(query, (err, data) => {
     if (err) {
       return res
         .status(500)
@@ -738,7 +608,7 @@ function getAllBookAndAuthor(res) {
  * isbn - string
  * username - string
  */
-function getAllLikeInfoRecommendation(res, isbn, username) {
+/*function getAllLikeInfoRecommendation(res, isbn, username) {
   const query = `SELECT Book_isbn, Recommended_isbn, Comment, Up_vote, Down_vote, Username, Title, Fname, Lname, 
 JSON_ARRAYAGG(Tag_name) AS Tag
 FROM ((Recommendation JOIN Book ON Book.ISBN=Recommended_isbn) JOIN  Author ON Author.ID=Book.Author_id) 
@@ -760,7 +630,71 @@ GROUP BY Book_isbn, Recommended_isbn,Username
       return res.status(200).json(data);
     }
   });
+}*/
+
+function getAllLikeInfoRecommendation(res, isbn, username) {
+  const query = `
+    SELECT 
+      Book_isbn, 
+      Recommended_isbn, 
+      Comment, 
+      Up_vote, 
+      Down_vote, 
+      Username, 
+      Title, 
+      Fname, 
+      Lname, 
+      JSON_ARRAYAGG(Tag_name) AS Tag
+    FROM 
+      ((Recommendation 
+      JOIN Book ON Book.ISBN = Recommended_isbn) 
+      JOIN Author ON Author.ID = Book.Author_id) 
+      NATURAL JOIN Recommendation_tag
+    WHERE 
+      Book_isbn = ? 
+      AND Recommended_isbn IN (
+        SELECT 
+          PS.Book_isbn 
+        FROM 
+          Posseses AS PS 
+          NATURAL JOIN Likes AS LS 
+        WHERE 
+          Username = ?
+      )
+      AND EXISTS (
+        SELECT 1 
+        FROM Likes 
+        WHERE 
+          Likes.Username = ? 
+          AND Likes.Genre_name IN (
+            SELECT Tag_name 
+            FROM Recommendation_tag 
+            WHERE Recommendation_tag.Recommended_isbn = Book.ISBN
+          )
+      )
+    GROUP BY 
+      Book_isbn, 
+      Recommended_isbn, 
+      Username;
+  `;
+  console.log("Query:", query);
+  console.log("Parameters:", [isbn, username, username]);
+  
+  db.query(query, [isbn, username, username], (err, data) => {
+    if (err) {
+      return res
+        .status(500)
+        .send({ error: `Error selecting recommendations`, details: err });
+    } else {
+      data = data.map((entry) => {
+        entry.Tag = JSON.parse(entry.Tag);
+        return entry;
+      });
+      return res.status(200).json(data);
+    }
+  });
 }
+
 
 /**
  * isbn - string
@@ -1021,7 +955,7 @@ app.get(
   }
 );
 
-//getInfoBook or get Book and author or search by title
+//getInfoBook or get Book and author
 app.get(
   "/book/:isbn",
   [
@@ -1039,29 +973,6 @@ app.get(
       getBookAndAuthor(res, isbn);
     } else {
       getInfoBook(res, isbn);
-    }
-  }
-);
-
-//get all books, and get all books filtered by keyword
-app.get(
-  "/book",
-  [
-    query("search")
-      .optional()
-      .isString()
-      .trim()
-      .escape()
-      .withMessage("Search must be a string"),
-    handleValidationErrors,
-  ],
-  (req, res) => {
-    const search = req.query.search;
-
-    if (search != undefined) {
-      getBookByTitle(res, "%" + search + "%");
-    } else {
-      getAllBookAndAuthor(res);
     }
   }
 );
@@ -1218,7 +1129,6 @@ app.post("/adminSettings", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log("hi");
   const { username, password } = req.body;
 
   console.log(username);
@@ -1285,55 +1195,6 @@ app.post("/login", (req, res) => {
     });
   });
 });
-
-// create a function to get the author name from its id
-function getAuthorById(req, res) {
-  const { authorId } = req.params; // Get the authorId from the request parameters
-
-  const query = "SELECT Fname, Lname FROM Author WHERE ID = ?";
-
-  db.query(query, [authorId], (err, data) => {
-    if (err) {
-      return res.json({ error: "Error fetching author details", details: err });
-    }
-    if (data.length > 0) {
-      return res.json(data[0]); // Return the first and last name
-    } else {
-      return res.status(404).json({ message: "Author not found" });
-    }
-  });
-}
-
-app.get("/search/browse", (req, res) => {
-  const searchTerm = req.query.q; // The word the user typed in
-  const searchPattern = `%${searchTerm}%`; // For partial matches
-
-  const searchQuery = `
-    SELECT 
-      Book.ISBN, 
-      Book.Title, 
-      CONCAT(Author.Fname, ' ', Author.Lname) AS AuthorName 
-    FROM 
-      Book
-    LEFT JOIN 
-      Author 
-    ON 
-      Book.Author_id = Author.ID
-    WHERE 
-      Book.Title LIKE ? OR CONCAT(Author.Fname, ' ', Author.Lname) LIKE ?
-  `;
-
-  db.query(searchQuery, [searchPattern, searchPattern], (err, results) => {
-    if (err) {
-      console.error("Error executing search query:", err.message);
-      return res.status(500).send("Failed to fetch search results.");
-    }
-
-    res.json(results); // Send the results back to the frontend
-  });
-});
-
-app.get("/author/:authorId", getAuthorById);
 
 // Start the server
 app.listen(8800, () => {
