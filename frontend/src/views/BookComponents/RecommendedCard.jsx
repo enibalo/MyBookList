@@ -15,6 +15,9 @@ export default function RecommendedCard({ recc }) {
   let [downVote, setDownVote] = useState(0);
   let [clickedUp, setClickedUp] = useState(false);
   let [clickedDown, setClickedDown] = useState(false);
+  let [isAdmin, setIsAdmin] = useState(
+    JSON.parse(localStorage.getItem("isAdmin"))
+  );
 
   useEffect(() => {
     setDownVote(recc.Down_vote);
@@ -25,6 +28,7 @@ export default function RecommendedCard({ recc }) {
   }, []);
 
   function handleClick(type, reccIsbn, username) {
+    if (isAdmin) return;
     if ("downvote" == type) {
       let value = clickedDown ? -1 : 1;
       setDownVote((prevCount) => prevCount + value);
