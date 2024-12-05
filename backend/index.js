@@ -619,77 +619,6 @@ function all(res) {
 
 /**
  * tableName = string,
- * attributes = an array of strings
- */
-function add(res, tableName, attributes) {
-  const query = "INSERT INTO ?? VALUES (?)";
-  return db.query(query, [tableName, attributes], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error inserting into ${tableName}`, details: err });
-    } else {
-      return res.status(201).send({ msg: "Operation was succseful!" });
-    }
-  });
-}
-
-/**
- * tableName = string
- * whereClause = list of objects. where the column name is the key and value is the column value
- */
-
-function my_delete(res, tableName, whereClause) {
-  const query =
-    "DELETE FROM ?? WHERE " +
-    whereClause
-      .map((item) => {
-        return mysql.escape(item);
-      })
-      .join(" AND ");
-
-  return db.query(query, [tableName, whereClause], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error deleting from ${tableName}`, details: err });
-    } else {
-      return res.status(204).end();
-    }
-  });
-}
-
-/**
- * tableName = string,
- * attributes = array of strings,
- * whereClause = list of objects. where the column name is the key and value is the column value
- */
-function get(res, tableName, attributes, whereClause) {
-  let query =
-    "SELECT ?? FROM ?? WHERE " +
-    whereClause
-      .map((item) => {
-        return mysql.escape(item);
-      })
-      .join(" AND ");
-
-  if (whereClause.length == 0) {
-    query = "SELECT ?? FROM ??";
-  }
-
-  db.query(query, [attributes, tableName, whereClause], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error selecting from ${tableName}`, details: err });
-    } else {
-      return res.status(200).json(data);
-    }
-  });
-}
-
-/**
- * tableName = string,
  * attributes = array of strings,
  */
 function getTags(res, tableName, attributes) {
@@ -703,32 +632,6 @@ function getTags(res, tableName, attributes) {
     } else {
       data[0].Name = JSON.parse(data[0].Name);
       return res.status(200).json(data[0].Name);
-    }
-  });
-}
-
-/**
- * tableName = string
- * attributes = an object. For each key-val pair the column name is the key and  the column value is the new value
- * whereClause = list of objects. where the column name is the key and  the column value is the value
- */
-
-function modify(res, tableName, attributes, whereClause) {
-  const query =
-    "UPDATE ?? SET ? WHERE " +
-    whereClause
-      .map((item) => {
-        return mysql.escape(item);
-      })
-      .join(" AND ");
-
-  db.query(query, [tableName, attributes], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error modifying ${tableName}`, details: err });
-    } else {
-      return res.status(204).end();
     }
   });
 }
@@ -1140,7 +1043,7 @@ app.get(
   }
 );
 
-//getInfoBook or get Book and author or search by title
+//get all books, and get all books filtered by keyword
 app.get(
   "/book",
   [
@@ -1159,29 +1062,6 @@ app.get(
       getBookByTitle(res, "%" + search + "%");
     } else {
       getAllBookAndAuthor(res);
-    }
-  }
-);
-
-//getInfoBook or get Book and author or search by title
-app.get(
-  "/book",
-  [
-    query("search")
-      .optional()
-      .isString()
-      .trim()
-      .escape()
-      .withMessage("Search must be a string"),
-    handleValidationErrors,
-  ],
-  (req, res) => {
-    const search = req.query.search;
-
-    if (search != undefined) {
-      getBookByTitle(res, "%" + search + "%");
-    } else {
-      all(res);
     }
   }
 );
