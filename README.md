@@ -1,21 +1,25 @@
-BackEnd is for our Database/Server stuff (nothing to see here because we haven't done anything yet)
+How To Run Our Project
 
-frontend is for React stuff. 
-Below is the current file structure (any file/foldr not included here can be ignored for now):  <br />
-    |frontend  <br />
-    &nbsp;|src  <br />
-    &ensp;  | assets - for pictures  <br />
-    &ensp;  | components - for reusable components like Header, Login Form, Toggle groups so we don't recreate stuff we share.   <br />
-    &ensp;  | views - for web pages like Home Page, User Setting Page  <br />
-    &emsp;      | BookComponents - My web page file was getting kind of long, so I decided to divide it into smaller components to make it easier to code. Feel free to do the same.  <br />
-    &ensp;  | styles - Is for all of our style sheets. Our shared styles go in index.css. Each web page gets it's own style sheet for style that is specific to it alone, using module.css. You can look at my file or the picture for reference. (In order to prevent naming conflicts. ) <br />
-    &nbsp;main.jsx - Controls our current routes. Use this as a reference: https://www.theodinproject.com/lessons/node-path-react-new-react-router. ( or Instagram). <br />
+1. Download the project from github.
+2. Unzip the My_book_list folder.
+3. Create a My_book_list database, in MariaDB. Run the the Create.sql, and then Insert.sql file ( both are located in the root My_book_list folder) in MariaDB.
+4. cd into backend folder from a terminal, and run npm start.
+5. cd into frontend folder from a terminal, and run npm run dev.
+6. npm run dev, should have also inputted a link: http://localhost:5173.
+7. Copy+paste the link into the browser. Done!
 
+File Structure
+(any file other than what is specified here can be ignored )
 
-![alt text](https://github.com/enibalo/MyBookList/blob/df0f2a74df878fad422894dcb4b4e3c4ca32a8f2/frontend/src/assets/image.png)
-For more info on css modules: https://www.makeuseof.com/react-components-css-modules-style/
-The CSS is the same, the only thing that changes is the file name, and the way you use it in the React file. className={styles.theClassName} id={styles.theIDName}
+BackEnd is for our Server.
+index.js - all of our backend stuff
 
-
-
-
+Frontend is for the website/user-interface.
+Below is the current file structure: <br />
+|frontend <br />
+&nbsp;&nbsp;|src <br />
+&ensp;&ensp; | assets - for pictures <br />
+&ensp;&ensp; | components - for reusable components like Header, Login Form, Toggle groups so we don't recreate stuff we share. <br />
+&ensp;&ensp; | views - for web pages like Home Page, User Setting Page <br />
+&ensp;&ensp; | styles - Is for all of our style sheets.
+&nbsp;&nbsp;main.jsx - Controls our current routes.
