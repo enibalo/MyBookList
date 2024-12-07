@@ -605,7 +605,7 @@ app.post("/settings", (req, res) => {
   // If neither password nor genres are provided, return an error
   res.status(400).send("Invalid request. Provide either a password or genres.");
 });
-
+//testing123
 function all(res) {
   const query = "SELECT * FROM Book";
   db.query(query, (err, data) => {
@@ -621,14 +621,14 @@ function all(res) {
  * tableName = string,
  * attributes = array of strings,
  */
-function getTags(res, tableName, attributes) {
-  let query = "SELECT JSON_ARRAYAGG(??) AS Name FROM ?? ";
+function getTags(res) {
+  let query = "SELECT JSON_ARRAYAGG(`Name`) AS Name FROM Tag ";
 
-  db.query(query, [attributes, tableName], (err, data) => {
+  db.query(query, (err, data) => {
     if (err) {
       return res
         .status(500)
-        .send({ error: `Error selecting from ${tableName}`, details: err });
+        .send({ error: `Error selecting from Tag`, details: err });
     } else {
       data[0].Name = JSON.parse(data[0].Name);
       return res.status(200).json(data[0].Name);
@@ -687,25 +687,7 @@ GROUP BY Book.ISBN
   });
 }
 
-/**
- * isbn - string
- */
-function getBookAndAuthor(res, isbn) {
-  const query = `SELECT Book.ISBN, Book.Title, Fname, Lname, Series_name, Book_order 
-    FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
-    WHERE Book.ISBN= ?`;
-  db.query(query, [isbn], (err, data) => {
-    if (err) {
-      return res
-        .status(500)
-        .send({ error: `Error selecting from Book`, details: err });
-    } else {
-      return res.status(200).json(data);
-    }
-  });
-}
-
-function getBookByTitle(res, search) {
+function getBookBySearch(res, search) {
   const query = `SELECT Book.ISBN, Book.Title, CONCAT(Fname, " ", Lname) AS AuthorName, Series_name, Book_order 
     FROM (Book JOIN Author ON Book.Author_id = Author.ID ) LEFT OUTER JOIN Book_series ON Book_series.Book_isbn=Book.ISBN 
     WHERE Book.Title LIKE ? OR Author.Fname LIKE ? OR Author.Lname LIKE ? `;
@@ -1026,20 +1008,12 @@ app.get(
   "/book/:isbn",
   [
     param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
-    query("short")
-      .optional()
-      .isBoolean()
-      .withMessage("Short must be a boolean"),
     handleValidationErrors,
   ],
   (req, res) => {
     const isbn = req.params.isbn;
     const short_response = req.query.short;
-    if (short_response == "true") {
-      getBookAndAuthor(res, isbn);
-    } else {
-      getInfoBook(res, isbn);
-    }
+    getInfoBook(res, isbn);
   }
 );
 
@@ -1059,7 +1033,7 @@ app.get(
     const search = req.query.search;
 
     if (search != undefined) {
-      getBookByTitle(res, "%" + search + "%");
+      getBookBySearch(res, "%" + search + "%");
     } else {
       getAllBookAndAuthor(res);
     }
@@ -1073,7 +1047,7 @@ app.get("/books", (req, res) => {
 
 // get all tags,
 app.get("/tag", (req, res) => {
-  getTags(res, "Tag", ["Name"]);
+  getTags(res);
 });
 
 //testing123
@@ -1081,7 +1055,7 @@ app.get("/", (req, res) => {
   res.json("hello world!");
 });
 
-//upvote/downvote
+//upvote
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/upvote",
   [
@@ -1099,7 +1073,7 @@ app.put(
     modifyVote(res, "Recommendation", "Up_vote", value, [user, isbn, reccIsbn]);
   }
 );
-
+//downvote
 app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/downvote",
   [

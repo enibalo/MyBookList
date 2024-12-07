@@ -43,6 +43,7 @@ INSERT INTO Genre (`Name`, Main_genre) VALUES
 ('Epic Fantasy', 'Fiction'),
 ('Space Opera', 'Fiction'),
 ('Fantasy', 'Fiction'),
+('Romance', 'Fiction'),
 ('Historical Romance', 'Fiction'),
 ('Detective Fiction', 'Fiction'),
 ('Mystery', 'Fiction'),
