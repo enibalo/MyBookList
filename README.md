@@ -9,7 +9,7 @@ How To Run Our Project
 7. Copy+paste the link into the browser. Done!
 
 File Structure
-(any file other than what is specified here can be ignored )
+(any file/folder other than what is specified here can be ignored )
 
 BackEnd is for our Server.
 index.js - all of our backend stuff
