@@ -1315,9 +1315,10 @@ function getAuthorById(req, res) {
   });
 }
 
-app.get("/search/browse", (req, res) => {
-  const searchTerm = req.query.q; // The word the user typed in
-  const searchPattern = `%${searchTerm}%`; // For partial matches
+// Function to handle the book search logic
+function searchBooks(req, res) {
+  const searchTerm = req.query.q; // Retrieve the search term from query params
+  const searchPattern = `%${searchTerm}%`; // Prepare the search pattern for partial matches
 
   const searchQuery = `
     SELECT 
@@ -1334,15 +1335,20 @@ app.get("/search/browse", (req, res) => {
       Book.Title LIKE ? OR CONCAT(Author.Fname, ' ', Author.Lname) LIKE ?
   `;
 
+  // Execute the query
   db.query(searchQuery, [searchPattern, searchPattern], (err, results) => {
     if (err) {
       console.error("Error executing search query:", err.message);
-      return res.status(500).send("Failed to fetch search results.");
+      return res.status(500).json({ error: "Failed to fetch search results" });
     }
 
-    res.json(results); // Send the results back to the frontend
+    res.json(results); // Send the search results to the frontend
   });
-});
+}
+
+// Define the endpoint and call the function
+app.get("/search/browse", searchBooks);
+
 
 
 
