@@ -15,7 +15,7 @@ const {
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173" })); // Allow Vite frontend
+app.use(cors()); // Allow Vite frontend
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -151,11 +151,12 @@ app.post("/BookAdd", (req, res) => {
 
   if (Phone && (Phone.length !== 10 || !/^\d+$/.test(Phone))) {
     return res.status(400).json({
-      message: "Invalid phone number. It must be 10 digits long and contain only numbers.",
+      message:
+        "Invalid phone number. It must be 10 digits long and contain only numbers.",
     });
   }
 
-  if (Email && (!Email.includes('@') || !Email.includes('.'))) {
+  if (Email && (!Email.includes("@") || !Email.includes("."))) {
     return res.status(400).json({
       message: "Invalid email address. It must contain both '@' and '.'",
     });
@@ -163,15 +164,21 @@ app.post("/BookAdd", (req, res) => {
   if (PurchaseLink) {
     try {
       new URL(PurchaseLink);
-      if (!PurchaseLink.startsWith("http://") && !PurchaseLink.startsWith("https://")) {
-        return res.status(400).json({ message: "Invalid purchase link. URL must start with http:// or https://." });
+      if (
+        !PurchaseLink.startsWith("http://") &&
+        !PurchaseLink.startsWith("https://")
+      ) {
+        return res.status(400).json({
+          message:
+            "Invalid purchase link. URL must start with http:// or https://.",
+        });
       }
     } catch (e) {
-      return res.status(400).json({ message: "Invalid purchase link. Please provide a valid URL." });
+      return res.status(400).json({
+        message: "Invalid purchase link. Please provide a valid URL.",
+      });
     }
   }
-  
-  
 
   // Validate genres to ensure no overlap between fiction and non-fiction
   const genresQuery = `SELECT Name, Main_genre FROM Genre`;
@@ -225,7 +232,7 @@ app.post("/BookAdd", (req, res) => {
             const insertSeriesQuery = `
             INSERT INTO Book_series (Book_isbn, Series_name, Book_order)
             VALUES (?, ?, ?)`;
-  
+
             db.query(
               insertSeriesQuery,
               [ISBN, SeriesName, BookOrder],
@@ -1145,5 +1152,6 @@ app.get("/author/:authorId", getAuthorById);
 
 // Start the server
 app.listen(8800, () => {
+  console.log(process.env.DB_HOST);
   console.log(`Server running on http://localhost:8800\n`);
 });
