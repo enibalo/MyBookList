@@ -133,22 +133,70 @@ app.post(
 app.post(
   "/BookAdd",
   [
-    body("ISBN").isISBN().withMessage("Invalid ISBN format").trim(),
-    body("Title").isString().trim().escape().withMessage("Invalid book title"),
-    body("Fname").isString().trim().escape().withMessage("Invalid first name"),
-    body("Lname").isString().trim().escape().withMessage("Invalid last name"),
+    body("ISBN").trim().isISBN().withMessage("Invalid ISBN format"),
+    body("Title").isString().trim().escape().withMessage("Title is required"),
+    body("SeriesName")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Invalid series name"),
+    body("BookOrder")
+      .optional()
+      .isInt()
+      .withMessage("Book order must be a positive integer"),
+    body("Fname")
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("First name is required"),
+    body("Lname")
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Last name is required"),
+    body("DOB")
+      .optional()
+      .isISO8601()
+      .withMessage("Invalid date of birth format. Use YYYY-MM-DD"),
     body("Publisher")
       .isString()
       .trim()
       .escape()
-      .withMessage("Invalid publisher name"),
+      .withMessage("Publisher is required"),
     body("Phone")
       .optional()
       .isMobilePhone()
       .withMessage("Invalid phone number"),
     body("Email").optional().isEmail().withMessage("Invalid email address"),
-    body("PurchaseLink").optional().isURL().withMessage("Invalid URL"),
-    body("Genres").isArray().withMessage("Genres must be an array"),
+    body("Description")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Invalid description format"),
+    body("PurchaseLink")
+      .optional()
+      .isURL()
+      .withMessage("Invalid purchase link URL"),
+    body("isFavourite")
+      .optional()
+      .isBoolean()
+      .withMessage("isFavourite must be a boolean"),
+    body("adminUsername")
+      .isString()
+      .trim()
+      .notEmpty()
+      .withMessage("Admin username is required"),
+    body("Genres")
+      .isArray({ min: 1 })
+      .withMessage("Genres must be a non-empty array"),
+    body("Genres.*")
+      .isString()
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Each genre must be a non-empty string"),
     handleValidationErrors,
   ],
   (req, res) => {
@@ -425,8 +473,9 @@ app.post(
     body("password")
       .optional()
       .isString()
-      .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters long"),
+      .trim()
+      .escape()
+      .withMessage("Invalid password"),
     body("genres").optional().isArray().withMessage("Genres must be an array"),
     handleValidationErrors,
   ],
@@ -874,7 +923,7 @@ function updateRecommendation(res, value, primaryKey, tags, tagsOnly) {
 app.get(
   "/book/:isbn/recommendation",
   [
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
     query("filter")
       .optional()
       .isBoolean()
@@ -906,7 +955,7 @@ app.get(
   "/users/:user/book/:isbn/recommendation",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
     handleValidationErrors,
   ],
   (req, res) => {
@@ -920,7 +969,7 @@ app.get(
 app.get(
   "/book/:isbn",
   [
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
     handleValidationErrors,
   ],
   (req, res) => {
@@ -973,8 +1022,8 @@ app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/upvote",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
-    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    param("reccIsbn").trim().isISBN().withMessage("Invalid recommended ISBN"),
     body("upvote").isInt().withMessage("Upvote must be an integer"),
     handleValidationErrors,
   ],
@@ -991,8 +1040,8 @@ app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn/downvote",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
-    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    param("reccIsbn").trim().isISBN().withMessage("Invalid recommended ISBN"),
     body("downvote").isInt().withMessage("Downvote must be an integer"),
     handleValidationErrors,
   ],
@@ -1014,8 +1063,8 @@ app.put(
   "/users/:user/book/:isbn/recommendation/:reccIsbn",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
-    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    param("reccIsbn").trim().isISBN().withMessage("Invalid recommended ISBN"),
     body("comment").isString().trim().escape().withMessage("Invalid comment"),
     body("tags").isArray().withMessage("Tags must be an array of strings"),
     body("tags.*")
@@ -1044,8 +1093,8 @@ app.post(
   "/users/:user/book/:isbn/recommendation/:reccIsbn",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
-    param("isbn").isISBN().withMessage("Invalid ISBN format").trim(),
-    param("reccIsbn").isISBN().withMessage("Invalid recommended ISBN").trim(),
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    param("reccIsbn").trim().isISBN().withMessage("Invalid recommended ISBN"),
     body("comment").isString().trim().escape().withMessage("Invalid comment"),
     body("tags").isArray().withMessage("Tags must be an array of strings"),
     body("tags.*")
@@ -1079,11 +1128,7 @@ app.post(
       .trim()
       .notEmpty()
       .withMessage("Invalid username"),
-    body("password")
-      .isString()
-      .trim()
-      .notEmpty()
-      .withMessage("Invalid password"),
+    body("password").isString().trim().withMessage("Invalid password"),
     handleValidationErrors,
   ],
   (req, res) => {
@@ -1123,16 +1168,8 @@ app.post(
 app.post(
   "/login",
   [
-    body("username")
-      .isString()
-      .trim()
-      .notEmpty()
-      .withMessage("Username is required"),
-    body("password")
-      .isString()
-      .trim()
-      .notEmpty()
-      .withMessage("Password is required"),
+    body("username").isString().trim().withMessage("Username is required"),
+    body("password").isString().trim().withMessage("Password is required"),
     handleValidationErrors,
   ],
   (req, res) => {
@@ -1228,11 +1265,7 @@ function getAuthorById(req, res) {
 app.get(
   "/search/browse",
   [
-    query("q")
-      .isString()
-      .trim()
-      .notEmpty()
-      .withMessage("Search term is required"),
+    query("q").isString().trim().withMessage("Search term is required"),
     handleValidationErrors,
   ],
   (req, res) => {
