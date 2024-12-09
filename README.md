@@ -1,6 +1,6 @@
 How To Run Our Project
 
-1. Download the project from github.
+1. Download the project from github. (You need to have npm, Vite, express-js installed).
 2. Unzip the My_book_list folder.
 3. Create a My_book_list database, in MariaDB. Run the the Create.sql, and then Insert.sql file ( both are located in the root My_book_list folder) in MariaDB.
 4. cd into backend folder from a terminal, and run npm start. (if command is not recognized please run "fnm env --use-on-cd | Out-String | Invoke-Expression" beforehand, same goes for frontend)
