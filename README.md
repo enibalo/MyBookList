@@ -21,5 +21,5 @@ Below is the current file structure: <br />
 &ensp;&ensp; | assets - for pictures <br />
 &ensp;&ensp; | components - for reusable components like Header, Login Form, Toggle groups so we don't recreate stuff we share. <br />
 &ensp;&ensp; | views - for web pages like Home Page, User Setting Page <br />
-&ensp;&ensp; | styles - Is for all of our style sheets.
+&ensp;&ensp; | styles - Is for all of our style sheets.<br />
 &nbsp;&nbsp;main.jsx - Controls our current routes.
