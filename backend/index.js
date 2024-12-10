@@ -70,6 +70,7 @@ app.get("/genres", (req, res) => {
   });
 });
 
+//FUNCTION START: getMainGenres
 app.get("/main-genres", (req, res) => {
   const query = "SELECT Name, Main_genre FROM Genre";
   db.query(query, (err, results) => {
@@ -81,9 +82,11 @@ app.get("/main-genres", (req, res) => {
     res.json(results); // Send all genres with their main genre
   });
 });
+//FUNCTION END: getMainGenres
 
 // API endpoint for form submission
-//add the thing to make sure passwordsMatch Lol
+
+//FUNCTION START: signup
 app.post(
   "/UpSign",
   [
@@ -131,6 +134,7 @@ app.post(
   }
 );
 
+//FUNCTION END: signup
 
 app.post(
   "/BookAdd",
@@ -492,6 +496,7 @@ app.post(
           .send("Invalid data. Ensure username and password are provided.");
       }
 
+      //FUNCTION START: UpdatePasswordUser
       const updatePasswordQuery =
         "UPDATE User SET Password = ? WHERE Username = ?";
       db.query(updatePasswordQuery, [password, username], (err, result) => {
@@ -509,10 +514,12 @@ app.post(
         console.log("Password updated successfully for username:", username);
         res.send("Password updated successfully!");
       });
+      //FUNCTION END: UpdatePasswordUser
 
       return; // Exit after handling "Change Password"
     }
 
+    //FUNCTION START: UpdateGenres
     // Handle Select Genres
     if (genres) {
       if (!username || !Array.isArray(genres)) {
@@ -562,13 +569,16 @@ app.post(
 
       return; // Exit after handling "Select Genres"
     }
-
+    //FUNCTION END: UpdateGenres
     // If neither password nor genres are provided, return an error
     res
       .status(400)
       .send("Invalid request. Provide either a password or genres.");
   }
 );
+
+//FUNCTION END: addBook
+
 //testing123
 function all(res) {
   const query = "SELECT * FROM Book";
@@ -1122,6 +1132,7 @@ app.post(
   }
 );
 
+//FUNCTION START: updatePasswordAdmin
 app.post(
   "/adminSettings",
   [
@@ -1166,8 +1177,7 @@ app.post(
     }
   }
 );
-
-// Log in function starts 
+//FUNCTION END: updatePasswordAdmin
 
 app.post(
   "/login",
@@ -1190,6 +1200,7 @@ app.post(
         .json({ message: "Username and password are required." });
     }
 
+    //FUNCTION START: adminLogin
     // First, check if the user is an admin
     const adminQuery = "SELECT * FROM Admin WHERE Username = ?";
     db.query(adminQuery, [username], (err, adminResults) => {
@@ -1213,6 +1224,7 @@ app.post(
             .json({ error: "Invalid username or password for admin." });
         }
       }
+      //FUNCTION END: adminLogin
 
       // If not an admin, check for regular user
       const userQuery = "SELECT * FROM User WHERE Username = ?";
@@ -1248,7 +1260,7 @@ app.post(
   }
 );
 
-// log in functionality ends 
+// log in functionality ends
 
 // create a function to get the author name from its id
 function getAuthorById(req, res) {
@@ -1268,8 +1280,7 @@ function getAuthorById(req, res) {
   });
 }
 
-
-// log in functionality 
+// log in functionality
 app.get(
   "/search/browse",
   [
