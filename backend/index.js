@@ -130,6 +130,8 @@ app.post(
     });
   }
 );
+
+// log in functionality 
 app.post(
   "/BookAdd",
   [
@@ -1165,6 +1167,8 @@ app.post(
   }
 );
 
+// Log in function starts 
+
 app.post(
   "/login",
   [
@@ -1262,6 +1266,8 @@ function getAuthorById(req, res) {
   });
 }
 
+
+// log in functionality 
 app.get(
   "/search/browse",
   [
