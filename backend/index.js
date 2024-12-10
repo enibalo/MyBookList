@@ -32,6 +32,12 @@ const db = mysql.createConnection({
   database: "My_book_list",
 });
 
+//At times, the sequence diagrams functions are translated into routes in our implementation,
+//because all a route does is execute the database function associated with that route.
+//To make finding a function easier we have labelled routes
+//with their corresponding function names in the sequence diagram.
+
+//FUNCTION START: getUsernameGenres
 app.get(
   "/user-genres/:username",
   [
@@ -45,7 +51,6 @@ app.get(
   (req, res) => {
     const { username } = req.params;
     const query = `SELECT Genre_name FROM Likes WHERE Username = ?`;
-
     db.query(query, [username], (err, results) => {
       if (err) {
         console.error("Error fetching user genres:", err);
@@ -57,7 +62,9 @@ app.get(
     });
   }
 );
+//FUNCTION End: getUsernameGenres
 
+//FUNCTION Start: getGenres
 app.get("/genres", (req, res) => {
   const fetchGenresQuery = "SELECT Name FROM Genre";
   db.query(fetchGenresQuery, (err, results) => {
@@ -69,6 +76,7 @@ app.get("/genres", (req, res) => {
     res.json(results.map((row) => row.Name));
   });
 });
+//FUNCTION End: getGenres
 
 //FUNCTION START: getMainGenres
 app.get("/main-genres", (req, res) => {
@@ -83,8 +91,6 @@ app.get("/main-genres", (req, res) => {
   });
 });
 //FUNCTION END: getMainGenres
-
-// API endpoint for form submission
 
 //FUNCTION START: signup
 app.post(
@@ -133,9 +139,9 @@ app.post(
     });
   }
 );
-
 //FUNCTION END: signup
 
+//FUNCTION START: addBook
 app.post(
   "/BookAdd",
   [
@@ -472,6 +478,8 @@ app.post(
   }
 );
 
+//FUNCTION END: addBook
+
 app.post(
   "/settings",
   [
@@ -577,9 +585,6 @@ app.post(
   }
 );
 
-//FUNCTION END: addBook
-
-//testing123
 function all(res) {
   const query = "SELECT * FROM Book";
   db.query(query, (err, data) => {
@@ -1179,6 +1184,7 @@ app.post(
 );
 //FUNCTION END: updatePasswordAdmin
 
+//FUNCTION START: loginUser
 app.post(
   "/login",
   [
@@ -1260,7 +1266,7 @@ app.post(
   }
 );
 
-// log in functionality ends
+//FUNCTION END: loginUser
 
 // create a function to get the author name from its id
 function getAuthorById(req, res) {
@@ -1280,7 +1286,7 @@ function getAuthorById(req, res) {
   });
 }
 
-// log in functionality
+//FUNCTION START: getBookByBrowse
 app.get(
   "/search/browse",
   [
@@ -1316,6 +1322,7 @@ app.get(
     });
   }
 );
+//FUNCTION END: getBookByBrowse
 
 app.get(
   "/author/:authorId",
