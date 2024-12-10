@@ -131,7 +131,7 @@ app.post(
   }
 );
 
-// log in functionality 
+
 app.post(
   "/BookAdd",
   [
@@ -1247,6 +1247,8 @@ app.post(
     });
   }
 );
+
+// log in functionality ends 
 
 // create a function to get the author name from its id
 function getAuthorById(req, res) {
