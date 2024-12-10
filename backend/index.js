@@ -32,12 +32,11 @@ const db = mysql.createConnection({
   database: "My_book_list",
 });
 
-//At times, the sequence diagrams functions are translated into routes in our implementation,
-//because all a route does is execute the database function associated with that route.
-//To make finding a function easier we have labelled routes
+//At times, the sequence diagrams functions are translated into routes in our implementation, since all a route does is execute the database function associated with that route.
+//To make finding a function easier we have labelled routes/sections of codes
 //with their corresponding function names in the sequence diagram.
 
-//FUNCTION START: getUsernameGenres
+//FUNCTION START: getUsereGenres
 app.get(
   "/user-genres/:username",
   [
@@ -62,7 +61,7 @@ app.get(
     });
   }
 );
-//FUNCTION End: getUsernameGenres
+//FUNCTION End: getUserGenres
 
 //FUNCTION Start: getGenres
 app.get("/genres", (req, res) => {
@@ -147,16 +146,8 @@ app.post(
   [
     body("ISBN").trim().isISBN().withMessage("Invalid ISBN format"),
     body("Title").isString().trim().escape().withMessage("Title is required"),
-    body("SeriesName")
-      .optional()
-      .isString()
-      .trim()
-      .escape()
-      .withMessage("Invalid series name"),
-    body("BookOrder")
-      .optional()
-      .isInt()
-      .withMessage("Book order must be a positive integer"),
+    body("SeriesName").optional().trim().escape(),
+    body("BookOrder").optional(),
     body("Fname")
       .isString()
       .trim()
@@ -1184,7 +1175,6 @@ app.post(
 );
 //FUNCTION END: updatePasswordAdmin
 
-//FUNCTION START: loginUser
 app.post(
   "/login",
   [
@@ -1233,6 +1223,8 @@ app.post(
       //FUNCTION END: adminLogin
 
       // If not an admin, check for regular user
+
+      //FUNCTION START: userLogin
       const userQuery = "SELECT * FROM User WHERE Username = ?";
       db.query(userQuery, [username], (err, userResults) => {
         if (err) {
@@ -1262,11 +1254,10 @@ app.post(
             .json({ error: "Invalid username or password." });
         }
       });
+      //FUNCTION END: userLogin
     });
   }
 );
-
-//FUNCTION END: loginUser
 
 // create a function to get the author name from its id
 function getAuthorById(req, res) {
