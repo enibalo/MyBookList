@@ -26,9 +26,9 @@ export default function EditRec() {
         .get(
           "http://localhost:8800/users/" +
             username +
-            "/book/" +
+            "/books/" +
             isbn +
-            "/recommendation"
+            "/recommendations"
         )
         .then((result) => {
           if (isMounted) {
@@ -109,9 +109,9 @@ function EditForm({ isbn, recc, username, toggle_id }) {
         .put(
           "http://localhost:8800/users/" +
             username +
-            "/book/" +
+            "/books/" +
             data.book_isbn +
-            "/recommendation/" +
+            "/recommendations/" +
             data.recommended_isbn,
           { comment: data.comment, tags: data.checkbox }
         )

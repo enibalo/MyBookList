@@ -14,9 +14,7 @@ export default function DefaultRec() {
     let isMounted = true;
     async function fetchData() {
       axios
-        .get(
-          "http://localhost:8800/book/" + isbn + "/recommendation?filter=false"
-        )
+        .get("http://localhost:8800/books/" + isbn + "/recommendations")
         .then((result) => {
           if (isMounted) {
             setReccs(result.data);

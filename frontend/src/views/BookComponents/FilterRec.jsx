@@ -21,9 +21,9 @@ export default function FilterRec() {
     async function fetchData() {
       axios
         .get(
-          "http://localhost:8800/book/" +
+          "http://localhost:8800/books/" +
             isbn +
-            "/recommendation?filter=true&username=" +
+            "/recommendations/filtered?username=" +
             username
         )
         .then((result) => {

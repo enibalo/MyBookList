@@ -927,40 +927,9 @@ function updateRecommendation(res, value, primaryKey, tags, tagsOnly) {
   });
 }
 
-//getAllInfoRecc and //getallinfoLikeRecc.
+//getUserPostsForAbook
 app.get(
-  "/book/:isbn/recommendation",
-  [
-    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
-    query("filter")
-      .optional()
-      .isBoolean()
-      .withMessage("Filter must be a boolean"),
-    query("username")
-      .optional()
-      .isString()
-      .trim()
-      .escape()
-      .withMessage("Invalid username"),
-    handleValidationErrors,
-  ],
-  (req, res) => {
-    const isbn = req.params.isbn;
-    const filter = req.query.filter;
-    const username = req.query.username;
-    if (filter == "true") {
-      if (username == undefined)
-        return res.status(400).send("Invalid request, username is missing.");
-      else getAllLikeInfoRecommendation(res, isbn, username);
-    } else {
-      getAllInfoRecommendation(res, isbn);
-    }
-  }
-);
-
-//getUserPostsForAbook for edit reccomendations
-app.get(
-  "/users/:user/book/:isbn/recommendation",
+  "/users/:user/books/:isbn/recommendations",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
     param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
@@ -973,26 +942,11 @@ app.get(
   }
 );
 
-//getInfoBook or get Book and author or search by title
+// get all books filtered by keyword
 app.get(
-  "/book/:isbn",
-  [
-    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
-    handleValidationErrors,
-  ],
-  (req, res) => {
-    const isbn = req.params.isbn;
-    const short_response = req.query.short;
-    getInfoBook(res, isbn);
-  }
-);
-
-//get all books, and get all books filtered by keyword
-app.get(
-  "/book",
+  "/books/filtered",
   [
     query("search")
-      .optional()
       .isString()
       .trim()
       .escape()
@@ -1001,22 +955,69 @@ app.get(
   ],
   (req, res) => {
     const search = req.query.search;
-
-    if (search != undefined) {
-      getBookBySearch(res, "%" + search + "%");
-    } else {
-      getAllBookAndAuthor(res);
-    }
+    getBookBySearch(res, "%" + search + "%");
   }
 );
 
-//testing123
+//getallinfoLikeRecc.
+app.get(
+  "/books/:isbn/recommendations/filtered",
+  [
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    query("username")
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Invalid username"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.query.username;
+
+    getAllLikeInfoRecommendation(res, isbn, username);
+  }
+);
+
+//getAllInfoRecc and
+app.get(
+  "/books/:isbn/recommendations",
+  [
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const isbn = req.params.isbn;
+    getAllInfoRecommendation(res, isbn);
+  }
+);
+
+//getInfoBook
+app.get(
+  "/books/:isbn",
+  [
+    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    handleValidationErrors,
+  ],
+  (req, res) => {
+    const isbn = req.params.isbn;
+    getInfoBook(res, isbn);
+  }
+);
+
+//get all book
 app.get("/books", (req, res) => {
-  all(res);
+  getAllBookAndAuthor(res);
 });
 
+//testing123
+/*
+app.get("/books", (req, res) => {
+  all(res);
+});*/
+
 // get all tags,
-app.get("/tag", (req, res) => {
+app.get("/tags", (req, res) => {
   getTags(res);
 });
 
@@ -1025,50 +1026,30 @@ app.get("/", (req, res) => {
   res.json("hello world!");
 });
 
-//upvote
+//upvotes and downvotes
 app.put(
-  "/users/:user/book/:isbn/recommendation/:reccIsbn/upvote",
+  "/users/:user/books/:isbn/recommendations/:reccIsbn/votes",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
     param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
-    param("reccIsbn").trim().isISBN().withMessage("Invalid recommended ISBN"),
-    body("upvote").isInt().withMessage("Upvote must be an integer"),
+    param("reccIsbn").trim().isISBN().withMessage("Invalid ISBN format"),
+    body("vote").isString().withMessage("Vote must be a string"),
+    body("value").isInt().withMessage("Value must be an intenger"),
     handleValidationErrors,
   ],
   (req, res) => {
     const user = { Username: req.params.user };
     const isbn = { Book_isbn: req.params.isbn };
     const reccIsbn = { Recommended_isbn: req.params.reccIsbn };
-    const value = req.body.upvote;
-    modifyVote(res, "Recommendation", "Up_vote", value, [user, isbn, reccIsbn]);
-  }
-);
-//downvote
-app.put(
-  "/users/:user/book/:isbn/recommendation/:reccIsbn/downvote",
-  [
-    param("user").isString().trim().escape().withMessage("Invalid username"),
-    param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
-    param("reccIsbn").trim().isISBN().withMessage("Invalid recommended ISBN"),
-    body("downvote").isInt().withMessage("Downvote must be an integer"),
-    handleValidationErrors,
-  ],
-  (req, res) => {
-    const user = { Username: req.params.user };
-    const isbn = { Book_isbn: req.params.isbn };
-    const reccIsbn = { Recommended_isbn: req.params.reccIsbn };
-    const downvote = req.body.downvote;
-    modifyVote(res, "Recommendation", "Down_vote", downvote, [
-      user,
-      isbn,
-      reccIsbn,
-    ]);
+    const vote = req.body.vote;
+    const value = req.body.value;
+    modifyVote(res, "Recommendation", vote, value, [user, isbn, reccIsbn]);
   }
 );
 
 //editRecc - update user's post
 app.put(
-  "/users/:user/book/:isbn/recommendation/:reccIsbn",
+  "/users/:user/books/:isbn/recommendations/:reccIsbn",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
     param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),
@@ -1098,7 +1079,7 @@ app.put(
 
 //addRecommendation
 app.post(
-  "/users/:user/book/:isbn/recommendation/:reccIsbn",
+  "/users/:user/books/:isbn/recommendations/:reccIsbn",
   [
     param("user").isString().trim().escape().withMessage("Invalid username"),
     param("isbn").trim().isISBN().withMessage("Invalid ISBN format"),

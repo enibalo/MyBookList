@@ -31,7 +31,7 @@ export default function AddRec() {
     if (isAdmin) return;
     async function fetchData() {
       axios
-        .get("http://localhost:8800/tag")
+        .get("http://localhost:8800/tags")
         .then((result) => {
           if (isMounted) {
             setTags(result.data);
@@ -54,9 +54,9 @@ export default function AddRec() {
         .post(
           "http://localhost:8800/users/" +
             username +
-            "/book/" +
+            "/books/" +
             data.book_isbn +
-            "/recommendation/" +
+            "/recommendations/" +
             data.recommended_isbn,
           { comment: data.comment, tags: data.checkbox }
         )

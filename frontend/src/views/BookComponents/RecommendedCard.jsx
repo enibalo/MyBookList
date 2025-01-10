@@ -39,13 +39,14 @@ export default function RecommendedCard({ recc }) {
           .put(
             "http://localhost:8800/users/" +
               username +
-              "/book/" +
+              "/books/" +
               isbn +
-              "/recommendation/" +
+              "/recommendations/" +
               reccIsbn +
-              "/downvote",
+              "/votes",
             {
-              downvote: value,
+              vote: "Down_vote",
+              value: value,
             }
           )
           .catch((error) => {
@@ -64,13 +65,14 @@ export default function RecommendedCard({ recc }) {
           .put(
             "http://localhost:8800/users/" +
               username +
-              "/book/" +
+              "/books/" +
               isbn +
-              "/recommendation/" +
+              "/recommendations/" +
               reccIsbn +
-              "/upvote",
+              "/votes",
             {
-              upvote: value,
+              vote: "Up_vote",
+              value: value,
             }
           )
           .catch((error) => {

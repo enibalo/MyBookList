@@ -28,7 +28,7 @@ function Browse() {
   useEffect(() => {
     const fetchAllBooks = async () => {
       try {
-        const response = await fetch("http://localhost:8800/book");
+        const response = await fetch("http://localhost:8800/books");
         const data = await response.json();
         setAllBooks(data); // Store all books
         setBooks(data); // Display all books initially

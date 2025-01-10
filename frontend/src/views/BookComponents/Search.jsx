@@ -18,7 +18,7 @@ function Search({ handleClick }) {
     const lowerSearchTerm = searchTerm.toLowerCase();
     async function getData() {
       axios
-        .get("http://localhost:8800/book?search=" + lowerSearchTerm)
+        .get("http://localhost:8800/books/filtered?search=" + lowerSearchTerm)
         .then((result) => {
           setFilteredBooks(result.data);
         })

@@ -25,7 +25,7 @@ function Book() {
     let isMounted = true;
     async function fetchData() {
       axios
-        .get("http://localhost:8800/book/" + isbn)
+        .get("http://localhost:8800/books/" + isbn)
         .then((result) => {
           if (isMounted) {
             setBook(result.data[0]);
@@ -42,7 +42,12 @@ function Book() {
     };
   }, []);
 
-  if (error) return <div>Error</div>;
+  if (error)
+    return (
+      <div style={{ padding: "15px" }}>
+        Error: We are unable to load this page. =/
+      </div>
+    );
 
   return (
     <>
