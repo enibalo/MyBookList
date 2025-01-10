@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import styles from "../styles/Header.module.css";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-//import { Link } from "react-router-dom";
 
 function Header() {
   const [username, setUsername] = useState("");
@@ -15,8 +14,6 @@ function Header() {
     const storedIsAdmin = localStorage.getItem("isAdmin") === "true";
     setUsername(storedUsername);
     setIsAdmin(storedIsAdmin);
-    //console.log("local storage");
-    //console.log(isAdmin);
   }, []);
 
   return (
@@ -31,8 +28,6 @@ function Header() {
 }
 
 export function HeaderLinks({ username, isAdmin }) {
-  console.log("header");
-  console.log(isAdmin);
   if (username == "") {
     return null;
   } else if (isAdmin == false) {

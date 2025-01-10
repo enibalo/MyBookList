@@ -12,7 +12,6 @@ function ToggleGroup({ selected, notSelected, itemName, id }) {
   } = useFormContext();
 
   function atLeastOneChecked(checkboxes) {
-    console.log(checkboxes);
     return checkboxes.length > 0;
   }
 

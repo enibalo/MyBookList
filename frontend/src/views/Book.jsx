@@ -28,7 +28,6 @@ function Book() {
         .get("http://localhost:8800/book/" + isbn)
         .then((result) => {
           if (isMounted) {
-            console.log(result.data[0]);
             setBook(result.data[0]);
           }
         })

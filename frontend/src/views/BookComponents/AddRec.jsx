@@ -49,7 +49,6 @@ export default function AddRec() {
   }, []);
 
   const onSubmit = (data) => {
-    console.log(data);
     async function sendData() {
       axios
         .post(

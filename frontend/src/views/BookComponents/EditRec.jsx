@@ -20,13 +20,8 @@ export default function EditRec() {
   useEffect(() => {
     let isMounted = true;
 
-    console.log("hi from useffect");
-    console.log(username);
-    console.log(`isAdmin is ${isAdmin}`);
-
     if (isAdmin) return;
     async function fetchData() {
-      console.log(`tried to fetch with ${username}`);
       axios
         .get(
           "http://localhost:8800/users/" +
@@ -37,21 +32,16 @@ export default function EditRec() {
         )
         .then((result) => {
           if (isMounted) {
-            console.log(result.data);
             setReccs(result.data);
           }
         })
         .catch((error) => {
           console.log(error);
           setError(true);
-        })
-        .finally(() => {
-          console.log("Sent a request!!");
         });
     }
 
     fetchData();
-    console.log("after fetchSdATA");
 
     return () => {
       isMounted = false;
@@ -114,7 +104,6 @@ function EditForm({ isbn, recc, username, toggle_id }) {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     async function sendData() {
       axios
         .put(
@@ -128,7 +117,6 @@ function EditForm({ isbn, recc, username, toggle_id }) {
         )
         .then(() => {
           alert("Submission successful!");
-          console.log("Sucess!");
         })
         .catch((error) => {
           alert(error.message);
