@@ -2,33 +2,24 @@ import coffeeLogo from "../assets/Coffee.svg";
 
 import { Link } from "react-router-dom";
 import styles from "../styles/Header.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 
 function Header() {
-  const [username, setUsername] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem("currentUsername");
-    const storedIsAdmin = localStorage.getItem("isAdmin") === "true";
-    setUsername(storedUsername);
-    setIsAdmin(storedIsAdmin);
-  }, []);
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin"));
 
   return (
     <header className={styles.header}>
       <img className={styles.img} aria-hidden="true" src={coffeeLogo}></img>
-
       <nav>
-        <HeaderLinks username={username} isAdmin={isAdmin}></HeaderLinks>
+        <HeaderLinks isAdmin={isAdmin}></HeaderLinks>
       </nav>
     </header>
   );
 }
 
-export function HeaderLinks({ username, isAdmin }) {
-  if (username == "") {
+export function HeaderLinks({ isAdmin }) {
+  if (isAdmin == null) {
     return null;
   } else if (isAdmin == false) {
     return (
@@ -68,7 +59,7 @@ export function HeaderLinks({ username, isAdmin }) {
         <li>
           <Link className={styles.noDecor} to={"../adminSettings"}>
             {" "}
-            User
+            Admin
           </Link>
         </li>
       </ul>
@@ -77,7 +68,6 @@ export function HeaderLinks({ username, isAdmin }) {
 }
 
 HeaderLinks.propTypes = {
-  username: PropTypes.string.isRequired,
   isAdmin: PropTypes.bool.isRequired,
 };
 
