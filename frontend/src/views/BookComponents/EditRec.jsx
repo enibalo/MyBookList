@@ -96,6 +96,7 @@ export default function EditRec() {
             isbn={isbn}
             recc={recc}
             username={username}
+            toggle_id={index}
           ></EditForm>
         );
       })}
@@ -103,7 +104,7 @@ export default function EditRec() {
   );
 }
 
-function EditForm({ isbn, recc, username }) {
+function EditForm({ isbn, recc, username, toggle_id }) {
   const methods = useForm({
     defaultValues: {
       comment: recc.Comment,
@@ -161,6 +162,7 @@ function EditForm({ isbn, recc, username }) {
         ></input>
 
         <ToggleGroup
+          id={toggle_id}
           selected={recc.Selected}
           notSelected={recc.NotSelected}
           itemName={"Tags"}
@@ -204,6 +206,7 @@ EditForm.propTypes = {
     Fname: PropTypes.string.isRequired,
     Lname: PropTypes.string.isRequired,
   }).isRequired,
+  toggle_id: PropTypes.number.isRequired,
 };
 
 export { EditForm };

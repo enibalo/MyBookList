@@ -5,7 +5,7 @@ import check from "../assets/Check.svg";
 //Any forms that implement it must use react-hook-form (this made it easy to make sure that at least one item is selected)
 //Template form is at the bottom of the file.
 
-function ToggleGroup({ selected, notSelected, itemName }) {
+function ToggleGroup({ selected, notSelected, itemName, id }) {
   const {
     register,
     formState: { errors },
@@ -22,14 +22,14 @@ function ToggleGroup({ selected, notSelected, itemName }) {
       {selected.map((item, index) => {
         return (
           <label
-            htmlFor={"input-" + item}
+            htmlFor={item + id}
             aria-labelledby={"span-" + item}
             key={item}
           >
             {index == 0 ? (
               <input
                 type="checkbox"
-                id={"input-" + item}
+                id={item + id}
                 name="toggleGroup"
                 value={item}
                 defaultChecked={true}
@@ -40,7 +40,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
             ) : (
               <input
                 type="checkbox"
-                id={"input-" + item}
+                id={item + id}
                 name="toggleGroup"
                 value={item}
                 defaultChecked={true}
@@ -63,14 +63,14 @@ function ToggleGroup({ selected, notSelected, itemName }) {
       {notSelected.map((item, index) => {
         return (
           <label
-            htmlFor={"input-" + item}
+            htmlFor={item + id}
             aria-labelledby={"span-" + item}
             key={item}
           >
             {index == 0 && selected.length == 0 ? (
               <input
                 type="checkbox"
-                id={"input-" + item}
+                id={item + id}
                 name="toggleGroup"
                 value={item}
                 {...register("checkbox", {
@@ -80,7 +80,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
             ) : (
               <input
                 type="checkbox"
-                id={"input-" + item}
+                id={item + id}
                 name="toggleGroup"
                 value={item}
                 {...register("checkbox")}
@@ -109,16 +109,19 @@ function ToggleGroup({ selected, notSelected, itemName }) {
 // selected - selected items
 // notSelected - not selected items
 // itemName is the name of the toggle group. like Tags, or Genres .
+//id - is used to uniquely identify an input when there are multiple forms using the same input values
 
 ToggleGroup.defaultProps = {
   selected: [],
   notSelected: [],
+  id: 0,
 };
 
 ToggleGroup.propTypes = {
   selected: PropTypes.arrayOf(PropTypes.string),
   notSelected: PropTypes.arrayOf(PropTypes.string),
-  itemName: PropTypes.string,
+  itemName: PropTypes.string.isRequired,
+  id: PropTypes.number,
 };
 
 export default ToggleGroup;
@@ -131,7 +134,7 @@ export default function DummyForm() {
   const methods = useForm();
 
   const onSubmit = (data) => {
-    //whatever you do with form data 
+    data.checkbox //an array of selected items 
   };
 
   return (
