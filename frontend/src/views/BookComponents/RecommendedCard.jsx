@@ -21,7 +21,6 @@ export default function RecommendedCard({ recc }) {
 
   useEffect(() => {
     setDownVote(recc.Down_vote);
-    console.log("update downvote");
   }, []);
   useEffect(() => {
     setUpVote(recc.Up_vote);

@@ -28,7 +28,6 @@ export default function FilterRec() {
         )
         .then((result) => {
           if (isMounted) {
-            console.log(result.data);
             setReccs(result.data);
           }
         })

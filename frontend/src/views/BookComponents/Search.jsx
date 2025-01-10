@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SearchBar from "../components/SearchBar.jsx"; // Adjust the path if needed
+import SearchBar from "../../components/SearchBar.jsx"; // Adjust the path if needed
 
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";

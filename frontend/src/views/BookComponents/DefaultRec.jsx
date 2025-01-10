@@ -19,7 +19,6 @@ export default function DefaultRec() {
         )
         .then((result) => {
           if (isMounted) {
-            console.log(result.data);
             setReccs(result.data);
           }
         })
@@ -43,7 +42,6 @@ export default function DefaultRec() {
   }
 
   if (reccs == null) {
-    console.log(`reccs is ${reccs}`);
     return (
       <div className="secondary" id={styles.noReccs}>
         Loading...
@@ -52,7 +50,6 @@ export default function DefaultRec() {
   }
 
   if (reccs.length == 0) {
-    console.log(`reccs is ${reccs}`);
     return (
       <div className="secondary" id={styles.noReccs}>
         Be the first to recommend a book!

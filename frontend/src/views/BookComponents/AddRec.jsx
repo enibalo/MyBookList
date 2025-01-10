@@ -5,7 +5,7 @@ import styles from "../../styles/Book.module.css";
 import { useForm, FormProvider } from "react-hook-form";
 import ToggleGroup from "../../components/ToggleGroup.jsx";
 import axios from "axios";
-import Search from "../Search.jsx";
+import Search from "./Search.jsx";
 
 export default function AddRec() {
   const methods = useForm({
@@ -34,7 +34,6 @@ export default function AddRec() {
         .get("http://localhost:8800/tag")
         .then((result) => {
           if (isMounted) {
-            console.log(result.data);
             setTags(result.data);
           }
         })

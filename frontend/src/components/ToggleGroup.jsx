@@ -5,7 +5,7 @@ import check from "../assets/Check.svg";
 //Any forms that implement it must use react-hook-form (this made it easy to make sure that at least one item is selected)
 //Template form is at the bottom of the file.
 
-function ToggleGroup({ selected, notSelected, itemName }) {
+function ToggleGroup({ selected, notSelected, itemName, id }) {
   const {
     register,
     formState: { errors },
@@ -13,6 +13,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
 
   function atLeastOneChecked(checkboxes) {
     console.log(checkboxes);
+    console.log("checkbox" + id);
     return checkboxes.length > 0;
   }
 
@@ -33,7 +34,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
                 name="toggleGroup"
                 value={item}
                 defaultChecked={true}
-                {...register("checkbox", {
+                {...register("checkbox" + { id }, {
                   validate: atLeastOneChecked,
                 })}
               ></input>
@@ -44,7 +45,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
                 name="toggleGroup"
                 value={item}
                 defaultChecked={true}
-                {...register("checkbox")}
+                {...register("checkbox" + id)}
               ></input>
             )}
 
@@ -73,7 +74,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
-                {...register("checkbox", {
+                {...register("checkbox" + id, {
                   validate: atLeastOneChecked,
                 })}
               ></input>
@@ -83,7 +84,7 @@ function ToggleGroup({ selected, notSelected, itemName }) {
                 id={"input-" + item}
                 name="toggleGroup"
                 value={item}
-                {...register("checkbox")}
+                {...register("checkbox" + { id })}
               ></input>
             )}
 
@@ -93,12 +94,13 @@ function ToggleGroup({ selected, notSelected, itemName }) {
               tabIndex="-1"
               id={"span-" + item}
             >
+              <img src={check}></img>
               <div className="inner-text">{item}</div>
             </span>
           </label>
         );
       })}
-      {errors.checkbox && (
+      {errors["checkbox" + id] && (
         <div className="error">You must select at least one item.</div>
       )}
     </fieldset>
@@ -112,12 +114,14 @@ function ToggleGroup({ selected, notSelected, itemName }) {
 ToggleGroup.defaultProps = {
   selected: [],
   notSelected: [],
+  id: "",
 };
 
 ToggleGroup.propTypes = {
   selected: PropTypes.arrayOf(PropTypes.string),
   notSelected: PropTypes.arrayOf(PropTypes.string),
   itemName: PropTypes.string,
+  id: PropTypes.string,
 };
 
 export default ToggleGroup;

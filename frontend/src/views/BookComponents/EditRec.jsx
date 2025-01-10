@@ -20,13 +20,8 @@ export default function EditRec() {
   useEffect(() => {
     let isMounted = true;
 
-    console.log("hi from useffect");
-    console.log(username);
-    console.log(`isAdmin is ${isAdmin}`);
-
     if (isAdmin) return;
     async function fetchData() {
-      console.log(`tried to fetch with ${username}`);
       axios
         .get(
           "http://localhost:8800/users/" +
@@ -37,21 +32,16 @@ export default function EditRec() {
         )
         .then((result) => {
           if (isMounted) {
-            console.log(result.data);
             setReccs(result.data);
           }
         })
         .catch((error) => {
           console.log(error);
           setError(true);
-        })
-        .finally(() => {
-          console.log("Sent a request!!");
         });
     }
 
     fetchData();
-    console.log("after fetchSdATA");
 
     return () => {
       isMounted = false;
@@ -92,7 +82,8 @@ export default function EditRec() {
       {reccs.map((recc, index) => {
         return (
           <EditForm
-            key={recc.isbn + "-" + index}
+            key={recc["Book_isbn"] + "-" + index}
+            toggle_id={recc["Book_isbn"] + "-" + index}
             isbn={isbn}
             recc={recc}
             username={username}
@@ -103,7 +94,7 @@ export default function EditRec() {
   );
 }
 
-function EditForm({ isbn, recc, username }) {
+function EditForm({ toggle_id, isbn, recc, username }) {
   const methods = useForm({
     defaultValues: {
       comment: recc.Comment,
@@ -113,7 +104,8 @@ function EditForm({ isbn, recc, username }) {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(data.checkbox);
+    console.log(data.checkbox["checkbox" + toggle_id]);
     async function sendData() {
       axios
         .put(
@@ -126,8 +118,7 @@ function EditForm({ isbn, recc, username }) {
           { comment: data.comment, tags: data.checkbox }
         )
         .then(() => {
-          alert("Submission successful!");
-          console.log("Sucess!");
+          alert("Update was successful!");
         })
         .catch((error) => {
           alert(error.message);
@@ -161,6 +152,7 @@ function EditForm({ isbn, recc, username }) {
         ></input>
 
         <ToggleGroup
+          id={toggle_id}
           selected={recc.Selected}
           notSelected={recc.NotSelected}
           itemName={"Tags"}
@@ -204,6 +196,7 @@ EditForm.propTypes = {
     Fname: PropTypes.string.isRequired,
     Lname: PropTypes.string.isRequired,
   }).isRequired,
+  toggle_id: PropTypes.string.isRequired,
 };
 
 export { EditForm };
