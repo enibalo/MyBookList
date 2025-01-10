@@ -68,7 +68,7 @@ export function HeaderLinks({ isAdmin }) {
 }
 
 HeaderLinks.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
+  isAdmin: PropTypes.string.isRequired,
 };
 
 export default Header;
