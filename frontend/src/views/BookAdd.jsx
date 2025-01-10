@@ -80,8 +80,8 @@ const BookAdd = () => {
     const payload = {
       ISBN: formData.ISBN,
       Title: formData.Title,
-      SeriesName: formData.SeriesName,
-      BookOrder: formData.BookOrder,
+      SeriesName: formData.SeriesName == "" ? undefined : formData.SeriesName,
+      BookOrder: formData.BookOrder == "" ? undefined : formData.BookOrder,
       Fname: formData.Fname,
       Lname: formData.Lname,
       DOB: formData.DOB,
@@ -89,12 +89,15 @@ const BookAdd = () => {
       Phone: formData.Phone,
       Email: formData.Email,
       Description: formData.Description,
-      PurchaseLink: formData.PurchaseLink,
+      PurchaseLink:
+        formData.PurchaseLink == "" ? undefined : formData.PurchaseLink,
       isFavourite: formData.isFavourite,
       //adminUsername: formData.adminUsername,
       adminUsername: username,
       Genres: formData.Genres,
     };
+
+    console.log(payload);
 
     try {
       const response = await fetch("http://localhost:8800/BookAdd", {

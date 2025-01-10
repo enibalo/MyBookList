@@ -146,8 +146,18 @@ app.post(
   [
     body("ISBN").trim().isISBN().withMessage("Invalid ISBN format"),
     body("Title").isString().trim().escape().withMessage("Title is required"),
-    body("SeriesName").optional().trim().escape(),
-    body("BookOrder").optional(),
+    body("SeriesName")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Series name must be a string"),
+    body("BookOrder")
+      .optional()
+      .isString()
+      .trim()
+      .escape()
+      .withMessage("Book order must be a string"),
     body("Fname")
       .isString()
       .trim()
@@ -181,7 +191,7 @@ app.post(
     body("PurchaseLink")
       .optional()
       .isURL()
-      .withMessage("Invalid purchase link URL"),
+      .withMessage("Invalid purchase link URL."),
     body("isFavourite")
       .optional()
       .isBoolean()
