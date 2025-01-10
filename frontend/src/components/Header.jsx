@@ -2,7 +2,7 @@ import coffeeLogo from "../assets/Coffee.svg";
 
 import { Link } from "react-router-dom";
 import styles from "../styles/Header.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 function Header() {
@@ -21,7 +21,7 @@ function Header() {
 export function HeaderLinks({ isAdmin }) {
   if (isAdmin == null) {
     return null;
-  } else if (isAdmin == false) {
+  } else if (isAdmin == "false") {
     return (
       <ul className={styles.ul}>
         <li>

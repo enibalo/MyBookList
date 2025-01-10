@@ -81,6 +81,7 @@ const UserSettings = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("username"); // Remove username from localStorage
+    localStorage.removeItem("isAdmin");
     navigate("/"); // Redirect to login page
   };
 
